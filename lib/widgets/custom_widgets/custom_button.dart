@@ -35,7 +35,7 @@ class StyledGradienButton extends StatelessWidget {
         onPressed: onPressed,
         child: Text(
           buttonText,
-          style: GoogleFonts.nunito(fontSize: 20),
+          style: GoogleFonts.nunito(fontSize: 17),
           textAlign: TextAlign.center,
         ),
       ),
@@ -43,11 +43,11 @@ class StyledGradienButton extends StatelessWidget {
   }
 }
 
-class LoginWithGoogleButton extends StatelessWidget {
+class LoginWithSocialButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
   final String? buttonIconAssets;
-  const LoginWithGoogleButton({
+  const LoginWithSocialButton({
     Key? key,
     required this.onPressed,
     required this.buttonText,
@@ -61,8 +61,7 @@ class LoginWithGoogleButton extends StatelessWidget {
       width: double.infinity,
       height: 52,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.0),
-          color: Color.fromARGB(255, 42, 205, 216)),
+          borderRadius: BorderRadius.circular(30.0), color: Colors.grey[300]),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
@@ -78,19 +77,61 @@ class LoginWithGoogleButton extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: Image.asset(
                       buttonIconAssets!,
-                      scale: 2,
+                      scale: 2.5,
                     ),
                   )
                 : const SizedBox.shrink(),
             SizedBox(
-              width: size.width / 12,
+              width: size.width / 10,
             ),
             Text(
               buttonText,
-              style: GoogleFonts.nunito(fontSize: 20),
+              style: GoogleFonts.nunito(fontSize: 16, color: Colors.black),
               textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class CircleIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+  final Color iconColor;
+  final Color bgColor;
+  final double iconSize;
+  final double buttonSize;
+
+  const CircleIconButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+    this.iconColor = Colors.white,
+    this.bgColor = Colors.blue,
+    this.iconSize = 24.0,
+    this.buttonSize = 48.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: buttonSize,
+      height: buttonSize,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(buttonSize / 2),
+          ),
+          backgroundColor: bgColor,
+        ),
+        child: Icon(
+          icon,
+          color: iconColor,
+          size: iconSize,
         ),
       ),
     );

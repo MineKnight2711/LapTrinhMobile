@@ -58,4 +58,20 @@ class AccountModel {
       'accountType': accountType,
     };
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'fullName': fullName,
+      'birthday': birthday?.toIso8601String(),
+      'email': email,
+      'gender': gender,
+      'address': address,
+      'nickname': nickname,
+      'password': password,
+      'imageUrl': imageUrl,
+      'phone': phone,
+      'accountType': accountType,
+    };
+  }
 }

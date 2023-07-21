@@ -1,26 +1,29 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
-import 'package:keyboard_mobile_app/screens/register_screen.dart';
+import 'package:keyboard_mobile_app/screens/login_signup/register_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/centered_text_with_linebar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
+
   final loginController = Get.put(LoginController());
-  final accountApi = Get.put(AccountApi());
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           width: size.width,
           height: size.height,
           child: Column(
@@ -62,17 +65,61 @@ class LoginScreen extends StatelessWidget {
                 hintText: 'Nhập tên đăng nhập...',
               ),
               SizedBox(
-                height: size.height / 25,
+                height: size.height / 60,
               ),
-              CustomInputTextField(
-                controller: loginController.usernameController,
+              CustomPasswordTextfield(
+                controller: loginController.passwordController,
                 labelText: 'Mật khẩu',
                 hintText: 'Nhập mật khẩu...',
               ),
               SizedBox(
-                height: size.height / 25,
+                height: size.height / 70,
               ),
-              StyledGradienButton(onPressed: () {}, buttonText: 'Đăng nhập'),
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      Radio(
+                        value: false,
+                        onChanged: (value) {},
+                        groupValue: null,
+                      ),
+                      Text(
+                        'Lưu đăng nhập',
+                        style: GoogleFonts.roboto(
+                          fontSize: 14,
+                        ),
+                      )
+                    ],
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Quên mật khẩu',
+                    style: GoogleFonts.roboto(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: size.height / 70,
+              ),
+              Row(
+                children: [
+                  SizedBox(
+                    width: size.width / 1.5,
+                    child: StyledGradienButton(
+                        onPressed: () {}, buttonText: 'Đăng nhập'),
+                  ),
+                  const Spacer(),
+                  CircleIconButton(
+                    icon: Icons.fingerprint,
+                    onPressed: () {},
+                  )
+                ],
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: const CenteredTextWithLineBars(
@@ -80,8 +127,19 @@ class LoginScreen extends StatelessWidget {
                   textFlex: 1,
                 ),
               ),
-              LoginWithGoogleButton(
-                  onPressed: () {},
+              LoginWithSocialButton(
+                  onPressed: () async {
+                    final result = await loginController.signInWithGoogle();
+                    if (result == 'SigninSuccess') {
+                      CustomSuccessMessage.showMessage('Đăng ký thành công!');
+                    } else if (result == 'LoginSuccess') {
+                      CustomSuccessMessage.showMessage('Đăng nhập thành công!');
+                    } else if (result == 'CancelSignIn') {
+                      CustomSuccessMessage.showMessage('Đã huỷ đăng nhập!');
+                    } else {
+                      CustomErrorMessage.showMessage('Đăng nhập thất bại!');
+                    }
+                  },
                   buttonText: 'Tiếp tục với Google',
                   buttonIconAssets: 'assets/icons/google.png'),
               SizedBox(
@@ -89,13 +147,12 @@ class LoginScreen extends StatelessWidget {
               ),
               RichText(
                 text: TextSpan(
-                  text: 'bạn chưa có tài khoản? ',
+                  text: 'Bạn chưa có tài khoản? ',
                   style: GoogleFonts.roboto(fontSize: 18, color: Colors.grey),
                   children: [
                     TextSpan(
                       text: 'Đăng ký',
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
                         color: Colors.blue,
                       ),
                       recognizer: TapGestureRecognizer()
@@ -105,7 +162,7 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

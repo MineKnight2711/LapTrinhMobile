@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/controller/register_controller.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
-
-import '../widgets/custom_widgets/custom_input.dart';
+import '../../widgets/custom_widgets/custom_input.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -59,7 +57,7 @@ class RegisterScreen extends StatelessWidget {
             SizedBox(height: size.height / 25),
             StyledGradienButton(
                 onPressed: () {
-                  registerController.register();
+                  registerController.signUp();
                 },
                 buttonText: 'Đăng ký')
           ]),
