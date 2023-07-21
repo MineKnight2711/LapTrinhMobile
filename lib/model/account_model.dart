@@ -25,7 +25,6 @@ class AccountModel {
     this.accountType,
   });
 
-  // Create a factory method to convert a JSON object to User object
   factory AccountModel.fromJson(Map<String, dynamic> json) {
     return AccountModel(
       id: json['id'],

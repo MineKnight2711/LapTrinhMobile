@@ -1,10 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
+import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/register_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/centered_text_with_linebar.dart';
@@ -109,7 +110,7 @@ class LoginScreen extends StatelessWidget {
               Row(
                 children: [
                   SizedBox(
-                    width: size.width / 1.5,
+                    width: size.width / 1.45,
                     child: StyledGradienButton(
                         onPressed: () {}, buttonText: 'Đăng nhập'),
                   ),
@@ -132,8 +133,10 @@ class LoginScreen extends StatelessWidget {
                     final result = await loginController.signInWithGoogle();
                     if (result == 'SigninSuccess') {
                       CustomSuccessMessage.showMessage('Đăng ký thành công!');
+                      slideInTransition(context, HomeScreen());
                     } else if (result == 'LoginSuccess') {
                       CustomSuccessMessage.showMessage('Đăng nhập thành công!');
+                      slideInTransition(context, HomeScreen());
                     } else if (result == 'CancelSignIn') {
                       CustomSuccessMessage.showMessage('Đã huỷ đăng nhập!');
                     } else {
