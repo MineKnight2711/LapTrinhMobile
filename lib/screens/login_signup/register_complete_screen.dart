@@ -2,11 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:keyboard_mobile_app/model/account_model.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/login_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
-
 import '../../api/account_api.dart';
 import '../../configs/mediaquery.dart';
 import '../../controller/register_controller.dart';

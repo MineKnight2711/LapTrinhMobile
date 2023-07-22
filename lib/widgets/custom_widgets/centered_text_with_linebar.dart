@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CenteredTextWithLineBars extends StatelessWidget {
   final String text;
@@ -38,6 +39,7 @@ class CenteredTextWithLineBars extends StatelessWidget {
               child: Text(
                 text,
                 textAlign: TextAlign.center,
+                style: GoogleFonts.nunito(fontSize: 18),
               ),
             ),
           ),

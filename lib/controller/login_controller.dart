@@ -13,6 +13,50 @@ class LoginController extends GetxController {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final accountApi = Get.find<AccountApi>();
+  final auth = FirebaseAuth.instance;
+
+  Future<String?> logIn(String email, String password) async {
+    try {
+      return await auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((userCredential) {
+        User? user = auth.currentUser;
+        user = userCredential.user;
+        auth.authStateChanges();
+        auth.userChanges();
+        return 'Success';
+      });
+      // SharedPreferences preferences = await SharedPreferences.getInstance();
+      // preferences.setString('email', email);
+    } on FirebaseAuthException catch (error) {
+      String errorMessage = '';
+      switch (error.code) {
+        case "invalid-email":
+          errorMessage = "Email không hợp lệ!.";
+          break;
+        case "wrong-password":
+          errorMessage = "Sai mật khẩu.";
+          break;
+        case "user-not-found":
+          errorMessage = "Tài khoản không tồn tại.";
+          break;
+        case "user-disabled":
+          errorMessage = "Tài khoản bị khoá.";
+          break;
+        case "too-many-requests":
+          errorMessage = "Sai mật khẩu quá nhiều lần vui lòng đợi 30 giây";
+          break;
+        case "operation-not-allowed":
+          errorMessage =
+              "Không thể đăng nhập vui lòng liên hệ người phát triển.";
+          break;
+        default:
+          errorMessage = "Lỗi chưa xác định.";
+      }
+      return errorMessage;
+    }
+  }
+
   Future<String?> signInWithGoogle() async {
     GoogleSignInAccount? googleUser =
         await GoogleSignIn().signIn().onError((error, stackTrace) {
