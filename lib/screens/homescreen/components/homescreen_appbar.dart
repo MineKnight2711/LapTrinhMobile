@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/screens/homescreen/components/user_drawer.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/login_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 
 import '../../../api/account_api.dart';
-import '../../../widgets/custom_widgets/message.dart';
-import 'draw_header.dart';
 
 // ignore: must_be_immutable
 class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -143,52 +142,12 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           Obx(() {
             if (accountApi.accountRespone.value != null) {
               final accounts = accountApi.accountRespone.value!;
-              if (accounts.imageUrl != null) {
-                avt = accounts.imageUrl;
-              } else {
-                avt = 'assets/images/avt.png';
-              }
-              return MyDrawerHeader(
-                fullName: '${accounts.fullName}',
-                email: '${accounts.email}',
-                avatarUrl: '$avt',
+              return UserDrawer(
+                accounts: accounts,
               );
             }
-            return const CircularProgressIndicator();
+            return const NoUserDrawer();
           }),
-          ListTile(
-            title: const Text('Cập nhật thông tin'),
-            onTap: () {
-              if (accountApi.accountRespone.value == null) {
-                CustomErrorMessage.showMessage(
-                    'Có lỗi xảy ra!\nVui lòng đăng nhập lại để thực hiện thao tác này! ');
-                return;
-              }
-              // Get.put(ProfileController(controller.accountRespone.value!));
-              // slideinTransition(context,
-              //     EditProfileScreen(account: controller.accountRespone.value!));
-            },
-          ),
-          ListTile(
-            title: const Text('Đổi mật khẩu'),
-            onTap: () {
-              // Get.put(ChangePasswordController());
-              // slideinTransition(context, ChangePasswordScreen());
-            },
-          ),
-          ListTile(
-            title: const Text('Đơn hàng'),
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: const Text('Đăng xuất'),
-            onTap: () {
-              // controller.logout();
-              // Navigator.pop(context);
-            },
-          ),
         ],
       ),
     );

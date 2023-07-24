@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +10,7 @@ import '../controller/account_controller.dart';
 
 class AccountApi extends GetxController {
   Rx<AccountResponse?> accountRespone = Rx<AccountResponse?>(null);
+
   @override
   void onInit() {
     super.onInit();
@@ -16,12 +18,32 @@ class AccountApi extends GetxController {
   }
 
   Future fetchCurrent() async {
-    accountRespone.value =
-        await AccountController().getUserFromSharedPreferences();
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      accountRespone.value = await login(user.uid);
+    }
+  }
+
+  Future<AccountResponse> login(String? accountId) async {
+    AccountResponse accountResponseResult = AccountResponse();
+    final response = await http.get(
+      Uri.parse('${ApiUrl.apiFindAccountById}/$accountId'),
+    );
+    if (response.statusCode == 200) {
+      accountResponseResult =
+          AccountResponse.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
+      accountRespone.value = accountResponseResult;
+      await AccountController()
+          .storedUserToSharedRefererces(accountResponseResult);
+      accountResponseResult.status = "Đăng nhập thành công";
+      return accountResponseResult;
+    } else {
+      accountResponseResult.status = "Đăng nhập thất bại";
+      return accountResponseResult;
+    }
   }
 
   Future<AccountModel?> register(AccountModel account) async {
-    print(account.toMap());
     final response = await http.post(
       Uri.parse('${ApiUrl.apiCreateAccount}/${account.id}'),
       body: {

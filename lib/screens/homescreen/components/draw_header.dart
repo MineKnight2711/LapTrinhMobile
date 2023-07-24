@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class MyDrawerHeader extends StatelessWidget {
   final String fullName;
   final String email;
-  final String avatarUrl;
+  final String? avatarUrl;
 
   const MyDrawerHeader({
     Key? key,
     required this.fullName,
     required this.email,
-    required this.avatarUrl,
+    this.avatarUrl,
   }) : super(key: key);
 
   @override
@@ -25,8 +25,8 @@ class MyDrawerHeader extends StatelessWidget {
             height: 80,
             width: 80,
             child: CircleAvatar(
-              backgroundImage: avatarUrl.isNotEmpty
-                  ? Image.network(avatarUrl).image
+              backgroundImage: avatarUrl != null
+                  ? Image.network(avatarUrl!).image
                   : Image.asset(
                       'assets/images/profile.png',
                     ).image,

@@ -9,7 +9,7 @@ import '../../widgets/custom_widgets/custom_input.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
-  final registerController = Get.put(RegisterController());
+  final registerController = Get.find<RegisterController>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

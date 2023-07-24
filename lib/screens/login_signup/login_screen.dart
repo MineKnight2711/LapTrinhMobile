@@ -13,11 +13,13 @@ import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
+import '../../api/fingerprint_api/local_auth_api.dart';
+import '../../widgets/custom_widgets/forgot_password_alertdialog.dart';
+
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
-  final loginController = Get.put(LoginController());
-
+  final loginController = Get.find<LoginController>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -74,38 +76,7 @@ class LoginScreen extends StatelessWidget {
                 hintText: 'Nhập mật khẩu...',
               ),
               SizedBox(
-                height: size.height / 70,
-              ),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      Radio(
-                        value: false,
-                        onChanged: (value) {},
-                        groupValue: null,
-                      ),
-                      Text(
-                        'Lưu đăng nhập',
-                        style: GoogleFonts.roboto(
-                          fontSize: 14,
-                        ),
-                      )
-                    ],
-                  ),
-                  const Spacer(),
-                  Text(
-                    'Quên mật khẩu',
-                    style: GoogleFonts.roboto(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: size.height / 70,
+                height: size.height / 40,
               ),
               Row(
                 children: [
@@ -117,7 +88,34 @@ class LoginScreen extends StatelessWidget {
                   const Spacer(),
                   CircleIconButton(
                     icon: Icons.fingerprint,
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (loginController.enableFingerprint.value) {
+                        final isAuthenticated =
+                            await LocalAuthApi.authenticate();
+                        if (isAuthenticated) {
+                          final result = await loginController
+                              .authenticatedWithFingerPrint();
+                          switch (result) {
+                            case 'Success':
+                              CustomSuccessMessage.showMessage(
+                                  'Xác thực thành công!');
+                              fadeInTransitionReplacement(
+                                  context, HomeScreen());
+                              break;
+                            case 'NotFound':
+                              CustomErrorMessage.showMessage(
+                                  'Không tìm thấy tài khoản!');
+                              break;
+                            default:
+                              break;
+                          }
+                        }
+                      } else {
+                        CustomErrorMessage.showMessage(
+                            'Vui lòng đăng nhập để bật tính năng này!');
+                        return;
+                      }
+                    },
                   )
                 ],
               ),
@@ -165,6 +163,32 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              SizedBox(
+                height: size.height / 60,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return PasswordRecoveryDialog();
+                        },
+                      );
+                    },
+                    child: Text(
+                      'Quên mật khẩu',
+                      style: GoogleFonts.roboto(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

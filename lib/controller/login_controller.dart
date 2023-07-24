@@ -1,25 +1,67 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keyboard_mobile_app/model/account_model.dart';
-import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../api/account_api.dart';
+import '../model/account_respone.dart';
 import '../widgets/custom_widgets/message.dart';
+import 'account_controller.dart';
 
 class LoginController extends GetxController {
+  TextEditingController emailController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final accountApi = Get.find<AccountApi>();
   final auth = FirebaseAuth.instance;
+  var isValidEmail = false.obs;
+  var enableFingerprint = false.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    checkFingerPrint();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    isValidEmail.value = false;
+    emailController.clear();
+  }
+
+  //Kiểm tra email hợp lệ
+  String? validateEmail(String? email) {
+    if (email == null || email.isEmpty) {
+      isValidEmail.value = false;
+      return 'Email không được trống';
+    }
+    //Đây là Regex cho đa số trường hợp email, tuy nhiên vẫn có một số ngoại lệ như sau:
+    //huynhphuocdat.siu@résumé.com đây là trường hợp email hợp lệ nhưng sẽ không match được regex này vì không hỗ trợ các ký tự nằm ngoài bảng mã ASCII
+    //Thêm 1 trường hợp nữa là <datcute2711@yahoo.com> đây vẫn là 1 email hợp lệ nhưng cũng không match regex vì không hỗ trợ dấu < và >
+    // RegExp emailRegex =
+    //     RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
+    //Còn đây là regex cho riêng gmail
+    RegExp gmailRegex = RegExp(
+        r'[\w]*@*[a-z]*\.*[\w]{5,}(\.)*(com)*(@gmail\.com)',
+        multiLine: true);
+    if (!gmailRegex.hasMatch(email)) {
+      isValidEmail.value = false;
+      return 'Email không đúng định dạng';
+    }
+
+    isValidEmail.value = true;
+
+    return null;
+  }
 
   Future<String?> logIn(String email, String password) async {
     try {
       return await auth
           .signInWithEmailAndPassword(email: email, password: password)
           .then((userCredential) {
+        // ignore: unused_local_variable
         User? user = auth.currentUser;
         user = userCredential.user;
         auth.authStateChanges();
@@ -82,7 +124,7 @@ class LoginController extends GetxController {
     account.accountType = "Customer";
     return await firebaseFirestore
         .collection("users")
-        .doc(userCredential.user?.uid)
+        .doc(newUserId)
         .get()
         .then((value) async {
       if (!value.exists) {
@@ -102,30 +144,34 @@ class LoginController extends GetxController {
         // await convertToUserModel();
       } else {
         // preferences.setString('email', userCredential.user!.email.toString());
-        Fluttertoast.showToast(msg: "Đăng nhập thành công ");
+        await accountApi.login(newUserId);
         return 'LoginSuccess';
-        // zoominTransition(context, AppHomeScreen());
-        // await getCurrentUser();
-        // await convertToUserModel();
       }
     });
   }
 
-  // Future<String?> facebookSignIn() async {
-  //   try {
-  //     final LoginResult result = await FacebookAuth.instance.login();
-  //     if (result.status == LoginStatus.success) {
-  //       final AuthCredential credential =
-  //           FacebookAuthProvider.credential(result.accessToken!.token);
-  //       await FirebaseAuth.instance.signInWithCredential(credential);
+  Future<String> authenticatedWithFingerPrint() async {
+    AccountResponse? accountResponseResult =
+        await AccountController().getUserFromSharedPreferences();
+    if (accountResponseResult != null) {
+      accountApi.accountRespone.value = accountResponseResult;
+      return 'Success';
+    }
+    return 'NotFound';
+  }
 
-  //       return 'Đăng nhập thành công';
-  //     } else if (result.status == LoginStatus.failed) {
-  //       return 'Đăng nhập thất bại';
-  //     }
-  //   } catch (e) {
-  //     print('Có lỗi xảy ra: $e');
-  //   }
-  //   return null;
-  // }
+  Future setFingerPrintState(bool value) async {
+    final pref = await SharedPreferences.getInstance();
+    pref.setBool('finger_print_enable', value);
+  }
+
+  Future checkFingerPrint() async {
+    final pref = await SharedPreferences.getInstance();
+    var value = pref.getBool('finger_print_enable');
+    if (value == null) {
+      enableFingerprint.value = false;
+    } else {
+      enableFingerprint.value = value;
+    }
+  }
 }
