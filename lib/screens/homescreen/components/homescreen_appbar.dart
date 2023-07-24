@@ -115,6 +115,10 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                   onTap: () {
                     scaffoldKey.currentState?.openEndDrawer();
                   },
+                  child: Image.asset(
+                    'assets/images/profile.png',
+                    scale: 1,
+                  ),
                 ),
               );
             }

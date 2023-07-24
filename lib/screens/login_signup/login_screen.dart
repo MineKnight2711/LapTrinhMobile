@@ -9,6 +9,7 @@ import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/register_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/centered_text_with_linebar.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
@@ -24,6 +25,12 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: CustomAppBar(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        title: 'Đăng nhập',
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 25),
@@ -31,14 +38,6 @@ class LoginScreen extends StatelessWidget {
           height: size.height,
           child: Column(
             children: [
-              SizedBox(
-                height: size.height / 20,
-              ),
-              Text(
-                'Đăng nhập',
-                style: GoogleFonts.nunito(
-                    fontSize: 20, fontWeight: FontWeight.bold),
-              ),
               SizedBox(
                 height: size.height / 25,
               ),
