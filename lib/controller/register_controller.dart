@@ -19,10 +19,10 @@ class RegisterController extends GetxController {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController fullnameController = TextEditingController();
-  TextEditingController nickNameController = TextEditingController();
   TextEditingController phonenumberController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   final accountApi = Get.find<AccountApi>();
+  Rx<AccountModel?> signInWithGoogleAccount = Rx<AccountModel?>(null);
   @override
   void onClose() {
     super.onClose();
@@ -33,7 +33,6 @@ class RegisterController extends GetxController {
     otpController.clear();
     passwordController.clear();
     confirmPasswordController.clear();
-    nickNameController.clear();
     fullnameController.clear();
     phonenumberController.clear();
     addressController.clear();
@@ -125,7 +124,29 @@ class RegisterController extends GetxController {
     return null;
   }
 
-  String? errorMessage;
+  Future passAccountSigninWithGoogle(AccountModel receivedAccount) async {
+    AccountModel newAccount = AccountModel();
+    newAccount.id = receivedAccount.id;
+    newAccount.fullName = receivedAccount.fullName;
+    newAccount.email = receivedAccount.email;
+    signInWithGoogleAccount.value = newAccount;
+  }
+
+  Future<String> signUpwithGoogle() async {
+    if (signInWithGoogleAccount.value != null) {
+      signInWithGoogleAccount.value!.birthday = date;
+      signInWithGoogleAccount.value!.address = addressController.text;
+      signInWithGoogleAccount.value!.gender = selectedGender;
+      signInWithGoogleAccount.value!.phone = phonenumberController.text;
+      signInWithGoogleAccount.value!.imageUrl =
+          'https://firebasestorage.googleapis.com/v0/b/keyboard-mobile-app.appspot.com/o/default_avatar.png?alt=media&token=125fef63-2e77-45d7-aedd-effdda210fbd';
+      print(signInWithGoogleAccount.value!.toMap());
+      await accountApi.register(signInWithGoogleAccount.value!);
+      return 'Success';
+    }
+    return 'NoAccount';
+  }
+
   Future<String?> signUp() async {
     final auth = FirebaseAuth.instance;
     try {
@@ -134,6 +155,7 @@ class RegisterController extends GetxController {
               email: emailController.text, password: passwordController.text)
           .then((value) => {pushDataToFirestore(auth)});
     } on FirebaseAuthException catch (error) {
+      String? errorMessage;
       switch (error.code) {
         case "invalid-email":
           errorMessage = "Email không đúng định dạng.";
@@ -168,8 +190,6 @@ class RegisterController extends GetxController {
     account.phone = phonenumberController.text;
     account.address = addressController.text;
     account.fullName = fullnameController.text;
-    account.nickname = nickNameController.text;
-    account.accountType = "Customer";
     if (selectedGender != null) {
       account.gender = selectedGender;
     } else {

@@ -5,6 +5,7 @@ import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 class AlertDialogShape extends RoundedRectangleBorder {
   AlertDialogShape({
@@ -57,7 +58,16 @@ class PasswordRecoveryDialog extends StatelessWidget {
               height: mediaHeight(context, 17),
               child: DefaultButton(
                 text: 'Gửi',
-                press: () {},
+                press: () async {
+                  String result = await loginController
+                      .forgotPassword(loginController.emailController.text);
+                  if (result == 'Success') {
+                    // ignore: use_build_context_synchronously
+                    showResetLinkSentDialog(context);
+                  } else {
+                    CustomErrorMessage.showMessage(result);
+                  }
+                },
               ),
             )
           ],

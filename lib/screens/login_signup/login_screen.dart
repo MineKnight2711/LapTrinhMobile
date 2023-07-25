@@ -1,11 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
+// import 'package:app_settings/app_settings.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
+import 'package:keyboard_mobile_app/screens/login_signup/register_complete_screen.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/register_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/centered_text_with_linebar.dart';
@@ -16,6 +19,7 @@ import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 import '../../api/fingerprint_api/local_auth_api.dart';
 import '../../widgets/custom_widgets/forgot_password_alertdialog.dart';
+import 'complete_register_with_google.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -62,7 +66,7 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: size.height / 20),
               CustomInputTextField(
-                controller: loginController.usernameController,
+                controller: loginController.emailController,
                 labelText: 'Tên đăng nhập',
                 hintText: 'Nhập tên đăng nhập...',
               ),
@@ -82,7 +86,18 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(
                     width: size.width / 1.45,
                     child: StyledGradienButton(
-                        onPressed: () {}, buttonText: 'Đăng nhập'),
+                        onPressed: () async {
+                          String result = await loginController.logIn(
+                              loginController.emailController.text,
+                              loginController.passwordController.text);
+                          if (result == 'Success') {
+                            CustomSuccessMessage.showMessage(result);
+                            loginController.onClose();
+                          } else {
+                            CustomErrorMessage.showMessage(result);
+                          }
+                        },
+                        buttonText: 'Đăng nhập'),
                   ),
                   const Spacer(),
                   CircleIconButton(
@@ -91,7 +106,7 @@ class LoginScreen extends StatelessWidget {
                       if (loginController.enableFingerprint.value) {
                         final isAuthenticated =
                             await LocalAuthApi.authenticate();
-                        if (isAuthenticated) {
+                        if (isAuthenticated == 'Success') {
                           final result = await loginController
                               .authenticatedWithFingerPrint();
                           switch (result) {
@@ -108,6 +123,28 @@ class LoginScreen extends StatelessWidget {
                             default:
                               break;
                           }
+                        } else if (isAuthenticated == 'BiometricsNotEnable') {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return CustomAlertDialog(
+                                onPressed: () {
+                                  AppSettings.openSecuritySettings();
+                                  Navigator.pop(context);
+                                  // AppSettings.openAppSettings(
+                                  //     type: AppSettingsType.security);
+                                },
+                                content:
+                                    "Bạn chưa kích hoạt sinh trắc học trên thiết bị này!\nVui lòng kích hoạt bằng cách vào Cài đặt->Bảo mật->Sinh trắc học",
+                                title: 'Lỗi',
+                              );
+                            },
+                          );
+                          return;
+                        } else {
+                          CustomErrorMessage.showMessage(
+                              'Điện thoại của bạn chưa hỗ trợ  sinh trắc học!');
+                          return;
                         }
                       } else {
                         CustomErrorMessage.showMessage(
@@ -129,8 +166,9 @@ class LoginScreen extends StatelessWidget {
                   onPressed: () async {
                     final result = await loginController.signInWithGoogle();
                     if (result == 'SigninSuccess') {
-                      CustomSuccessMessage.showMessage('Đăng ký thành công!');
-                      slideInTransition(context, HomeScreen());
+                      CustomSuccessMessage.showMessage(
+                          'Đăng ký thành công!\nCòn 1 bước nữa...');
+                      slideInTransition(context, SignUpGoogleCompletedScreen());
                     } else if (result == 'LoginSuccess') {
                       CustomSuccessMessage.showMessage('Đăng nhập thành công!');
                       slideInTransition(context, HomeScreen());

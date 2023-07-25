@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class AccountResponse {
   int? accountId;
   String? fullName;
@@ -7,7 +9,6 @@ class AccountResponse {
   DateTime? birthday;
   String? address;
   String? nickname;
-  String? accountType;
   String? status;
   String? imageUrl;
   AccountResponse(
@@ -19,7 +20,6 @@ class AccountResponse {
       this.imageUrl,
       this.birthday,
       this.address,
-      this.accountType,
       this.status});
 
   AccountResponse.fromJson(Map<String, dynamic> json) {
@@ -33,7 +33,6 @@ class AccountResponse {
         json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
     ;
     address = json['address'];
-    accountType = json['accountType'];
     status = json['status'];
   }
 
@@ -45,9 +44,8 @@ class AccountResponse {
     data['imageUrl'] = imageUrl;
     data['email'] = email;
     data['gender'] = gender;
-    data['birthday'] = birthday;
-    data['address'] = address;
-    data['accountType'] = accountType;
+    data['birthday'] =
+        birthday != null ? DateFormat("yyyy-MM-dd").format(birthday!) : '';
     data['status'] = status;
     return data;
   }

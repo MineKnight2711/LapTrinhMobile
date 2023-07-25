@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/homescreen_body.dart';
 
 import 'components/homescreen_appbar.dart';
@@ -181,6 +182,7 @@ class MyBottomNavigationBar extends StatelessWidget {
           topRight: Radius.circular(20.0),
         ),
         child: BottomNavigationBar(
+          backgroundColor: mainAppbarColor,
           type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(

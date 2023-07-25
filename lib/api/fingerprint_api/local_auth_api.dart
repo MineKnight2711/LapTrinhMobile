@@ -20,18 +20,19 @@ class LocalAuthApi {
   //   }
   // }
 
-  static Future<bool> authenticate() async {
+  static Future<String> authenticate() async {
     final isAvailable = await hasBiometrics();
-    if (!isAvailable) return false;
+    if (!isAvailable) return 'NoBiometrics';
     try {
-      // ignore: deprecated_member_use
-      return await _auth.authenticateWithBiometrics(
+      await _auth.authenticate(
+        biometricOnly: true,
         localizedReason: 'Scan Fingerprint to Authenticate',
         useErrorDialogs: true,
         stickyAuth: true,
       );
+      return 'Success';
     } on PlatformException {
-      return false;
+      return 'BiometricsNotEnable';
     }
   }
 }

@@ -46,17 +46,7 @@ class AccountApi extends GetxController {
   Future<AccountModel?> register(AccountModel account) async {
     final response = await http.post(
       Uri.parse('${ApiUrl.apiCreateAccount}/${account.id}'),
-      body: {
-        "fullName": account.fullName,
-        "email": account.email,
-        "birthday": DateFormat('yyyy-MM-dd').format(account.birthday!),
-        "gender": account.gender,
-        "address": account.address,
-        "nickname": account.nickname,
-        "imageUrl": '',
-        "phone": account.phone,
-        "accountType": account.accountType,
-      },
+      body: account.toJson(),
     );
     if (response.statusCode == 200) {
       AccountModel accounts = AccountModel.fromJson(jsonDecode(response.body));

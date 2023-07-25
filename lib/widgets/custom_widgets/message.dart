@@ -8,7 +8,7 @@ class CustomErrorMessage {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Color.fromARGB(255, 255, 0, 0),
+      backgroundColor: const Color.fromARGB(255, 255, 0, 0),
       textColor: Colors.white,
       fontSize: 16.0,
     );
@@ -22,7 +22,7 @@ class CustomSuccessMessage {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,
       timeInSecForIosWeb: 1,
-      backgroundColor: Color.fromARGB(255, 0, 255, 55),
+      backgroundColor: const Color.fromARGB(255, 0, 255, 55),
       textColor: Colors.white,
       fontSize: 16.0,
     );
@@ -37,7 +37,7 @@ class CustomSnackBar {
       SnackBar(
         content: Text(
           message,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 16.0,
           ),
@@ -56,8 +56,10 @@ class CustomSnackBar {
 class CustomAlertDialog extends StatelessWidget {
   final String content;
   final String? title;
+  final Function()? onPressed;
 
-  const CustomAlertDialog({required this.content, this.title});
+  const CustomAlertDialog(
+      {super.key, required this.content, this.title, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +84,27 @@ class CustomAlertDialog extends StatelessWidget {
         content: Text(content),
         actions: [
           ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text('OK'),
+            onPressed: onPressed,
+            child: const Text('OK'),
           ),
         ],
       ),
     );
   }
+}
+
+void showResetLinkSentDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Reset Password Link Sent'),
+      content: const Text(''),
+      actions: [
+        ElevatedButton(
+          child: const Text('OK'),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ],
+    ),
+  );
 }

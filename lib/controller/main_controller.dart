@@ -8,7 +8,7 @@ class MainController {
   static initializeControllers() {
     Get.put(HomeScreenController());
     Get.put(AccountApi());
-    Get.put(LoginController());
     Get.put(RegisterController());
+    Get.put(LoginController());
   }
 }

@@ -12,7 +12,7 @@ class AccountController {
   Future<void> storedUserToSharedRefererces(
       AccountResponse accountResponse) async {
     final prefs = await SharedPreferences.getInstance();
-    final accountJsonEncode = jsonEncode(accountResponse);
+    final accountJsonEncode = jsonEncode(accountResponse.toJson());
     await prefs.setString('current_account', accountJsonEncode);
   }
 

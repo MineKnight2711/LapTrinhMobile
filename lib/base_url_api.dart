@@ -3,7 +3,8 @@ class ApiUrl {
   //ip LAN nhà - 192.168.1.44
   //ip mạng ảo của giả lập - 10.0.2.2
   //ip wifi nhà - 192.168.0.106
-  static const baseUrl = 'http://192.168.0.106:6969/api/';
+  //ip mobile hostspot - 192.168.29.192
+  static const baseUrl = 'http://10.10.116.60:6969/api/';
 
   static const apiGetAllAccount = '${baseUrl}accounts/all';
 

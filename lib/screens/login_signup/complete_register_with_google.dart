@@ -1,29 +1,29 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:keyboard_mobile_app/screens/login_signup/login_screen.dart';
-import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
-import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
+import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
+
 import '../../api/account_api.dart';
 import '../../configs/mediaquery.dart';
 import '../../controller/register_controller.dart';
+import '../../transition_animation/screen_transition.dart';
 import '../../widgets/custom_widgets/custom_appbar.dart';
 import '../../widgets/custom_widgets/custom_button.dart';
 import '../../widgets/custom_widgets/custom_input.dart';
 import '../../widgets/custom_widgets/datetime_picker.dart';
 import '../../widgets/custom_widgets/gender_chose.dart';
+import '../../widgets/custom_widgets/message.dart';
+import 'login_screen.dart';
 
-class RegisterCompleteScreen extends StatelessWidget {
-  RegisterCompleteScreen({super.key});
+class SignUpGoogleCompletedScreen extends StatelessWidget {
+  SignUpGoogleCompletedScreen({super.key});
   final controller = Get.find<AccountApi>();
   final registerController = Get.find<RegisterController>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
           onPressed: () {
+            registerController.onClose();
             Navigator.pop(context);
           },
           title: 'Hoàn tất đăng ký'),
@@ -49,19 +49,14 @@ class RegisterCompleteScreen extends StatelessWidget {
                 const SizedBox(
                   height: 30,
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                CustomInputTextField(
-                    onChanged: registerController.validatePhonenumber,
-                    controller: registerController.phonenumberController,
-                    labelText: 'Nhập số điện thoại',
-                    hintText: 'Số điện thoại'),
                 GenderSelectionWidget(
                   size: 1.7,
                   onChanged: (value) {
                     registerController.selectedGender = value;
                   },
+                ),
+                const SizedBox(
+                  height: 30,
                 ),
                 CustomInputTextField(
                     onChanged: registerController.validateAddress,
@@ -69,23 +64,31 @@ class RegisterCompleteScreen extends StatelessWidget {
                     labelText: 'Nhập địa chỉ',
                     hintText: 'Địa chỉ'),
                 const SizedBox(
+                  height: 20,
+                ),
+                CustomInputTextField(
+                    onChanged: registerController.validatePhonenumber,
+                    controller: registerController.phonenumberController,
+                    labelText: 'Nhập số điện thoại',
+                    hintText: 'Số điện thoại'),
+                const SizedBox(
                   height: 30,
                 ),
                 DefaultButton(
-                  enabled: registerController.isValidFullname.value &&
-                      registerController.isValidPhonenumber.value &&
-                      registerController.isValidAddress.value,
+                  enabled: registerController.isValidAddress.value,
                   text: 'Đăng ký',
                   press: () async {
                     // showLoadingAnimation(context);
-                    String? result = await registerController.signUp();
+                    String? result =
+                        await registerController.signUpwithGoogle();
                     if (result == "Success") {
                       CustomSuccessMessage.showMessage("Đăng ký thành công!");
-                      slideInTransition(context, LoginScreen());
+                      // ignore: use_build_context_synchronously
+                      slideInTransitionReplacement(context, HomeScreen());
                       registerController.onClose();
                     } else {
                       CustomErrorMessage.showMessage(
-                          result ?? 'Không thể đăng ký');
+                          'Có lỗi xảy ra vui lòng thử lại');
                       return;
                     }
                   },
@@ -96,5 +99,6 @@ class RegisterCompleteScreen extends StatelessWidget {
         ),
       ),
     );
+    ;
   }
 }

@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class AccountModel {
   String? id;
   String? fullName;
@@ -5,11 +7,8 @@ class AccountModel {
   String? email;
   String? gender;
   String? address;
-  String? nickname;
-  String? password;
   String? imageUrl;
   String? phone;
-  String? accountType;
 
   AccountModel({
     this.id,
@@ -18,26 +17,20 @@ class AccountModel {
     this.email,
     this.gender,
     this.address,
-    this.nickname,
-    this.password,
     this.imageUrl,
     this.phone,
-    this.accountType,
   });
 
   factory AccountModel.fromJson(Map<String, dynamic> json) {
     return AccountModel(
       id: json['id'],
       fullName: json['fullName'],
-      birthday: json['birthday'],
+      birthday: DateFormat('yyyy-MM-dd').parse(json['birthday']),
       email: json['email'],
       gender: json['gender'],
       address: json['address'],
-      nickname: json['nickname'],
-      password: json['password'],
       imageUrl: json['imageUrl'],
       phone: json['phone'],
-      accountType: json['accountType'],
     );
   }
 
@@ -46,15 +39,13 @@ class AccountModel {
     return {
       'id': id,
       'fullName': fullName,
-      'birthday': birthday,
+      'birthday':
+          birthday != null ? DateFormat("yyyy-MM-dd").format(birthday!) : '',
       'email': email,
       'gender': gender,
       'address': address,
-      'nickname': nickname,
-      'password': password,
       'imageUrl': imageUrl,
       'phone': phone,
-      'accountType': accountType,
     };
   }
 
@@ -66,11 +57,8 @@ class AccountModel {
       'email': email,
       'gender': gender,
       'address': address,
-      'nickname': nickname,
-      'password': password,
       'imageUrl': imageUrl,
       'phone': phone,
-      'accountType': accountType,
     };
   }
 }

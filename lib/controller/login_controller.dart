@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:keyboard_mobile_app/controller/register_controller.dart';
 import 'package:keyboard_mobile_app/model/account_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api/account_api.dart';
@@ -12,11 +13,13 @@ import 'account_controller.dart';
 
 class LoginController extends GetxController {
   TextEditingController emailController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
+  // TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final accountApi = Get.find<AccountApi>();
+  final registerController = Get.find<RegisterController>();
   final auth = FirebaseAuth.instance;
   var isValidEmail = false.obs;
+  var isValidPassword = false.obs;
   var enableFingerprint = false.obs;
   @override
   void onInit() {
@@ -28,7 +31,9 @@ class LoginController extends GetxController {
   void onClose() {
     super.onClose();
     isValidEmail.value = false;
+    isValidPassword.value = false;
     emailController.clear();
+    passwordController.clear();
   }
 
   //Kiểm tra email hợp lệ
@@ -56,7 +61,7 @@ class LoginController extends GetxController {
     return null;
   }
 
-  Future<String?> logIn(String email, String password) async {
+  Future<String> logIn(String email, String password) async {
     try {
       return await auth
           .signInWithEmailAndPassword(email: email, password: password)
@@ -121,29 +126,15 @@ class LoginController extends GetxController {
     account.id = newUserId;
     account.email = userCredential.user?.email;
     account.fullName = userCredential.user?.displayName;
-    account.accountType = "Customer";
     return await firebaseFirestore
         .collection("users")
         .doc(newUserId)
         .get()
         .then((value) async {
       if (!value.exists) {
-        //Upload hình mặc định
-
-        // userModel.Avatar = await uploadAvatar(newUserId ?? "");
-        // firebaseFirestore
-        //     .collection("user")
-        //     .doc(newUserId)
-        //     .set(account.toMap());
-        // print(account.toMap());
-        await accountApi.register(account);
-        // preferences.setString('email', userCredential.user!.email.toString());
-
+        await registerController.passAccountSigninWithGoogle(account);
         return 'SigninSuccess';
-        // await getCurrentUser();
-        // await convertToUserModel();
       } else {
-        // preferences.setString('email', userCredential.user!.email.toString());
         await accountApi.login(newUserId);
         return 'LoginSuccess';
       }
@@ -172,6 +163,29 @@ class LoginController extends GetxController {
       enableFingerprint.value = false;
     } else {
       enableFingerprint.value = value;
+    }
+  }
+
+  Future<String> forgotPassword(String email) async {
+    if (email.isEmpty) {
+      return 'Email rỗng!';
+    }
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return 'Success';
+    } on FirebaseAuthException catch (error) {
+      String errorMessage = '';
+      switch (error.code) {
+        case "invalid-email":
+          errorMessage = "Email không hợp lệ!.";
+          break;
+        case "user-not-found":
+          errorMessage = "Tài khoản không tồn tại.";
+          break;
+        default:
+          errorMessage = "Lỗi chưa xác định.";
+      }
+      return errorMessage;
     }
   }
 }
