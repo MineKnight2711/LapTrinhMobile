@@ -30,8 +30,7 @@ class LoginController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    isValidEmail.value = false;
-    isValidPassword.value = false;
+    isValidEmail.value = isValidPassword.value = false;
     emailController.clear();
     passwordController.clear();
   }
@@ -61,46 +60,53 @@ class LoginController extends GetxController {
     return null;
   }
 
+  String? validatePassword(String? password) {
+    if (password == null || password.isEmpty) {
+      isValidPassword.value = false;
+      return 'Mật khẩu không được trống';
+    }
+
+    isValidPassword.value = true;
+
+    return null;
+  }
+
   Future<String> logIn(String email, String password) async {
     try {
-      return await auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((userCredential) {
-        // ignore: unused_local_variable
-        User? user = auth.currentUser;
-        user = userCredential.user;
-        auth.authStateChanges();
-        auth.userChanges();
-        return 'Success';
-      });
-      // SharedPreferences preferences = await SharedPreferences.getInstance();
-      // preferences.setString('email', email);
+      final userCredential = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      // ignore: unused_local_variable
+      User? user = auth.currentUser;
+      user = userCredential.user;
+
+      auth.authStateChanges();
+      auth.userChanges();
+      return 'Success';
     } on FirebaseAuthException catch (error) {
-      String errorMessage = '';
-      switch (error.code) {
-        case "invalid-email":
-          errorMessage = "Email không hợp lệ!.";
-          break;
-        case "wrong-password":
-          errorMessage = "Sai mật khẩu.";
-          break;
-        case "user-not-found":
-          errorMessage = "Tài khoản không tồn tại.";
-          break;
-        case "user-disabled":
-          errorMessage = "Tài khoản bị khoá.";
-          break;
-        case "too-many-requests":
-          errorMessage = "Sai mật khẩu quá nhiều lần vui lòng đợi 30 giây";
-          break;
-        case "operation-not-allowed":
-          errorMessage =
-              "Không thể đăng nhập vui lòng liên hệ người phát triển.";
-          break;
-        default:
-          errorMessage = "Lỗi chưa xác định.";
-      }
+      String errorMessage = getErrorMessage(error.code);
       return errorMessage;
+    }
+  }
+
+  String getErrorMessage(String errorCode) {
+    switch (errorCode) {
+      case "invalid-email":
+        return "Email không hợp lệ!";
+      case "wrong-password":
+        return "Sai mật khẩu hoặc tài khoản không có mật khẩu\nNếu tài khoản của bạn đã liên kết với google hãy dùng chức năng bên dưới .";
+      case "user-not-found":
+        return "Tài khoản không tồn tại.";
+      case "user-disabled":
+        return "Tài khoản bị khoá.";
+      case "too-many-requests":
+        return "Sai mật khẩu quá nhiều lần vui lòng đợi 30 giây";
+      case "requires-recent-login":
+        return "Yêu cầu đăng nhập gần đây để thực hiện thao tác nhạy cảm.";
+      case "operation-not-allowed":
+        return "Không thể đăng nhập vui lòng liên hệ người phát triển.";
+      default:
+        return "Lỗi chưa xác định.";
     }
   }
 

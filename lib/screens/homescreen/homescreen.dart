@@ -45,98 +45,11 @@ class HomeScreen extends StatelessWidget {
         onRefresh: _refesh,
         color: Colors.blue,
         child: ListView(
-          children: [
+          children: const [
             Column(
               children: [
-                Container(
-                  height: 129.0,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: const BoxDecoration(
-                    color: Color(0xff06AB8D),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 24.3),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.location_on_outlined,
-                              size: 24.0,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(
-                              width: 15.39,
-                              height: 20,
-                            ),
-                            Text(
-                              'Chọn địa điểm',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14.5,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 20.23,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 6.0,
-                          horizontal: 12.0,
-                        ),
-                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(12.0),
-                          ),
-                          border: Border.all(
-                            width: 1.0,
-                            color: Colors.grey[400]!,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            const SizedBox(
-                              width: 21.0,
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                initialValue: null,
-                                decoration: InputDecoration.collapsed(
-                                  filled: true,
-                                  fillColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  hintText: "Tìm kiếm sản phẩm",
-                                  hintStyle: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 13,
-                                    color: const Color(0xff5F6E7C),
-                                  ),
-                                ),
-                                onFieldSubmitted: (value) {},
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.search),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const Column(
-                  children: [
-                    SizedBox(height: 10),
-                    HomescreenBody(),
-                  ],
-                ),
+                SizedBox(height: 10),
+                HomescreenBody(),
               ],
             ),
           ],
@@ -182,7 +95,7 @@ class MyBottomNavigationBar extends StatelessWidget {
           topRight: Radius.circular(20.0),
         ),
         child: BottomNavigationBar(
-          backgroundColor: mainAppbarColor,
+          backgroundColor: mainBottomNavColor,
           type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(

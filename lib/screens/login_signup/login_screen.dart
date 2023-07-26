@@ -6,9 +6,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
-import 'package:keyboard_mobile_app/screens/login_signup/register_complete_screen.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/register_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/centered_text_with_linebar.dart';
@@ -66,14 +66,16 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: size.height / 20),
               CustomInputTextField(
+                onChanged: loginController.validateEmail,
                 controller: loginController.emailController,
-                labelText: 'Tên đăng nhập',
-                hintText: 'Nhập tên đăng nhập...',
+                labelText: 'Email',
+                hintText: 'Nhập email...',
               ),
               SizedBox(
                 height: size.height / 60,
               ),
               CustomPasswordTextfield(
+                onChanged: loginController.validatePassword,
                 controller: loginController.passwordController,
                 labelText: 'Mật khẩu',
                 hintText: 'Nhập mật khẩu...',
@@ -85,19 +87,29 @@ class LoginScreen extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: size.width / 1.45,
-                    child: StyledGradienButton(
-                        onPressed: () async {
-                          String result = await loginController.logIn(
-                              loginController.emailController.text,
-                              loginController.passwordController.text);
-                          if (result == 'Success') {
-                            CustomSuccessMessage.showMessage(result);
-                            loginController.onClose();
-                          } else {
-                            CustomErrorMessage.showMessage(result);
-                          }
-                        },
-                        buttonText: 'Đăng nhập'),
+                    child: Obx(
+                      () => DefaultButton(
+                          enabled: loginController.isValidEmail.value &&
+                              loginController.isValidPassword.value,
+                          press: () async {
+                            String result = await loginController.logIn(
+                                loginController.emailController.text,
+                                loginController.passwordController.text);
+                            if (result == 'Success') {
+                              CustomSuccessMessage.showMessage(result);
+                              loginController.onClose();
+                              fadeInTransitionReplacement(
+                                  context, HomeScreen());
+                            } else {
+                              CustomSnackBar.showCustomSnackBar(
+                                  context, result, 3,
+                                  backgroundColor: mainErrorColor);
+                              loginController.onClose();
+                              return;
+                            }
+                          },
+                          text: 'Đăng nhập'),
+                    ),
                   ),
                   const Spacer(),
                   CircleIconButton(

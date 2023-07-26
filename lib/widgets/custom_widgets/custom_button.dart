@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 
 class DefaultButton extends StatelessWidget {
   const DefaultButton({
@@ -20,7 +21,7 @@ class DefaultButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          backgroundColor: const Color(0xFF39C5C8),
+          backgroundColor: mainButtonColor,
         ),
         onPressed: enabled ? press : null,
         child: Text(
@@ -92,7 +93,7 @@ class LoginWithSocialButton extends StatelessWidget {
       width: double.infinity,
       height: 52,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30.0), color: Colors.grey[300]),
+          borderRadius: BorderRadius.circular(10.0), color: Colors.grey[300]),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
@@ -113,7 +114,7 @@ class LoginWithSocialButton extends StatelessWidget {
                   )
                 : const SizedBox.shrink(),
             SizedBox(
-              width: size.width / 10,
+              width: size.width / 7,
             ),
             Text(
               buttonText,

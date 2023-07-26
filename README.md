@@ -1,3 +1,10 @@
 # keyboard_mobile_app
+Mobile App Develoment - 2023
 
-A new Flutter project.
+Author:
+Project manager - DEV Nguyễn Trọng Quý
+DEV Huỳnh Phước Đạt
+
+Tech:
+Flutter-Dart with Firebase
+Srping Boots API

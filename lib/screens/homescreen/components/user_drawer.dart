@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/controller/account_controller.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
+import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
+import '../../../controller/change_password_controller.dart';
+import '../../user_screens/change_password_screen.dart';
 import 'draw_header.dart';
 
 class UserDrawer extends StatelessWidget {
@@ -42,8 +45,13 @@ class UserDrawer extends StatelessWidget {
         ListTile(
           title: const Text('Đổi mật khẩu'),
           onTap: () {
-            // Get.put(ChangePasswordController());
-            // slideinTransition(context, ChangePasswordScreen());
+            Navigator.pop(context);
+            Get.put(ChangePasswordController());
+            slideInTransition(
+                context,
+                ChangePasswordScreen(
+                  email: '${accounts.email}',
+                ));
           },
         ),
         ListTile(

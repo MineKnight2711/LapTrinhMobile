@@ -59,14 +59,6 @@ class SignUpGoogleCompletedScreen extends StatelessWidget {
                   height: 30,
                 ),
                 CustomInputTextField(
-                    onChanged: registerController.validateAddress,
-                    controller: registerController.addressController,
-                    labelText: 'Nhập địa chỉ',
-                    hintText: 'Địa chỉ'),
-                const SizedBox(
-                  height: 20,
-                ),
-                CustomInputTextField(
                     onChanged: registerController.validatePhonenumber,
                     controller: registerController.phonenumberController,
                     labelText: 'Nhập số điện thoại',
@@ -75,7 +67,7 @@ class SignUpGoogleCompletedScreen extends StatelessWidget {
                   height: 30,
                 ),
                 DefaultButton(
-                  enabled: registerController.isValidAddress.value,
+                  enabled: registerController.isValidPhonenumber.value,
                   text: 'Đăng ký',
                   press: () async {
                     // showLoadingAnimation(context);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 
 class MyDrawerHeader extends StatelessWidget {
   final String fullName;
@@ -18,37 +19,42 @@ class MyDrawerHeader extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Color(0xff06AB8D),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 80,
-            width: 80,
-            child: CircleAvatar(
-              backgroundImage: avatarUrl != null
-                  ? Image.network(avatarUrl!).image
-                  : Image.asset(
-                      'assets/images/profile.png',
-                    ).image,
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: mediaHeight(context, 14),
+              width: mediaWidth(context, 6),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: avatarUrl != null
+                      ? Image.network(avatarUrl!).image
+                      : Image.asset(
+                          'assets/images/profile.png',
+                        ).image,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            fullName,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+            SizedBox(height: mediaHeight(context, 40)),
+            Text(
+              fullName,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          Text(
-            email,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14,
+            Text(
+              email,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

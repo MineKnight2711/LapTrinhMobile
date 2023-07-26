@@ -70,7 +70,8 @@ class RegisterScreen extends StatelessWidget {
                     registerController.isValidReenter.value,
                 text: 'Tiếp tục',
                 press: () {
-                  slideInTransition(context, RegisterCompleteScreen());
+                  slideInTransitionReplacement(
+                      context, RegisterCompleteScreen());
                 },
               ),
             ),

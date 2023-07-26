@@ -6,7 +6,6 @@ class AccountModel {
   DateTime? birthday;
   String? email;
   String? gender;
-  String? address;
   String? imageUrl;
   String? phone;
 
@@ -16,7 +15,6 @@ class AccountModel {
     this.birthday,
     this.email,
     this.gender,
-    this.address,
     this.imageUrl,
     this.phone,
   });
@@ -28,7 +26,6 @@ class AccountModel {
       birthday: DateFormat('yyyy-MM-dd').parse(json['birthday']),
       email: json['email'],
       gender: json['gender'],
-      address: json['address'],
       imageUrl: json['imageUrl'],
       phone: json['phone'],
     );
@@ -43,7 +40,6 @@ class AccountModel {
           birthday != null ? DateFormat("yyyy-MM-dd").format(birthday!) : '',
       'email': email,
       'gender': gender,
-      'address': address,
       'imageUrl': imageUrl,
       'phone': phone,
     };
@@ -56,7 +52,6 @@ class AccountModel {
       'birthday': birthday?.toIso8601String(),
       'email': email,
       'gender': gender,
-      'address': address,
       'imageUrl': imageUrl,
       'phone': phone,
     };

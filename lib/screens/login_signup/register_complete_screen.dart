@@ -49,9 +49,6 @@ class RegisterCompleteScreen extends StatelessWidget {
                 const SizedBox(
                   height: 30,
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
                 CustomInputTextField(
                     onChanged: registerController.validatePhonenumber,
                     controller: registerController.phonenumberController,
@@ -63,25 +60,18 @@ class RegisterCompleteScreen extends StatelessWidget {
                     registerController.selectedGender = value;
                   },
                 ),
-                CustomInputTextField(
-                    onChanged: registerController.validateAddress,
-                    controller: registerController.addressController,
-                    labelText: 'Nhập địa chỉ',
-                    hintText: 'Địa chỉ'),
                 const SizedBox(
                   height: 30,
                 ),
                 DefaultButton(
-                  enabled: registerController.isValidFullname.value &&
-                      registerController.isValidPhonenumber.value &&
-                      registerController.isValidAddress.value,
+                  enabled: registerController.isValidPhonenumber.value,
                   text: 'Đăng ký',
                   press: () async {
                     // showLoadingAnimation(context);
                     String? result = await registerController.signUp();
                     if (result == "Success") {
                       CustomSuccessMessage.showMessage("Đăng ký thành công!");
-                      slideInTransition(context, LoginScreen());
+                      slideInTransitionReplacement(context, LoginScreen());
                       registerController.onClose();
                     } else {
                       CustomErrorMessage.showMessage(

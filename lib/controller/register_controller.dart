@@ -20,7 +20,6 @@ class RegisterController extends GetxController {
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController fullnameController = TextEditingController();
   TextEditingController phonenumberController = TextEditingController();
-  TextEditingController addressController = TextEditingController();
   final accountApi = Get.find<AccountApi>();
   Rx<AccountModel?> signInWithGoogleAccount = Rx<AccountModel?>(null);
   @override
@@ -35,7 +34,6 @@ class RegisterController extends GetxController {
     confirmPasswordController.clear();
     fullnameController.clear();
     phonenumberController.clear();
-    addressController.clear();
     date = selectedGender = null;
   }
 
@@ -135,7 +133,6 @@ class RegisterController extends GetxController {
   Future<String> signUpwithGoogle() async {
     if (signInWithGoogleAccount.value != null) {
       signInWithGoogleAccount.value!.birthday = date;
-      signInWithGoogleAccount.value!.address = addressController.text;
       signInWithGoogleAccount.value!.gender = selectedGender;
       signInWithGoogleAccount.value!.phone = phonenumberController.text;
       signInWithGoogleAccount.value!.imageUrl =
@@ -148,12 +145,20 @@ class RegisterController extends GetxController {
   }
 
   Future<String?> signUp() async {
+    if (selectedGender == null) {
+      return 'Bạn chưa chọn giới tính';
+    }
+    if (date == null) {
+      return 'Vui lòng kiểm tra ngày sinh!';
+    }
     final auth = FirebaseAuth.instance;
     try {
-      await auth
+      return await auth
           .createUserWithEmailAndPassword(
               email: emailController.text, password: passwordController.text)
-          .then((value) => {pushDataToFirestore(auth)});
+          .then((value) {
+        return pushDataToFirestore(value);
+      });
     } on FirebaseAuthException catch (error) {
       String? errorMessage;
       switch (error.code) {
@@ -176,34 +181,23 @@ class RegisterController extends GetxController {
       }
       return errorMessage;
     }
-    return 'Success';
+    // return 'Success';
     // snackBarPopUp(context, "Đang kiểm tra thông tin vui lòng đợi...");
   }
 
-  Future pushDataToFirestore(FirebaseAuth auth) async {
-    User? user = auth.currentUser;
-
+  Future<String> pushDataToFirestore(UserCredential userCredential) async {
+    User? user = userCredential.user;
     AccountModel account = AccountModel();
     // String imageUrl = await uploadAvatar(user!.uid);
     account.id = user?.uid;
     account.email = user?.email;
     account.phone = phonenumberController.text;
-    account.address = addressController.text;
     account.fullName = fullnameController.text;
-    if (selectedGender != null) {
-      account.gender = selectedGender;
-    } else {
-      CustomErrorMessage.showMessage('Bạn chưa chọn giới tính');
-      return;
-    }
-    if (date != null) {
-      account.birthday = date;
-    } else {
-      CustomErrorMessage.showMessage('Vui lòng kiểm tra ngày sinh!');
-      return;
-    }
+    account.imageUrl =
+        'https://firebasestorage.googleapis.com/v0/b/keyboard-mobile-app.appspot.com/o/default_avatar.png?alt=media&token=125fef63-2e77-45d7-aedd-effdda210fbd';
+    account.gender = selectedGender;
+    account.birthday = date;
     await accountApi.register(account);
-    CustomSuccessMessage.showMessage(
-        "Đăng ký thành công vui lòng đăng nhập tài khoản của bạn");
+    return 'Success';
   }
 }

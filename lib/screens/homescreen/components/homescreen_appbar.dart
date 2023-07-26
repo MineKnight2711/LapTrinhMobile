@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/user_drawer.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/login_screen.dart';
@@ -28,47 +29,12 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
           slideInTransition(context, HomeScreen());
         },
       ),
-      backgroundColor: const Color(0xff06AB8D),
+      backgroundColor: mainAppThemeColor,
       title: Text(
         "Home",
         style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
       ),
       actions: [
-        Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: GestureDetector(
-                onTap: () {
-                  // slideinTransition(context, const CartScreen());
-                },
-                child: const Icon(
-                  Icons.shopping_cart_outlined,
-                  size: 30.0,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            // Positioned(
-            //   top: 8,
-            //   right: 0,
-            //   child: CircleAvatar(
-            //     radius: 8,
-            //     backgroundColor: Colors.red,
-            //     child:
-            //      Obx(
-            //       () => Text(
-            //         '${cartController.cartItem.length}',
-            //         style: const TextStyle(fontSize: 10),
-            //       ),
-            //     ),
-            //   ),
-            // ),
-          ],
-        ),
-        const SizedBox(
-          width: 23.0,
-        ),
         SizedBox(
           width: 45,
           child: Obx(() {
@@ -100,6 +66,7 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                 margin: const EdgeInsets.symmetric(vertical: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
+                  color: imageBackgroundColor,
                   image: DecorationImage(
                     image: imageUrl != null
                         ? Image.network(

@@ -35,7 +35,20 @@ class AccountResponse {
     address = json['address'];
     status = json['status'];
   }
-
+  factory AccountResponse.fromMap(Map<String, dynamic>? map) {
+    return AccountResponse(
+      accountId: map?['accountId'],
+      fullName: map?['fullName'],
+      imageUrl: map?['imageUrl'],
+      phoneNumber: map?['phoneNumber'],
+      email: map?['email'],
+      gender: map?['gender'],
+      birthday:
+          map?['birthday'] != null ? DateTime.parse(map?['birthday']) : null,
+      address: map?['address'],
+      status: map?['status'],
+    );
+  }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['accountId'] = accountId;
