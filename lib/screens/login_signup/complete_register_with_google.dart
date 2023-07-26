@@ -12,7 +12,6 @@ import '../../widgets/custom_widgets/custom_input.dart';
 import '../../widgets/custom_widgets/datetime_picker.dart';
 import '../../widgets/custom_widgets/gender_chose.dart';
 import '../../widgets/custom_widgets/message.dart';
-import 'login_screen.dart';
 
 class SignUpGoogleCompletedScreen extends StatelessWidget {
   SignUpGoogleCompletedScreen({super.key});
@@ -91,6 +90,5 @@ class SignUpGoogleCompletedScreen extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

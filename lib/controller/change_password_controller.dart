@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/api/account_api.dart';
-import 'package:keyboard_mobile_app/controller/account_controller.dart';
 import 'package:keyboard_mobile_app/model/respone_base_model.dart';
 
 class ChangePasswordController extends GetxController {

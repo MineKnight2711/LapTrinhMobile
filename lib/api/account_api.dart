@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:keyboard_mobile_app/model/account_model.dart';

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/model/account_model.dart';
-import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 class RegisterController extends GetxController {
   var isValidEmail = false.obs;

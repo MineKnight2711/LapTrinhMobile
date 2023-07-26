@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
-import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
