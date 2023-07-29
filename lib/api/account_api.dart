@@ -39,6 +39,7 @@ class AccountApi extends GetxController {
       await AccountController().storedUserToSharedRefererces(
           AccountResponse.fromMap(responseBase.data));
       // accountResponseResult.status = "Đăng nhập thành công";
+      print(responseBase.data);
       return accountResponseResult;
     } else {
       // accountResponseResult.status = "Đăng nhập thất bại";
@@ -48,7 +49,7 @@ class AccountApi extends GetxController {
 
   Future<ResponseBaseModel?> register(AccountModel account) async {
     final response = await http.post(
-      Uri.parse('${ApiUrl.apiCreateAccount}/${account.id}'),
+      Uri.parse('${ApiUrl.apiCreateAccount}/${account.accountId}'),
       body: account.toJson(),
     );
     ResponseBaseModel responseBase = ResponseBaseModel();
@@ -69,6 +70,39 @@ class AccountApi extends GetxController {
     ResponseBaseModel responseBase = ResponseBaseModel();
     final response = await http.put(
       url,
+    );
+    if (response.statusCode == 200) {
+      responseBase = ResponseBaseModel.fromJson(json.decode(response.body));
+      return responseBase;
+    } else {
+      responseBase.message = 'Fail';
+      return responseBase;
+    }
+  }
+
+  Future<ResponseBaseModel> forgotPassword(String email) async {
+    ResponseBaseModel responseBase = ResponseBaseModel();
+    final url = Uri.parse('${ApiUrl.apiForgotPassword}/$email');
+    final response = await http.post(
+      url,
+    );
+    if (response.statusCode == 200) {
+      responseBase = ResponseBaseModel.fromJson(json.decode(response.body));
+      return responseBase;
+    } else {
+      responseBase.message = 'Fail';
+      return responseBase;
+    }
+  }
+
+  Future<ResponseBaseModel> updateAccount(AccountModel account) async {
+    ResponseBaseModel responseBase = ResponseBaseModel();
+    print(account.toJson());
+    final url = Uri.parse('${ApiUrl.apiUpdateAccount}/${account.accountId}');
+    final body = account.toJson();
+    final response = await http.put(
+      url,
+      body: body,
     );
     if (response.statusCode == 200) {
       responseBase = ResponseBaseModel.fromJson(json.decode(response.body));

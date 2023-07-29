@@ -123,7 +123,7 @@ class RegisterController extends GetxController {
 
   Future passAccountSigninWithGoogle(AccountModel receivedAccount) async {
     AccountModel newAccount = AccountModel();
-    newAccount.id = receivedAccount.id;
+    newAccount.accountId = receivedAccount.accountId;
     newAccount.fullName = receivedAccount.fullName;
     newAccount.email = receivedAccount.email;
     signInWithGoogleAccount.value = newAccount;
@@ -188,7 +188,7 @@ class RegisterController extends GetxController {
     User? user = userCredential.user;
     AccountModel account = AccountModel();
     // String imageUrl = await uploadAvatar(user!.uid);
-    account.id = user?.uid;
+    account.accountId = user?.uid;
     account.email = user?.email;
     account.phone = phonenumberController.text;
     account.fullName = fullnameController.text;

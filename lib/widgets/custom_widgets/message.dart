@@ -1,5 +1,7 @@
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomErrorMessage {
   static void showMessage(String message) {
@@ -93,12 +95,21 @@ class CustomAlertDialog extends StatelessWidget {
   }
 }
 
-void showResetLinkSentDialog(BuildContext context) {
+void showResetLinkSentDialog(BuildContext context, String link) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: const Text('Reset Password Link Sent'),
-      content: const Text(''),
+      content: InkWell(
+        onTap: () => launchURLLink(link),
+        child: const Text.rich(
+          TextSpan(
+            text: "Nhấn vào đây để đổi mật khẩu",
+            style: TextStyle(
+                color: Colors.blue, decoration: TextDecoration.underline),
+          ),
+        ),
+      ),
       actions: [
         ElevatedButton(
           child: const Text('OK'),
@@ -107,4 +118,13 @@ void showResetLinkSentDialog(BuildContext context) {
       ],
     ),
   );
+}
+
+launchURLLink(String link) async {
+  Uri url = Uri.parse(link);
+  if (await launchUrl(url)) {
+    await launchUrl(url);
+  } else {
+    throw 'Could not launch $url';
+  }
 }

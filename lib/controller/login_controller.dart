@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keyboard_mobile_app/controller/register_controller.dart';
 import 'package:keyboard_mobile_app/model/account_model.dart';
+import 'package:keyboard_mobile_app/model/respone_base_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../api/account_api.dart';
 import '../model/account_respone.dart';
@@ -129,11 +132,11 @@ class LoginController extends GetxController {
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     AccountModel account = AccountModel();
-    account.id = newUserId;
+    account.accountId = newUserId;
     account.email = userCredential.user?.email;
     account.fullName = userCredential.user?.displayName;
     return await firebaseFirestore
-        .collection("users")
+        .collection("accounts")
         .doc(newUserId)
         .get()
         .then((value) async {
@@ -172,26 +175,13 @@ class LoginController extends GetxController {
     }
   }
 
-  Future<String> forgotPassword(String email) async {
+  Future<ResponseBaseModel> forgotPassword(String email) async {
+    ResponseBaseModel respone = ResponseBaseModel();
     if (email.isEmpty) {
-      return 'Email rỗng!';
+      respone.message = 'Email rỗng!';
+      return respone;
     }
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      return 'Success';
-    } on FirebaseAuthException catch (error) {
-      String errorMessage = '';
-      switch (error.code) {
-        case "invalid-email":
-          errorMessage = "Email không hợp lệ!.";
-          break;
-        case "user-not-found":
-          errorMessage = "Tài khoản không tồn tại.";
-          break;
-        default:
-          errorMessage = "Lỗi chưa xác định.";
-      }
-      return errorMessage;
-    }
+    respone = await accountApi.forgotPassword(email);
+    return respone;
   }
 }

@@ -4,7 +4,8 @@ class ApiUrl {
   //ip mạng ảo của giả lập - 10.0.2.2
   //ip wifi nhà - 192.168.0.106
   //ip mobile hostspot - 192.168.29.192
-  static const baseUrl = 'http://192.168.1.44:6969/api/';
+  //ip debug lan - 192.168.93.160
+  static const baseUrl = 'http://10.0.2.2:6969/api/';
 
   static const apiGetAllAccount = '${baseUrl}accounts/all';
 
@@ -12,7 +13,9 @@ class ApiUrl {
   static const apiCreateAccount = '${baseUrl}account';
   static const apiFindAccountById = '${baseUrl}account';
   static const apiChangePassword = '${baseUrl}account';
+  static const apiForgotPassword = '${baseUrl}account/reset-password';
   //// Api của Quý-------------------------------------------------
+  static const apiUpdateAccount = '${baseUrl}account/info';
 
   ///
   ///

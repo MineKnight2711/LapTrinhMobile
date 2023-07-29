@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class AccountModel {
-  String? id;
+  String? accountId;
   String? fullName;
   DateTime? birthday;
   String? email;
@@ -10,7 +10,7 @@ class AccountModel {
   String? phone;
 
   AccountModel({
-    this.id,
+    this.accountId,
     this.fullName,
     this.birthday,
     this.email,
@@ -21,7 +21,7 @@ class AccountModel {
 
   factory AccountModel.fromJson(Map<String, dynamic> json) {
     return AccountModel(
-      id: json['id'],
+      accountId: json['accountId'],
       fullName: json['fullName'],
       birthday: DateFormat('yyyy-MM-dd').parse(json['birthday']),
       email: json['email'],
@@ -34,7 +34,7 @@ class AccountModel {
   // Convert the User object to a JSON representation
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+      'accountId': accountId,
       'fullName': fullName,
       'birthday':
           birthday != null ? DateFormat("yyyy-MM-dd").format(birthday!) : '',
@@ -47,7 +47,7 @@ class AccountModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'accountId': accountId,
       'fullName': fullName,
       'birthday': birthday?.toIso8601String(),
       'email': email,

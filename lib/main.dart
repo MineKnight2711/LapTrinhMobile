@@ -11,10 +11,6 @@ void main() async {
   // print(ip);
   runApp(
     MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        fontFamily: 'Roboto',
-      ),
       initialRoute: 'home_screen',
       debugShowCheckedModeBanner: false,
       routes: {

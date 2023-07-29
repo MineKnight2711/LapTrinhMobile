@@ -1,8 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
+import 'package:keyboard_mobile_app/model/respone_base_model.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
@@ -59,14 +62,11 @@ class PasswordRecoveryDialog extends StatelessWidget {
               child: DefaultButton(
                 text: 'Gửi',
                 press: () async {
-                  String result = await loginController
+                  ResponseBaseModel result = await loginController
                       .forgotPassword(loginController.emailController.text);
-                  if (result == 'Success') {
-                    // ignore: use_build_context_synchronously
-                    showResetLinkSentDialog(context);
-                  } else {
-                    CustomErrorMessage.showMessage(result);
-                  }
+
+                  showResetLinkSentDialog(
+                      context, result.message ?? 'Có lỗi xảy ra');
                 },
               ),
             )

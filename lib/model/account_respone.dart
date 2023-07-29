@@ -1,7 +1,9 @@
 import 'package:intl/intl.dart';
 
+import 'account_model.dart';
+
 class AccountResponse {
-  int? accountId;
+  String? accountId;
   String? fullName;
   String? phoneNumber;
   String? email;
@@ -26,7 +28,7 @@ class AccountResponse {
     accountId = json['accountId'];
     fullName = json['fullName'];
     imageUrl = json['imageUrl'];
-    phoneNumber = json['phoneNumber'];
+    phoneNumber = json['phone'];
     email = json['email'];
     gender = json['gender'];
     birthday =
@@ -40,7 +42,7 @@ class AccountResponse {
       accountId: map?['accountId'],
       fullName: map?['fullName'],
       imageUrl: map?['imageUrl'],
-      phoneNumber: map?['phoneNumber'],
+      phoneNumber: map?['phone'],
       email: map?['email'],
       gender: map?['gender'],
       birthday:
@@ -53,7 +55,7 @@ class AccountResponse {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['accountId'] = accountId;
     data['fullName'] = fullName;
-    data['phoneNumber'] = phoneNumber;
+    data['phone'] = phoneNumber;
     data['imageUrl'] = imageUrl;
     data['email'] = email;
     data['gender'] = gender;
@@ -61,5 +63,17 @@ class AccountResponse {
         birthday != null ? DateFormat("yyyy-MM-dd").format(birthday!) : '';
     data['status'] = status;
     return data;
+  }
+
+  AccountModel toAccountModel() {
+    return AccountModel(
+      accountId: accountId.toString(),
+      fullName: fullName,
+      birthday: birthday,
+      email: email,
+      gender: gender,
+      imageUrl: imageUrl,
+      phone: phoneNumber,
+    );
   }
 }
