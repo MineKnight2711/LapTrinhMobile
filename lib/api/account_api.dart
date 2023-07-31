@@ -39,7 +39,6 @@ class AccountApi extends GetxController {
       await AccountController().storedUserToSharedRefererces(
           AccountResponse.fromMap(responseBase.data));
       // accountResponseResult.status = "Đăng nhập thành công";
-      print(responseBase.data);
       return accountResponseResult;
     } else {
       // accountResponseResult.status = "Đăng nhập thất bại";
@@ -97,7 +96,6 @@ class AccountApi extends GetxController {
 
   Future<ResponseBaseModel> updateAccount(AccountModel account) async {
     ResponseBaseModel responseBase = ResponseBaseModel();
-    print(account.toJson());
     final url = Uri.parse('${ApiUrl.apiUpdateAccount}/${account.accountId}');
     final body = account.toJson();
     final response = await http.put(

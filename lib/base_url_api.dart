@@ -16,6 +16,8 @@ class ApiUrl {
   static const apiForgotPassword = '${baseUrl}account/reset-password';
   //// Api của Quý-------------------------------------------------
   static const apiUpdateAccount = '${baseUrl}account/info';
+  static const apiGetAllCategory = '${baseUrl}category';
+  static const apiGetProductByCategory = '${baseUrl}product/category';
 
   ///
   ///

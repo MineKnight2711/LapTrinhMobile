@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
+import 'package:keyboard_mobile_app/controller/category_controller.dart';
+import 'package:keyboard_mobile_app/controller/product_controller.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/homescreen_body.dart';
 
 import 'components/homescreen_appbar.dart';
@@ -26,12 +28,12 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final homeController = Get.find<HomeScreenController>();
+  final categoryController = Get.find<CategoryController>();
+  final productController = Get.find<ProductController>();
   Future<void> _refesh() async {
-    // await categoryController.getAllCategory();
-    // await dishController.getAllDish();
-    // await sizeController.getAllSize();
-    // await toppingController.getAllTopping();
+    await categoryController.getAllCategory();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,16 +45,7 @@ class HomeScreen extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: _refesh,
         color: Colors.blue,
-        child: ListView(
-          children: const [
-            Column(
-              children: [
-                SizedBox(height: 10),
-                HomescreenBody(),
-              ],
-            ),
-          ],
-        ),
+        child: const HomescreenBody(),
       ),
       bottomNavigationBar: MyBottomNavigationBar(
         onItemTapped: (index) => homeController.onItemTapped,

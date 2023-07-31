@@ -46,6 +46,17 @@ class UserDrawer extends StatelessWidget {
           },
         ),
         ListTile(
+          title: const Text('Địa chỉ đã lưu'),
+          onTap: () {
+            Navigator.pop(context);
+            Get.put(UpdateProfileController(accounts));
+            slideInTransition(
+              context,
+              ChangeInfo(account: accounts),
+            );
+          },
+        ),
+        ListTile(
           title: const Text('Đổi mật khẩu'),
           onTap: () {
             Navigator.pop(context);

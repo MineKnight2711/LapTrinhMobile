@@ -2,7 +2,7 @@ class ResponseBaseModel {
   String? id;
   String? apiVersion;
   String? message;
-  Map<String, dynamic>? data;
+  dynamic data;
 
   ResponseBaseModel({
     this.apiVersion,
@@ -19,18 +19,12 @@ class ResponseBaseModel {
       data: json['data'],
     );
   }
-  // Map<String, dynamic> toJsonData() {
-  //   return data as Map<String, dynamic>;
-  // }
-
-  // Map<String, dynamic> toJson() {
-  //   final Map<String, dynamic> dataJson = toJsonData();
-  //   final Map<String, dynamic> json = {
-  //     'id': id,
-  //     'apiVersion': apiVersion,
-  //     'message': message,
-  //     'data': dataJson,
-  //   };
-  //   return json;
-  // }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['apiVersion'] = apiVersion;
+    data['message'] = message;
+    data['data'] = data;
+    return data;
+  }
 }

@@ -8,7 +8,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   MainController.initializeControllers();
-  // print(ip);
   runApp(
     MaterialApp(
       initialRoute: 'home_screen',

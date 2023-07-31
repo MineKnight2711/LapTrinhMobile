@@ -1,63 +1,111 @@
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
+import 'package:keyboard_mobile_app/controller/category_controller.dart';
+import 'package:keyboard_mobile_app/screens/homescreen/components/product_list.dart';
 
-class HomescreenBody extends StatelessWidget {
+import '../../../model/category_model.dart';
+
+class HomescreenBody extends StatefulWidget {
   const HomescreenBody({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ///// HIEN THI DANH MUC TU WIDGET CATEGORY O DAY ////
-        const Column(
-          children: [
-            // MenuCategoryList(),
-          ],
-        ),
-        const SizedBox(
-          height: 19.0,
-        ),
-        //WIDGET HIEN THI BANNER VOUCHER O DAY//
-        const Column(
-          children: [
-            BannerList(),
-          ],
-        ),
-        const SizedBox(
-          height: 26.22,
-        ),
-        Container(
-          height: 20.0,
-          margin: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            children: [
-              Text(
-                "Hàng nóng hổi...",
-                style: GoogleFonts.roboto(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                "Xem Tất Cả",
-                style: GoogleFonts.poppins(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xff1CB069),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(
-          height: 13.87,
-        ),
-        //List sản phẩm recommeneded
-      ],
+  State<HomescreenBody> createState() => _HomescreenBodyState();
+}
+
+class _HomescreenBodyState extends State<HomescreenBody>
+    with TickerProviderStateMixin<HomescreenBody> {
+  late TabController _tabController;
+  final categoryController = Get.find<CategoryController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _initTabController();
+    categoryController.listCategory.stream.listen(_onCategoriesChanged);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  void _initTabController() {
+    _tabController = TabController(
+      length: categoryController.listCategory.value?.length ?? 0,
+      vsync: this,
     );
+  }
+
+  void _onCategoriesChanged(List<CategoryModel>? categories) {
+    int newLength = categories?.length ?? 0;
+    if (newLength != _tabController.length) {
+      setState(() {
+        _initTabController();
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Widget tabBar = Obx(() {
+      if (categoryController.listCategory.value == null) {
+        // Return a loader or a placeholder while the categories are loading
+        return const LinearProgressIndicator();
+      }
+      return TabBar(
+        tabs: categoryController.listCategory.value!
+            .map((category) => Tab(text: category.categoryName ?? ''))
+            .toList(),
+        labelStyle: const TextStyle(fontSize: 16.0),
+        unselectedLabelStyle: const TextStyle(fontSize: 14.0),
+        labelColor: Colors.black87,
+        unselectedLabelColor: const Color.fromRGBO(0, 0, 0, 0.5),
+        isScrollable: true,
+        controller: _tabController,
+      );
+    });
+
+    return SafeArea(
+        child: NestedScrollView(
+      body: Obx(() {
+        if (categoryController.listCategory.value != null &&
+            categoryController.listCategory.value!.isNotEmpty) {
+          final listCategory = categoryController.listCategory.value!;
+          return TabBarView(
+            controller: _tabController,
+            physics: const ClampingScrollPhysics(),
+            children: listCategory.map((category) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 16.0),
+                  Flexible(
+                      child: ProductList(
+                    categoryModel: category,
+                  )),
+                ],
+              );
+            }).toList(),
+          );
+        } else {
+          categoryController.getAllCategory();
+          return const Center(child: Text("Loading..."));
+        }
+      }),
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
+          const SliverToBoxAdapter(
+            child: BannerList(),
+          ),
+          SliverToBoxAdapter(
+            child: tabBar,
+          ),
+        ];
+      },
+    ));
   }
 }
 
