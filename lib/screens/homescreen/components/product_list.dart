@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/model/category_model.dart';
+import 'package:keyboard_mobile_app/screens/product/product_screen.dart';
+import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 
 import '../../../controller/product_controller.dart';
 
@@ -71,7 +73,8 @@ class ProductList extends StatelessWidget {
                                     Radius.circular(10.0)),
                                 child: InkWell(
                                   onTap: () {
-                                    //Chuyen trang san pham
+                                    slideInTransition(context,
+                                        ProductScreen(product: product));
                                   },
                                   child: Container(
                                       decoration: BoxDecoration(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
+import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? title;
@@ -25,7 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       leading: showLeading
           ? Padding(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(10),
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
@@ -43,10 +45,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions,
       title: Text(
         title ?? "",
-        style: const TextStyle(
+        style: GoogleFonts.roboto(
           color: Colors.black,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+          fontSize: mediaAspectRatio(context, 1 / 42),
+          fontWeight: FontWeight.w400,
         ),
       ),
       bottom: bottom,

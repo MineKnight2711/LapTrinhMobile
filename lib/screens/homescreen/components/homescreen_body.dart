@@ -52,7 +52,6 @@ class _HomescreenBodyState extends State<HomescreenBody>
   Widget build(BuildContext context) {
     Widget tabBar = Obx(() {
       if (categoryController.listCategory.value == null) {
-        // Return a loader or a placeholder while the categories are loading
         return const LinearProgressIndicator();
       }
       return TabBar(
@@ -70,13 +69,14 @@ class _HomescreenBodyState extends State<HomescreenBody>
 
     return SafeArea(
         child: NestedScrollView(
+      physics: const NeverScrollableScrollPhysics(),
       body: Obx(() {
         if (categoryController.listCategory.value != null &&
             categoryController.listCategory.value!.isNotEmpty) {
           final listCategory = categoryController.listCategory.value!;
           return TabBarView(
             controller: _tabController,
-            physics: const ClampingScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             children: listCategory.map((category) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
