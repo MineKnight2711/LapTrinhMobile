@@ -3,7 +3,7 @@ import 'package:keyboard_mobile_app/api/product_api.dart';
 import 'package:keyboard_mobile_app/model/product_details_model.dart';
 import 'package:keyboard_mobile_app/utils/data_convert.dart';
 
-class CartController extends GetxController {
+class ProductDetailController extends GetxController {
   Rx<List<String>?> imageUrlList = Rx<List<String>?>(null);
   @override
   void onClose() {

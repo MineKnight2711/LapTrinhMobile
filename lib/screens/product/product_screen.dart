@@ -4,11 +4,11 @@ import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/product_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
-import 'package:keyboard_mobile_app/screens/product/components/color_selected.dart';
 import 'package:keyboard_mobile_app/screens/product/components/product_bottom_sheet.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 
+import '../../controller/product_detail_controller.dart';
 import '../../widgets/custom_widgets/rating_bars.dart';
 import 'components/product_display.dart';
 
@@ -16,6 +16,7 @@ class ProductScreen extends StatelessWidget {
   final ProductModel product;
   ProductScreen({super.key, required this.product});
   final productController = Get.find<ProductController>();
+  final detailsController = Get.put(ProductDetailController());
   @override
   Widget build(BuildContext context) {
     productController.getProductDetails("${product.productId}");
@@ -137,7 +138,7 @@ class ProductScreen extends StatelessWidget {
                   product: product,
                 );
               },
-            );
+            ).then((value) => detailsController.onClose());
           },
         ),
       ),

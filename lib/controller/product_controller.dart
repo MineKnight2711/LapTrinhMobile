@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/api/product_api.dart';
 import 'package:keyboard_mobile_app/model/product_details_model.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
-import 'package:logger/logger.dart';
 import '../model/respone_base_model.dart';
 import '../utils/data_convert.dart';
 

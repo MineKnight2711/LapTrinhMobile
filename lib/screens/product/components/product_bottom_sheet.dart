@@ -1,19 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
-import 'package:keyboard_mobile_app/controller/cart_controller.dart';
+import 'package:keyboard_mobile_app/controller/product_detail_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/product/components/color_selected.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
-import '../../../widgets/custom_widgets/custom_button.dart';
-import '../../../widgets/custom_widgets/message.dart';
-
 class ProductDetailsBottomSheet extends StatelessWidget {
   final ProductModel product;
-  final cartController = Get.put(CartController());
+  final cartController = Get.find<ProductDetailController>();
   // final accountController = Get.find<AccountApi>();
 
   ProductDetailsBottomSheet({super.key, required this.product});
@@ -69,13 +67,32 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                   physics: const ClampingScrollPhysics(),
                   child: Column(
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: mediaHeight(context, 5),
-                        child: CachedNetworkImage(
-                            imageUrl: "${product.displayUrl}",
-                            fit: BoxFit.contain),
-                      ),
+                      Obx(() {
+                        if (cartController.imageUrlList.value == null) {
+                          return SizedBox(
+                            width: double.infinity,
+                            height: mediaHeight(context, 5),
+                            child: CachedNetworkImage(
+                                imageUrl: "${product.displayUrl}",
+                                fit: BoxFit.contain),
+                          );
+                        } else {
+                          final listImageUrl =
+                              cartController.imageUrlList.value;
+                          return SizedBox(
+                            width: double.infinity,
+                            height: mediaHeight(context, 5),
+                            child: Swiper(
+                              itemCount: listImageUrl!.length,
+                              itemBuilder: (context, index) {
+                                final item = listImageUrl[index];
+                                return CachedNetworkImage(
+                                    imageUrl: item, fit: BoxFit.contain);
+                              },
+                            ),
+                          );
+                        }
+                      }),
                       const Divider(
                         thickness: 3,
                       ),
@@ -94,8 +111,7 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                             ),
                             ColorChoiceWidget(
                               onSizeSelected: (value) {
-                                cartController.selectedProductDetails.value =
-                                    value;
+                                cartController.choseProduct(value);
                               },
                             ),
                             const SizedBox(
