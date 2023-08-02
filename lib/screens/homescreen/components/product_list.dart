@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -91,8 +92,9 @@ class ProductList extends StatelessWidget {
                                       child: product.displayUrl != null
                                           ? Hero(
                                               tag: product.displayUrl ?? '',
-                                              child: Image.network(
-                                                  product.displayUrl!))
+                                              child: CachedNetworkImage(
+                                                  imageUrl:
+                                                      product.displayUrl!))
                                           : const SizedBox.shrink()),
                                 ),
                               ),

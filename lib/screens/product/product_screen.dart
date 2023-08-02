@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/product_controller.dart';
@@ -50,67 +51,85 @@ class ProductScreen extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   },
                 ),
-                SizedBox(
-                  height: mediaHeight(context, 30),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: ShowRatingBar(
-                        rating: 4.5,
-                        size: 20,
+                Container(
+                  height: mediaHeight(context, 1),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                            blurRadius: 10,
+                            color: Colors.grey,
+                            offset: Offset(1, 0)),
+                      ],
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20))),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: mediaHeight(context, 30),
                       ),
-                    ),
-                    const Spacer(),
-                    Container(
-                      width: mediaWidth(context, 3),
-                      height: mediaHeight(context, 20),
-                      decoration: const BoxDecoration(
-                        color: mainButtonColor,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            bottomLeft: Radius.circular(20)),
-                      ),
-                      child: GestureDetector(
-                        onTap: () {
-                          //Chuyển dến màn hình đánh giá
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Icon(Icons.star, color: Colors.white),
-                            SizedBox(
-                              width: mediaWidth(context, 120),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: ShowRatingBar(
+                              rating: 4.5,
+                              size: 20,
                             ),
-                            const Text("Đánh giá")
-                          ],
+                          ),
+                          const Spacer(),
+                          Container(
+                            width: mediaWidth(context, 3),
+                            height: mediaHeight(context, 20),
+                            decoration: const BoxDecoration(
+                              color: mainButtonColor,
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  bottomLeft: Radius.circular(20)),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                //Chuyển dến màn hình đánh giá
+                              },
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Icon(Icons.star, color: Colors.white),
+                                  SizedBox(
+                                    width: mediaWidth(context, 120),
+                                  ),
+                                  const Text("Đánh giá")
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: mediaHeight(context, 30),
+                      ),
+                      const Center(
+                        child: Text(
+                          "Mô tả",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 20.0),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: mediaHeight(context, 30),
-                ),
-                const Center(
-                  child: Text(
-                    "Chi tiết",
-                    style:
-                        TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20.0, right: 40.0, bottom: 130),
-                  child: Text(
-                    "${product.description}",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontFamily: "NunitoSans",
-                        fontStyle: FontStyle.normal,
-                        fontSize: 16.0),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20.0, right: 40.0, bottom: 130),
+                        child: Text(
+                          "${product.description}",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              fontSize: 16.0),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

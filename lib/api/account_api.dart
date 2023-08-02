@@ -17,11 +17,14 @@ class AccountApi extends GetxController {
     fetchCurrent();
   }
 
-  Future fetchCurrent() async {
+  Future<AccountResponse?> fetchCurrent() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       accountRespone.value = await login(user.uid);
+
+      return accountRespone.value;
     }
+    return null;
   }
 
   Future<AccountResponse> login(String? accountId) async {

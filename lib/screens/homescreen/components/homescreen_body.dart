@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/category_controller.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/product_list.dart';
-
 import '../../../model/category_model.dart';
+import '../../../widgets/custom_widgets/custom_swiper_panation.dart';
 
 class HomescreenBody extends StatefulWidget {
   const HomescreenBody({Key? key}) : super(key: key);
@@ -169,37 +169,4 @@ class ListDataTemp {
     "assets/images/banner3.jpg",
     "assets/images/banner3.jpg",
   ];
-}
-
-class CustomSwiperPagination extends StatelessWidget {
-  final int itemCount;
-  final int activeIndex;
-
-  const CustomSwiperPagination(
-      {super.key, required this.itemCount, required this.activeIndex});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        margin: const EdgeInsets.all(16.0),
-        height: 2, // Adjust the height of the line here
-        width: itemCount * 20.0, // Adjust the width based on itemCount
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: itemCount,
-          itemBuilder: (context, index) {
-            return Container(
-              width: 12,
-              margin: const EdgeInsets.symmetric(horizontal: 2.0),
-              color: activeIndex == index
-                  ? Colors.blue
-                  : Colors.grey, // Adjust active and inactive colors here
-            );
-          },
-        ),
-      ),
-    );
-  }
 }

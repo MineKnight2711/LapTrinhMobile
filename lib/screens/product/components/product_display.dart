@@ -2,14 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/product_controller.dart';
 import 'package:keyboard_mobile_app/model/product_details_model.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
-import 'package:logger/logger.dart';
-
-import '../../../utils/data_convert.dart';
 
 class ProductDisplay extends StatelessWidget {
   final ProductModel product;
@@ -27,49 +24,96 @@ class ProductDisplay extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Container(
-          //   color: Colors.black,
-          //   child: Hero(
-          //     tag: "${product.displayUrl}",
-          //     child: Image.network(
-          //       "${product.displayUrl}",
-          //       fit: BoxFit.cover,
-          //     ),
-          //   ),
-          // ),
           SizedBox(
-              height: mediaHeight(context, 2.5),
+              height: mediaHeight(context, 3.5),
               child: Obx(
                 () {
                   if (productController.listImageUrl.value.isNotEmpty) {
-                    print(productController.listImageUrl.value.length);
+                    int itemNumber =
+                        productController.listImageUrl.value.length;
                     return Swiper(
-                      itemCount: productController.listImageUrl.value.length,
+                      itemCount: itemNumber,
                       scrollDirection: Axis.horizontal,
+                      physics: itemNumber > 1
+                          ? const ClampingScrollPhysics()
+                          : const NeverScrollableScrollPhysics(),
+
+                      viewportFraction: itemNumber > 1
+                          ? 0.75
+                          : 1, // Set the fraction of the viewport that each item occupies
+                      scale: itemNumber > 1 ? 0.7 : 1,
                       itemBuilder: (context, index) {
                         if (index == 0) {
-                          return Container(
-                            color: Colors.black,
-                            child: Hero(
-                              tag: "${product.displayUrl}",
-                              child: CachedNetworkImage(
-                                imageUrl: "${product.displayUrl}",
-                                fit: BoxFit.cover,
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: mediaHeight(context, 80),
                               ),
-                            ),
+                              Container(
+                                height: mediaHeight(context, 4),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    boxShadow: const [
+                                      BoxShadow(blurRadius: 3, spreadRadius: 1)
+                                    ]),
+                                child: Hero(
+                                  tag: "${product.displayUrl}",
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: "${product.displayUrl}",
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: mediaHeight(context, 80),
+                              ),
+                            ],
                           );
                         } else {
                           final imageUrl =
                               productController.listImageUrl.value[index];
-                          return Container(
-                            color: Colors.black,
-                            child: Hero(
-                              tag: imageUrl,
-                              child: CachedNetworkImage(
-                                imageUrl: imageUrl,
-                                fit: BoxFit.cover,
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: mediaHeight(context, 80),
                               ),
-                            ),
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return ImageViewDialog(
+                                          imageUrl: imageUrl);
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  height: mediaHeight(context, 4),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            blurRadius: 3, spreadRadius: 1)
+                                      ]),
+                                  child: Hero(
+                                    tag: imageUrl,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: mediaHeight(context, 80),
+                              ),
+                            ],
                           );
                         }
                       },
@@ -78,7 +122,37 @@ class ProductDisplay extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 },
               )),
+          SizedBox(
+            height: mediaHeight(context, 70),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class ImageViewDialog extends StatelessWidget {
+  final String imageUrl;
+
+  const ImageViewDialog({super.key, required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: InteractiveViewer(
+          maxScale: 5.0,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10.0),
+            child: CachedNetworkImage(imageUrl: imageUrl),
+          ),
+        ),
       ),
     );
   }

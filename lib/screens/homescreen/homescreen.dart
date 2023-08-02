@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
+import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/controller/category_controller.dart';
 import 'package:keyboard_mobile_app/controller/product_controller.dart';
+import 'package:keyboard_mobile_app/screens/cart_screen/cart_screen.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/homescreen_body.dart';
+import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 
 import 'components/homescreen_appbar.dart';
 
 class HomeScreenController extends GetxController {
   var selectedindex = 0.obs;
-  void onItemTapped(int index) {
+  void onItemTapped(BuildContext context, int index) {
     selectedindex.value = index;
-    // if (selectedindex.value == 1) {
-    //   if (u.user == null) {
-    //     slideinTransition(context, LoginScreen());
-    //     pleaseLoginPopup(context);
-    //   } else {
-    //     slideinTransition(context, CardScreenView());
-    //   }
-    // } else if (selectedindex.value == 0) {
-    //   slideinTransitionNoBack(context, AppHomeScreen());
-    // }
+    if (selectedindex.value == 1) {
+      Get.put(CartController());
+      slideInTransition(context, CartScreen());
+    } else {
+      slideInTransitionReplacement(context, HomeScreen());
+    }
   }
 }
 
@@ -47,9 +46,11 @@ class HomeScreen extends StatelessWidget {
         color: Colors.blue,
         child: const HomescreenBody(),
       ),
-      bottomNavigationBar: MyBottomNavigationBar(
-        onItemTapped: (index) => homeController.onItemTapped,
-        selectedIndex: homeController.selectedindex.value,
+      bottomNavigationBar: Obx(
+        () => MyBottomNavigationBar(
+          onItemTapped: (index) => homeController.onItemTapped(context, index),
+          selectedIndex: homeController.selectedindex.value,
+        ),
       ),
     );
   }

@@ -7,11 +7,14 @@ import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/product_detail_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/product/components/color_selected.dart';
+import 'package:keyboard_mobile_app/screens/product/components/quantity_selector.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_swiper_panation.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
 class ProductDetailsBottomSheet extends StatelessWidget {
   final ProductModel product;
-  final cartController = Get.find<ProductDetailController>();
+  final detailController = Get.find<ProductDetailController>();
   // final accountController = Get.find<AccountApi>();
 
   ProductDetailsBottomSheet({super.key, required this.product});
@@ -68,33 +71,63 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                   child: Column(
                     children: [
                       Obx(() {
-                        if (cartController.imageUrlList.value == null) {
-                          return SizedBox(
-                            width: double.infinity,
-                            height: mediaHeight(context, 5),
-                            child: CachedNetworkImage(
-                                imageUrl: "${product.displayUrl}",
-                                fit: BoxFit.contain),
+                        if (detailController.imageUrlList.value == null) {
+                          return Container(
+                            height: mediaHeight(context, 4),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                boxShadow: const [
+                                  BoxShadow(blurRadius: 3, spreadRadius: 1)
+                                ]),
+                            child: Hero(
+                              tag: "${product.displayUrl}",
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: CachedNetworkImage(
+                                  imageUrl: "${product.displayUrl}",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                           );
                         } else {
                           final listImageUrl =
-                              cartController.imageUrlList.value;
+                              detailController.imageUrlList.value;
                           return SizedBox(
                             width: double.infinity,
                             height: mediaHeight(context, 5),
                             child: Swiper(
                               itemCount: listImageUrl!.length,
+                              physics: listImageUrl.length > 1
+                                  ? const ClampingScrollPhysics()
+                                  : const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 final item = listImageUrl[index];
-                                return CachedNetworkImage(
-                                    imageUrl: item, fit: BoxFit.contain);
+                                return SizedBox(
+                                  height: mediaHeight(context, 4),
+                                  child: Hero(
+                                    tag: item,
+                                    child: CachedNetworkImage(
+                                      imageUrl: item,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                );
                               },
+                              pagination: SwiperCustomPagination(
+                                builder: (context, config) {
+                                  return CustomSwiperPagination(
+                                      itemCount: listImageUrl.length,
+                                      activeIndex: config.activeIndex);
+                                },
+                              ),
                             ),
                           );
                         }
                       }),
-                      const Divider(
-                        thickness: 3,
+                      Divider(
+                        color: Colors.black.withOpacity(0.2),
+                        thickness: 1,
                       ),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -111,7 +144,7 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                             ),
                             ColorChoiceWidget(
                               onSizeSelected: (value) {
-                                cartController.choseProduct(value);
+                                detailController.choseProduct(value);
                               },
                             ),
                             const SizedBox(
@@ -120,8 +153,9 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const Divider(
-                        thickness: 3,
+                      Divider(
+                        color: Colors.black.withOpacity(0.2),
+                        thickness: 1,
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -131,15 +165,39 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                               'Chọn số lượng',
                               style: GoogleFonts.nunito(fontSize: 16),
                             ),
+                            const Spacer(),
+                            Obx(
+                              () => Visibility(
+                                visible: detailController.chosenDetails.value !=
+                                    null,
+                                child: Transform.scale(
+                                  scale: size.aspectRatio / 0.6,
+                                  child: QuantitySelector(
+                                    initialValue: 1,
+                                    maxQuantity: detailController
+                                            .chosenDetails.value?.quantity ??
+                                        1,
+                                    onValueChanged: (quantity) {},
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                      const SizedBox(
-                        height: 10,
+                      SizedBox(
+                        height: mediaHeight(context, 40),
                       ),
-                      const SizedBox(
-                        height: 40,
+                      Divider(
+                        color: Colors.black.withOpacity(0.2),
+                        thickness: 1,
                       ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        child: DefaultButton(
+                            press: () {}, text: 'Thêm vào giỏ hàng'),
+                      )
                     ],
                   ),
                 ),
