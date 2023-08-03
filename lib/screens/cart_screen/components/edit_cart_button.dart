@@ -43,8 +43,9 @@ class _EditCartItemButtonState extends State<EditCartItemButton> {
         child: Row(
           children: [
             Icon(
-              pencil,
+              Icons.edit,
               key: const ValueKey<Color>(Colors.black),
+              size: 20,
               color: widget.isEnabled!
                   ? Colors.green
                   : Colors.black, // Only change color if isEnabled is true

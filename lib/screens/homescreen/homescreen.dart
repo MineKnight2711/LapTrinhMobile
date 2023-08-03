@@ -14,10 +14,18 @@ import 'components/homescreen_appbar.dart';
 class HomeScreenController extends GetxController {
   var selectedindex = 0.obs;
   void onItemTapped(BuildContext context, int index) {
+    if (selectedindex.value == index) {
+      // If the tapped index is the same as the current selected index,
+      // do nothing and return early to prevent unnecessary navigation.
+      return;
+    }
+
     selectedindex.value = index;
+
     if (selectedindex.value == 1) {
       Get.put(CartController());
       slideInTransition(context, CartScreen());
+      selectedindex.value = 0;
     } else {
       slideInTransitionReplacement(context, HomeScreen());
     }

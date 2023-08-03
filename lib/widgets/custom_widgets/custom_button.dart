@@ -3,15 +3,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 
 class DefaultButton extends StatelessWidget {
+  final String text;
+  final VoidCallback press;
+  final bool enabled;
+
   const DefaultButton({
     Key? key,
     required this.text,
     required this.press,
     this.enabled = true,
   }) : super(key: key);
-  final String text;
-  final VoidCallback press;
-  final bool enabled;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -26,7 +28,7 @@ class DefaultButton extends StatelessWidget {
         onPressed: enabled ? press : null,
         child: Text(
           text,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: GoogleFonts.nunito(fontWeight: FontWeight.w500, fontSize: 16),
         ),
       ),
     );

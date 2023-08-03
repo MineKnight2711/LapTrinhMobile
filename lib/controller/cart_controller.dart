@@ -1,9 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:keyboard_mobile_app/api/cart_api.dart';
 import 'package:keyboard_mobile_app/api/product_api.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/model/respone_base_model.dart';
+import 'package:keyboard_mobile_app/utils/data_convert.dart';
+import 'package:keyboard_mobile_app/utils/show_animations.dart';
 import 'package:logger/logger.dart';
 
 import '../api/account_api.dart';
@@ -14,9 +17,12 @@ import '../model/product_model.dart';
 class CartController extends GetxController {
   final acccountApi = Get.find<AccountApi>();
   final productApi = Get.find<ProductApi>();
-  List<CartModel> listCartItem = <CartModel>[].obs;
-  List<CartModel> checkedItems = <CartModel>[].obs;
-  bool isCheckAll = false;
+  RxList<CartModel> listCartItem = <CartModel>[].obs;
+  RxList<CartModel> checkedItems = <CartModel>[].obs;
+
+  final listImageUrl = <String>[].obs;
+
+  // bool isCheckAll = false;
   late CartApi cartApi;
   final totalPrice = 0.0.obs;
   // final isCheckAll = false.obs;
@@ -31,8 +37,12 @@ class CartController extends GetxController {
   void onClose() {
     super.onClose();
     totalPrice.value = 0.0;
-    // isCheckAll.value = false;
-    listCartItem = checkedItems = [];
+    // isCheckAll = false;
+    listCartItem.value = checkedItems.value = [];
+  }
+
+  void closeBottomSheet() {
+    listImageUrl.value = [];
   }
 
   //Chờ thông tin người dùng hiện tại
@@ -56,7 +66,7 @@ class CartController extends GetxController {
             (cartMap) => CartModel.fromJson(cartMap),
           )
           .toList();
-      listCartItem = cartList;
+      listCartItem.value = cartList;
       Logger().i("${listCartItem.length} test cart");
       // isNoProduct.value = false;
     }
@@ -75,14 +85,17 @@ class CartController extends GetxController {
     final respone = await productApi.getProductDetailsById(productDetailId);
     if (respone.data != null) {
       final productDetailModel = ProductDetailModel.fromJson(respone.data);
+      listImageUrl.value =
+          DataConvert().encodeListImages("${productDetailModel.imageUrl}");
       return productDetailModel;
     }
     return null;
   }
 
-  void checkAll() {
-    if (isCheckAll == true) {
+  void checkAll(bool isCheck, BuildContext context) {
+    if (isCheck) {
       checkedItems.assignAll(listCartItem);
+      showLoadingAnimation(context, "assets/animations/checked.json", 180, 2);
       calculateCartTotal();
     } else {
       checkedItems.clear();
@@ -90,34 +103,63 @@ class CartController extends GetxController {
     }
   }
 
-  void checkPerItem(CartModel item) {
-    if (queryChekedItemList(item) != -1) {
-      checkedItems.remove(item);
+  void checkPerItem(bool isCheck, CartModel item, BuildContext context) {
+    if (isCheck) {
+      checkedItems.add(item);
+      if (checkedItems.length == listCartItem.length) {
+        showLoadingAnimation(context, "assets/animations/checked.json", 180, 2);
+      }
       calculateCartTotal();
     } else {
-      checkedItems.add(item);
+      checkedItems.remove(item);
       calculateCartTotal();
     }
   }
 
-  //Phương thức kiểm tra đối tượng item trong List checkedItem
-  //Nếu kết quả trả về -1 -> đối tượng tồn tại, ngược lại thì đối tượng không tồn tại
+  // //Phương thức kiểm tra đối tượng item trong List checkedItem
+  // //Nếu kết quả trả về -1 -> đối tượng tồn tại, ngược lại thì đối tượng không tồn tại
 
-  int queryChekedItemList(CartModel item) {
-    return checkedItems.indexWhere((element) =>
-        element.accountId == item.accountId &&
-        element.productDetailId == item.productDetailId &&
-        element.quantity == item.quantity);
-  }
+  // int queryChekedItemList(CartModel item) {
+  //   return checkedItems.indexWhere((element) =>
+  //       element.accountId == item.accountId &&
+  //       element.productDetailId == item.productDetailId &&
+  //       element.quantity == item.quantity);
+  // }
 
-  Future<String> addToCart(String? accountId, CartModel cartItem) async {
+  Future<String> addToCart(CartModel cartItem) async {
     //Kiểm tra đối tượng Cartitem giống phương thức bên dưới
     if (acccountApi.accountRespone.value != null) {
-      final respone = await cartApi.addToCart(accountId, cartItem);
+      final respone = await cartApi.addToCart(cartItem);
       if (respone.message.toString().contains("Success")) {
         return "Success";
       } else if (respone.message.toString().contains("Update")) {
         return "Update";
+      } else {
+        return "Fail";
+      }
+    }
+    return "NoUser";
+  }
+
+  Future<String> updateCart(CartModel cartItem) async {
+    //Kiểm tra đối tượng Cartitem giống phương thức bên dưới
+    if (acccountApi.accountRespone.value != null) {
+      final respone = await cartApi.updateCart(cartItem);
+      if (respone.message.toString().contains("Success")) {
+        return "Success";
+      } else {
+        return "Fail";
+      }
+    }
+    return "NoUser";
+  }
+
+  Future<String> clearCart(String accountId) async {
+    //Kiểm tra đối tượng Cartitem giống phương thức bên dưới
+    if (acccountApi.accountRespone.value != null) {
+      final respone = await cartApi.clearCart(accountId);
+      if (respone.message.toString().contains("Success")) {
+        return "Success";
       } else {
         return "Fail";
       }
@@ -134,6 +176,8 @@ class CartController extends GetxController {
         total += await calculateItemTotal(item);
       }
       totalPrice.value = total;
+    } else {
+      totalPrice.value = 0;
     }
   }
 

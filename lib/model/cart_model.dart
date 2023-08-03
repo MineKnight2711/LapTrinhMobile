@@ -19,9 +19,8 @@ class CartModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['accountId'] = accountId;
     data['productDetailId'] = productDetailId;
-    data['quantity'] = quantity;
+    data['quantity'] = quantity.toString();
     return data;
   }
 }

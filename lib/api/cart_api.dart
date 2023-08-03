@@ -8,15 +8,40 @@ import '../base_url_api.dart';
 import '../model/respone_base_model.dart';
 
 class CartApi extends GetxController {
-  Future<ResponseBaseModel> addToCart(
-      String? accountId, CartModel cartItem) async {
+  Future<ResponseBaseModel> addToCart(CartModel cartItem) async {
     ResponseBaseModel responseBaseModel = ResponseBaseModel();
-    final url = Uri.parse("${ApiUrl.apiAddToCart}/$accountId");
-    final body = {
-      "productDetailId": cartItem.productDetailId,
-      "quantity": cartItem.quantity.toString()
-    };
+    final url = Uri.parse("${ApiUrl.apiAddToCart}/${cartItem.accountId}");
+    final body = cartItem.toJson();
     final response = await http.post(url, body: body);
+    if (response.statusCode == 200) {
+      responseBaseModel = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+      return responseBaseModel;
+    } else {
+      responseBaseModel.message = "Fail";
+      return responseBaseModel;
+    }
+  }
+
+  Future<ResponseBaseModel> updateCart(CartModel cartItem) async {
+    ResponseBaseModel responseBaseModel = ResponseBaseModel();
+    final url = Uri.parse("${ApiUrl.apiUpdateCart}/${cartItem.accountId}");
+    final body = cartItem.toJson();
+    final response = await http.put(url, body: body);
+    if (response.statusCode == 200) {
+      responseBaseModel = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+      return responseBaseModel;
+    } else {
+      responseBaseModel.message = "Fail";
+      return responseBaseModel;
+    }
+  }
+
+  Future<ResponseBaseModel> clearCart(String accountId) async {
+    ResponseBaseModel responseBaseModel = ResponseBaseModel();
+    final url = Uri.parse("${ApiUrl.apiClearCart}/$accountId");
+    final response = await http.delete(url);
     if (response.statusCode == 200) {
       responseBaseModel = ResponseBaseModel.fromJson(
           jsonDecode(utf8.decode(response.bodyBytes)));

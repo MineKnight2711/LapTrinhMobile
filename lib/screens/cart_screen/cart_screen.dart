@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
@@ -14,15 +16,10 @@ import 'components/cart_bottom_nav.dart';
 import 'components/edit_cart_bottom_sheet.dart';
 import 'components/edit_cart_button.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
-
-  @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
+class CartScreen extends StatelessWidget {
   final cartController = Get.find<CartController>();
+
+  CartScreen({super.key});
 
   // final orderController = Get.put(CreateOrderController());
   Future<void> refesh() async {
@@ -43,24 +40,17 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: Obx(() {
         if (cartController.listCartItem.isNotEmpty) {
-          final listItem = cartController.listCartItem;
-          final checkedItemFromList = cartController.checkedItems;
           return Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
                       Checkbox(
-                        value: checkedItemFromList.length == listItem.length
-                            ? checkedItemFromList.isNotEmpty
-                            : cartController.isCheckAll,
+                        value: cartController.checkedItems.length ==
+                            cartController.listCartItem.length,
                         onChanged: (value) {
-                          setState(() {
-                            cartController.isCheckAll = value ?? false;
-                            cartController.checkAll();
-                          });
+                          cartController.checkAll(value!, context);
                         },
                       ),
                       const Text('Chọn tất cả'),
@@ -68,191 +58,270 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                   const Spacer(),
                   Container(
-                    width: size.width / 2.8,
+                    width: size.width / 2.3,
                     height: size.height / 24,
                     margin: const EdgeInsets.only(right: 10),
-                    child: DefaultButton(
-                      enabled:
-                          cartController.checkedItems.length == listItem.length,
-                      press: () {
-                        // cartController.clearCart();
-                      },
-                      text: 'Xoá giỏ hàng',
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor:
+                              mainButtonColor, // Change the text (label) color here
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: cartController.checkedItems.length ==
+                                cartController.listCartItem.length
+                            ? () async {
+                                final currentAccount =
+                                    await cartController.awaitCurrentAccount();
+                                if (currentAccount != null) {
+                                  String result = await cartController
+                                      .clearCart("${currentAccount.accountId}");
+                                  if (result == "Success") {
+                                    CustomSuccessMessage.showMessage(
+                                        "Đã xoá sản phẩm thành công");
+                                  } else {
+                                    CustomErrorMessage.showMessage(
+                                        "Có lỗi xảy ra!");
+                                  }
+                                } else {
+                                  CustomErrorMessage.showMessage(
+                                      "Phiên đăng nhập không hợp lệ!");
+                                }
+                              }
+                            : null,
+                        icon: const Icon(Icons.delete),
+                        label: const Text('Xoá giỏ hàng'),
+                      ),
                     ),
                   ),
                 ],
               ),
               Expanded(
                 child: RefreshIndicator(
-                  onRefresh: refesh,
-                  child: ListView.builder(
-                    itemCount: listItem.length,
-                    itemBuilder: (context, index) {
-                      final item = listItem[index];
-                      return Dismissible(
-                        key: Key(item.hashCode.toString()),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          alignment: Alignment.centerRight,
-                          color: Colors.red,
-                          child: const Padding(
-                            padding: EdgeInsets.only(right: 20),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
+                    onRefresh: refesh,
+                    child: Obx(
+                      () => ListView.builder(
+                        itemCount: cartController.listCartItem.length,
+                        itemBuilder: (context, index) {
+                          final item = cartController.listCartItem[index];
+                          return Dismissible(
+                            key: Key(item.hashCode.toString()),
+                            direction: DismissDirection.endToStart,
+                            background: Container(
+                              alignment: Alignment.centerRight,
+                              color: Colors.red,
+                              child: const Padding(
+                                padding: EdgeInsets.only(right: 20),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        onDismissed: (direction) async {
-                          String result = await cartController.removeItem(item);
-                          if (result == "Success") {
-                            CustomSuccessMessage.showMessage(
-                                "Đã xoá sản phẩm thành công");
-                          } else {
-                            CustomErrorMessage.showMessage("Có lỗi xảy ra!");
-                          }
-                        },
-                        child: SizedBox(
-                          height: size.height / 9.5,
-                          child: FutureBuilder<ProductDetailModel?>(
-                            future: cartController
-                                .getProductByDetail(item.productDetailId!),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                final detail = snapshot.data;
-                                return FutureBuilder<ProductModel?>(
-                                  future: cartController
-                                      .getProductById("${detail?.productId}"),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      final product = snapshot.data;
-                                      return ListTile(
-                                        leading: SizedBox(
-                                          height: size.height / 10,
-                                          width: size.width / 4,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 1,
-                                                right: 85,
-                                                child: Checkbox(
-                                                  value: cartController
-                                                              .queryChekedItemList(
-                                                                  item) !=
-                                                          -1
-                                                      ? true
-                                                      : cartController
-                                                          .isCheckAll,
-                                                  onChanged: (value) {
-                                                    setState(() {
+                            onDismissed: (direction) async {
+                              String result =
+                                  await cartController.removeItem(item);
+                              if (result == "Success") {
+                                CustomSuccessMessage.showMessage(
+                                    "Đã xoá sản phẩm thành công");
+                              } else {
+                                CustomErrorMessage.showMessage(
+                                    "Có lỗi xảy ra!");
+                              }
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.black, width: 0.1)),
+                              height: size.height / 8.5,
+                              child: FutureBuilder<ProductDetailModel?>(
+                                future: cartController
+                                    .getProductByDetail(item.productDetailId!),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData) {
+                                    final detail = snapshot.data;
+                                    return FutureBuilder<ProductModel?>(
+                                      future: cartController.getProductById(
+                                          "${detail?.productId}"),
+                                      builder: (context, snapshot) {
+                                        if (snapshot.hasData) {
+                                          final product = snapshot.data;
+
+                                          return ListTile(
+                                            leading: SizedBox(
+                                              height: size.height / 10,
+                                              width: size.width / 4,
+                                              child: Stack(
+                                                children: [
+                                                  Positioned(
+                                                    left: 1,
+                                                    right: 85,
+                                                    child: Obx(
+                                                      () => Checkbox(
+                                                        value: cartController
+                                                            .checkedItems
+                                                            .contains(item),
+                                                        onChanged: (value) {
+                                                          cartController
+                                                              .checkPerItem(
+                                                                  value!,
+                                                                  item,
+                                                                  context);
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Align(
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              7),
+                                                      child: SizedBox(
+                                                        height:
+                                                            size.height / 10,
+                                                        width: size.width / 5.5,
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl:
+                                                              "${product?.displayUrl}",
+                                                          fit: BoxFit.fill,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            title: SizedBox(
+                                              // color: mainBottomNavColor,
+                                              // width: mediaWidth(context, 3),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(
+                                                          "${product?.productName}",
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style: GoogleFonts
+                                                              .nunito(
+                                                                  fontSize: 14),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                          child: Text(
+                                                        "${detail?.color}",
+                                                        style:
+                                                            GoogleFonts.nunito(
+                                                          color:
+                                                              Colors.blue[400],
+                                                          fontSize: 14,
+                                                        ),
+                                                      ))
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(
+                                                          "SL: ${item.quantity}",
+                                                          style: GoogleFonts
+                                                              .nunito(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            trailing: Column(
+                                              children: [
+                                                EditCartItemButton(
+                                                  isEnabled: !cartController
+                                                      .checkedItems
+                                                      .contains(item),
+                                                  onTap: () {
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      isScrollControlled: true,
+                                                      shape:
+                                                          const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  20),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  20),
+                                                        ),
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return EditCartItemBottomSheet(
+                                                            productDetailModel:
+                                                                detail!,
+                                                            product: product!,
+                                                            cart: item);
+                                                      },
+                                                    ).then((value) {
                                                       cartController
-                                                          .isCheckAll = false;
-                                                      cartController
-                                                          .checkPerItem(item);
+                                                          .closeBottomSheet();
                                                     });
                                                   },
                                                 ),
-                                              ),
-                                              Align(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(7),
-                                                  child: SizedBox(
-                                                    height: size.height / 10,
-                                                    width: size.width / 5.5,
-                                                    child: CachedNetworkImage(
-                                                      imageUrl:
-                                                          "${product?.displayUrl}",
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        title: Text.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    "${item.quantity}x ${product?.productName} - ",
-                                                style: const TextStyle(
-                                                    color: Colors.black),
-                                              ),
-                                              TextSpan(
-                                                text: "${detail?.color}",
-                                                style: const TextStyle(
-                                                    color: Colors.blue),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        trailing: Column(
-                                          children: [
-                                            EditCartItemButton(
-                                              isEnabled: true,
-                                              // cartController.queryChekedItemList(item) ==
-                                              //     -1,
-                                              onTap: () {
-                                                showModalBottomSheet(
-                                                  context: context,
-                                                  isScrollControlled: true,
-                                                  shape:
-                                                      const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(20),
-                                                      topRight:
-                                                          Radius.circular(20),
-                                                    ),
-                                                  ),
-                                                  backgroundColor: Colors.white,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return EditCartItemBottomSheet(
-                                                        cart: item);
+                                                FutureBuilder<double>(
+                                                  future: cartController
+                                                      .calculateItemTotal(item),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      double totalForItem =
+                                                          snapshot.data!;
+                                                      return Text(DataConvert()
+                                                          .formatCurrency(
+                                                              totalForItem));
+                                                    } else {
+                                                      return const SizedBox
+                                                          .shrink();
+                                                    }
                                                   },
-                                                );
-                                              },
+                                                ),
+                                              ],
                                             ),
-                                            FutureBuilder<double>(
-                                              future: cartController
-                                                  .calculateItemTotal(item),
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  double totalForItem =
-                                                      snapshot.data!;
-                                                  return Text(DataConvert()
-                                                      .formatCurrency(
-                                                          totalForItem));
-                                                } else {
-                                                  return const SizedBox
-                                                      .shrink();
-                                                }
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    } else {
-                                      return const SizedBox.shrink();
-                                    }
-                                  },
-                                );
-                              } else {
-                                return const CircularProgressIndicator();
-                              }
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                                          );
+                                        } else {
+                                          return const SizedBox.shrink();
+                                        }
+                                      },
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    )),
               ),
             ],
           );
@@ -295,13 +364,7 @@ class _CartScreenState extends State<CartScreen> {
       bottomNavigationBar: Obx(
         () => CartBottomNavigation(
           totalPrice: cartController.totalPrice.value,
-          onPaymentPressed: () async {
-            if (cartController.checkedItems.isEmpty) {
-              CustomErrorMessage.showMessage(
-                  'Bạn phải chọn ít nhất 1 sản phẩm để đặt hàng');
-              return;
-            }
-          },
+          onPaymentPressed: () async {},
         ),
       ),
     );

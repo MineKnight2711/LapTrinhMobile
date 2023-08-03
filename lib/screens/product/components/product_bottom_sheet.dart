@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +12,11 @@ import 'package:keyboard_mobile_app/model/cart_model.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/product/components/color_selected.dart';
 import 'package:keyboard_mobile_app/screens/product/components/quantity_selector.dart';
+import 'package:keyboard_mobile_app/utils/show_animations.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_swiper_panation.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
+import 'package:logger/logger.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
 import '../../../api/account_api.dart';
@@ -22,7 +26,7 @@ class ProductDetailsBottomSheet extends StatelessWidget {
   final detailController = Get.find<ProductDetailController>();
   final accountController = Get.find<AccountApi>();
   final cartController = Get.find<CartController>();
-
+  int chosenValue = 1;
   ProductDetailsBottomSheet({super.key, required this.product});
 
   @override
@@ -179,13 +183,12 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                 child: Transform.scale(
                                   scale: size.aspectRatio / 0.6,
                                   child: QuantitySelector(
-                                    initialValue: 1,
+                                    initialValue: chosenValue,
                                     maxQuantity: detailController
                                             .chosenDetails.value?.quantity ??
                                         1,
                                     onValueChanged: (quantity) {
-                                      detailController.chosenQuantity.value =
-                                          quantity;
+                                      chosenValue = quantity;
                                     },
                                   ),
                                 ),
@@ -209,6 +212,7 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                             enabled:
                                 detailController.chosenDetails.value != null,
                             press: () async {
+                              Logger().i("$chosenValue so luong chon");
                               final currentAccount =
                                   await cartController.awaitCurrentAccount();
                               if (currentAccount != null) {
@@ -216,22 +220,35 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                 newItem.accountId = currentAccount.accountId;
                                 newItem.productDetailId = detailController
                                     .chosenDetails.value?.productDetailId;
-                                newItem.quantity =
-                                    detailController.chosenQuantity.value;
-                                String result = await cartController.addToCart(
-                                    currentAccount.accountId, newItem);
+                                newItem.quantity = chosenValue;
+                                String result =
+                                    await cartController.addToCart(newItem);
                                 switch (result) {
                                   case "Success":
                                     cartController.getCartByAccountId(
                                         currentAccount.accountId);
                                     CustomSuccessMessage.showMessage(
                                         "Thêm vào giỏ hàng thành công!");
+                                    showLoadingAnimation(
+                                            context,
+                                            "assets/animations/add_to_cart.json",
+                                            160,
+                                            2)
+                                        .then(
+                                            (value) => Navigator.pop(context));
                                     break;
                                   case "Update":
                                     cartController.getCartByAccountId(
                                         currentAccount.accountId);
                                     CustomSuccessMessage.showMessage(
                                         "Cập nhật giỏ hàng thành công!");
+                                    showLoadingAnimation(
+                                            context,
+                                            "assets/animations/add_to_cart.json",
+                                            160,
+                                            2)
+                                        .then(
+                                            (value) => Navigator.pop(context));
                                     break;
                                   case "Fail":
                                     CustomErrorMessage.showMessage(

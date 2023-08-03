@@ -17,6 +17,8 @@ class ApiUrl {
   static const apiForgotPassword = '${baseUrl}account/reset-password';
   static const apiGetProductById = '${baseUrl}product/getById';
   static const apiGetProductDetailsById = '${baseUrl}productDetail/getById';
+  static const apiUpdateCart = '${baseUrl}cart/update';
+  static const apiClearCart = '${baseUrl}cart/clear-cart';
   //// Api của Quý-------------------------------------------------
   static const apiUpdateAccount = '${baseUrl}account/info';
   static const apiGetAllCategory = '${baseUrl}category';
