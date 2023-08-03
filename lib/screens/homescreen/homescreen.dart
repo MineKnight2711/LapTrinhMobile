@@ -7,6 +7,7 @@ import 'package:keyboard_mobile_app/controller/product_controller.dart';
 import 'package:keyboard_mobile_app/screens/cart_screen/cart_screen.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/homescreen_body.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 
 import 'components/homescreen_appbar.dart';
 
@@ -38,7 +39,15 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
       ////////////////MENU NAVIGATION BAR BEN TRAI O DAY//////////////
-      appBar: CustomHomeAppBar(scaffoldKey: scaffoldKey),
+      appBar: CustomAppBar(
+        onPressed: () {},
+        showLeading: false,
+        actions: [
+          CustomHomeAppBar(scaffoldKey: scaffoldKey),
+        ],
+        title: "CMK",
+        backGroundColor: Colors.transparent,
+      ),
       endDrawer:
           CustomHomeAppBar(scaffoldKey: scaffoldKey).buildDrawer(context),
       body: RefreshIndicator(

@@ -6,6 +6,7 @@ import 'package:keyboard_mobile_app/utils/data_convert.dart';
 class ProductDetailController extends GetxController {
   Rx<ProductDetailModel?> chosenDetails = Rx<ProductDetailModel?>(null);
   Rx<List<String>?> imageUrlList = Rx<List<String>?>(null);
+  final chosenQuantity = 1.obs;
   @override
   void onClose() {
     super.onClose();

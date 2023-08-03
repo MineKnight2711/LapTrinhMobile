@@ -23,6 +23,7 @@ class ApiUrl {
   static const apiGetProductByCategory = '${baseUrl}product/category';
   static const apiGetProductDetails = '${baseUrl}productDetail/listProduct';
   static const apiGetCartByAccount = '${baseUrl}cart';
+  static const apiAddToCart = '${baseUrl}cart/add';
   static const apiDeleteItemFromCart = '${baseUrl}cart/delete';
 
   ///

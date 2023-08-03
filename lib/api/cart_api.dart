@@ -2,11 +2,31 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:keyboard_mobile_app/model/cart_model.dart';
 
 import '../base_url_api.dart';
 import '../model/respone_base_model.dart';
 
 class CartApi extends GetxController {
+  Future<ResponseBaseModel> addToCart(
+      String? accountId, CartModel cartItem) async {
+    ResponseBaseModel responseBaseModel = ResponseBaseModel();
+    final url = Uri.parse("${ApiUrl.apiAddToCart}/$accountId");
+    final body = {
+      "productDetailId": cartItem.productDetailId,
+      "quantity": cartItem.quantity.toString()
+    };
+    final response = await http.post(url, body: body);
+    if (response.statusCode == 200) {
+      responseBaseModel = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+      return responseBaseModel;
+    } else {
+      responseBaseModel.message = "Fail";
+      return responseBaseModel;
+    }
+  }
+
   Future getCartByAccountId(String? accountId) async {
     ResponseBaseModel responseBaseModel = ResponseBaseModel();
     final url = Uri.parse("${ApiUrl.apiGetCartByAccount}/$accountId");

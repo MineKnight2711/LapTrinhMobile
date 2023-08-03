@@ -18,79 +18,58 @@ class CustomHomeAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      leading: GestureDetector(
-        child: const Icon(
-          Icons.home_outlined,
-          size: 30,
-        ),
-        onTap: () {
-          slideInTransition(context, HomeScreen());
-        },
-      ),
-      backgroundColor: mainAppThemeColor,
-      title: Text(
-        "Home",
-        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 14),
-      ),
-      actions: [
-        SizedBox(
-          width: 45,
-          child: Obx(() {
-            final userInfo = accountApi.accountRespone.value;
-            if (userInfo == null) {
-              return Container(
-                width: 45,
-                margin: const EdgeInsets.symmetric(vertical: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  image: DecorationImage(
-                    image: Image.asset(
-                      'assets/images/profile.png',
-                      scale: 1,
-                    ).image,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    slideInTransition(context, LoginScreen());
-                  },
-                ),
-              );
-            } else {
-              String? imageUrl = accountApi.accountRespone.value?.imageUrl;
-              return Container(
-                width: 45,
-                margin: const EdgeInsets.symmetric(vertical: 5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: imageBackgroundColor,
-                  image: DecorationImage(
-                    image: imageUrl != null
-                        ? Image.network(
-                            imageUrl,
-                          ).image
-                        : Image.asset(
-                            'assets/images/profile.png',
-                          ).image,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    scaffoldKey.currentState?.openEndDrawer();
-                  },
-                ),
-              );
-            }
-          }),
-        ),
-        const SizedBox(
-          width: 23.0,
-        ),
-      ],
+    return Container(
+      margin: const EdgeInsets.only(right: 10),
+      width: 45,
+      child: Obx(() {
+        final userInfo = accountApi.accountRespone.value;
+        if (userInfo == null) {
+          return Container(
+            width: 45,
+            margin: const EdgeInsets.symmetric(vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              image: DecorationImage(
+                image: Image.asset(
+                  'assets/images/profile.png',
+                  scale: 1,
+                ).image,
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: GestureDetector(
+              onTap: () {
+                slideInTransition(context, LoginScreen());
+              },
+            ),
+          );
+        } else {
+          String? imageUrl = accountApi.accountRespone.value?.imageUrl;
+          return Container(
+            width: 45,
+            margin: const EdgeInsets.symmetric(vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: imageBackgroundColor,
+              image: DecorationImage(
+                image: imageUrl != null
+                    ? Image.network(
+                        imageUrl,
+                      ).image
+                    : Image.asset(
+                        'assets/images/profile.png',
+                      ).image,
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: GestureDetector(
+              onTap: () {
+                scaffoldKey.currentState?.openEndDrawer();
+              },
+            ),
+          );
+        }
+      }),
     );
   }
 

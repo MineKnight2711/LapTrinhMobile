@@ -84,7 +84,9 @@ class ColorChoiceWidgetState extends State<ColorChoiceWidget> {
                             : Colors.grey[300],
                         borderRadius: BorderRadius.circular(2.0),
                         border: Border.all(
-                            color: const Color.fromARGB(255, 255, 98, 0)),
+                            color: _selectedColor == item.color
+                                ? const Color.fromARGB(255, 255, 98, 0)
+                                : Colors.transparent),
                       ),
                       child: Stack(
                         children: [

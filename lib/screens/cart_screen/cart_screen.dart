@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
+import 'package:keyboard_mobile_app/model/product_model.dart';
 
+import '../../model/product_details_model.dart';
 import '../../utils/data_convert.dart';
 import '../../widgets/custom_widgets/custom_appbar.dart';
 import '../../widgets/custom_widgets/custom_button.dart';
@@ -10,12 +14,17 @@ import 'components/cart_bottom_nav.dart';
 import 'components/edit_cart_bottom_sheet.dart';
 import 'components/edit_cart_button.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
+  const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
   final cartController = Get.find<CartController>();
 
-  CartScreen({super.key});
   // final orderController = Get.put(CreateOrderController());
-  // final userController = Get.find<AccountApi>();
   Future<void> refesh() async {
     await cartController.awaitCurrentAccount();
   }
@@ -35,7 +44,7 @@ class CartScreen extends StatelessWidget {
       body: Obx(() {
         if (cartController.listCartItem.isNotEmpty) {
           final listItem = cartController.listCartItem;
-          // var checkedItemFromList = cartController.checkedItems;
+          final checkedItemFromList = cartController.checkedItems;
           return Column(
             children: [
               Row(
@@ -44,14 +53,14 @@ class CartScreen extends StatelessWidget {
                   Row(
                     children: [
                       Checkbox(
-                        value: cartController.checkedItems.length ==
-                            listItem.length,
+                        value: checkedItemFromList.length == listItem.length
+                            ? checkedItemFromList.isNotEmpty
+                            : cartController.isCheckAll,
                         onChanged: (value) {
-                          if (value!) {
-                            cartController.checkedItems.assignAll(listItem);
-                          } else {
-                            cartController.checkedItems.clear();
-                          }
+                          setState(() {
+                            cartController.isCheckAll = value ?? false;
+                            cartController.checkAll();
+                          });
                         },
                       ),
                       const Text('Chọn tất cả'),
@@ -78,121 +87,169 @@ class CartScreen extends StatelessWidget {
                   onRefresh: refesh,
                   child: ListView.builder(
                     itemCount: listItem.length,
-                    itemBuilder: (BuildContext context, int index) {
+                    itemBuilder: (context, index) {
                       final item = listItem[index];
-                      return Obx(() {
-                        bool isChecked =
-                            cartController.checkedItems.contains(item);
-                        return Dismissible(
-                          key: Key(item.hashCode.toString()),
-                          direction: DismissDirection.endToStart,
-                          background: Container(
-                            alignment: Alignment.centerRight,
-                            color: Colors.red,
-                            child: const Padding(
-                              padding: EdgeInsets.only(right: 20),
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
+                      return Dismissible(
+                        key: Key(item.hashCode.toString()),
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          color: Colors.red,
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 20),
+                            child: Icon(
+                              Icons.delete,
+                              color: Colors.white,
                             ),
                           ),
-                          onDismissed: (direction) async {
-                            String result =
-                                await cartController.removeItem(item);
-                            if (result == "Success") {
-                              CustomSuccessMessage.showMessage(
-                                  "Đã xoá sản phẩm thành công");
-                            } else {
-                              CustomErrorMessage.showMessage("Có lỗi xảy ra!");
-                            }
-                          },
-                          child: ListTile(
-                            leading: SizedBox(
-                              height: size.height / 10,
-                              width: size.width / 4,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 1,
-                                    right: 85,
-                                    child: Checkbox(
-                                      value: isChecked,
-                                      onChanged: (value) {
-                                        if (isChecked) {
-                                          cartController.checkedItems
-                                              .remove(item);
-                                        } else {
-                                          cartController.checkedItems.add(item);
-                                        }
-                                        print(
-                                            cartController.checkedItems.length);
-                                      },
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(7),
-                                      child: SizedBox(
-                                        height: size.height / 10,
-                                        width: size.width / 5.5,
-                                        child: Image.asset(
-                                          "assets/images/banner1.png",
-                                          fit: BoxFit.fill,
+                        ),
+                        onDismissed: (direction) async {
+                          String result = await cartController.removeItem(item);
+                          if (result == "Success") {
+                            CustomSuccessMessage.showMessage(
+                                "Đã xoá sản phẩm thành công");
+                          } else {
+                            CustomErrorMessage.showMessage("Có lỗi xảy ra!");
+                          }
+                        },
+                        child: SizedBox(
+                          height: size.height / 9.5,
+                          child: FutureBuilder<ProductDetailModel?>(
+                            future: cartController
+                                .getProductByDetail(item.productDetailId!),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                final detail = snapshot.data;
+                                return FutureBuilder<ProductModel?>(
+                                  future: cartController
+                                      .getProductById("${detail?.productId}"),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      final product = snapshot.data;
+                                      return ListTile(
+                                        leading: SizedBox(
+                                          height: size.height / 10,
+                                          width: size.width / 4,
+                                          child: Stack(
+                                            children: [
+                                              Positioned(
+                                                left: 1,
+                                                right: 85,
+                                                child: Checkbox(
+                                                  value: cartController
+                                                              .queryChekedItemList(
+                                                                  item) !=
+                                                          -1
+                                                      ? true
+                                                      : cartController
+                                                          .isCheckAll,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      cartController
+                                                          .isCheckAll = false;
+                                                      cartController
+                                                          .checkPerItem(item);
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                              Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(7),
+                                                  child: SizedBox(
+                                                    height: size.height / 10,
+                                                    width: size.width / 5.5,
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          "${product?.displayUrl}",
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            title: Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: "${item.quantity}x Tên sản phẩm - ",
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                  TextSpan(
-                                    text: "Màu sản phẩm",
-                                    style: const TextStyle(color: Colors.blue),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            subtitle: Text("Danh mục"),
-                            trailing: Column(
-                              children: [
-                                EditCartItemButton(
-                                  isEnabled: true,
-                                  // cartController.queryChekedItemList(item) ==
-                                  //     -1,
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
+                                        title: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    "${item.quantity}x ${product?.productName} - ",
+                                                style: const TextStyle(
+                                                    color: Colors.black),
+                                              ),
+                                              TextSpan(
+                                                text: "${detail?.color}",
+                                                style: const TextStyle(
+                                                    color: Colors.blue),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      backgroundColor: Colors.white,
-                                      builder: (BuildContext context) {
-                                        return EditCartItemBottomSheet(
-                                            cart: item);
-                                      },
-                                    );
+                                        trailing: Column(
+                                          children: [
+                                            EditCartItemButton(
+                                              isEnabled: true,
+                                              // cartController.queryChekedItemList(item) ==
+                                              //     -1,
+                                              onTap: () {
+                                                showModalBottomSheet(
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(20),
+                                                      topRight:
+                                                          Radius.circular(20),
+                                                    ),
+                                                  ),
+                                                  backgroundColor: Colors.white,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return EditCartItemBottomSheet(
+                                                        cart: item);
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                            FutureBuilder<double>(
+                                              future: cartController
+                                                  .calculateItemTotal(item),
+                                              builder: (context, snapshot) {
+                                                if (snapshot.hasData) {
+                                                  double totalForItem =
+                                                      snapshot.data!;
+                                                  return Text(DataConvert()
+                                                      .formatCurrency(
+                                                          totalForItem));
+                                                } else {
+                                                  return const SizedBox
+                                                      .shrink();
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    } else {
+                                      return const SizedBox.shrink();
+                                    }
                                   },
-                                ),
-                                Text(
-                                    ' ${DataConvert().formatCurrency(696969)}'),
-                              ],
-                            ),
+                                );
+                              } else {
+                                return const CircularProgressIndicator();
+                              }
+                            },
                           ),
-                        );
-                      });
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -237,10 +294,7 @@ class CartScreen extends StatelessWidget {
       }),
       bottomNavigationBar: Obx(
         () => CartBottomNavigation(
-          totalPrice: cartController.totalPrice.value == 0 ||
-                  cartController.totalPrice.value.isNaN
-              ? 0
-              : cartController.totalPrice.value,
+          totalPrice: cartController.totalPrice.value,
           onPaymentPressed: () async {
             if (cartController.checkedItems.isEmpty) {
               CustomErrorMessage.showMessage(

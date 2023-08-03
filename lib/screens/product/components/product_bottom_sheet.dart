@@ -4,18 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
+import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/controller/product_detail_controller.dart';
+import 'package:keyboard_mobile_app/model/cart_model.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/product/components/color_selected.dart';
 import 'package:keyboard_mobile_app/screens/product/components/quantity_selector.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_swiper_panation.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
+
+import '../../../api/account_api.dart';
 
 class ProductDetailsBottomSheet extends StatelessWidget {
   final ProductModel product;
   final detailController = Get.find<ProductDetailController>();
-  // final accountController = Get.find<AccountApi>();
+  final accountController = Get.find<AccountApi>();
+  final cartController = Get.find<CartController>();
 
   ProductDetailsBottomSheet({super.key, required this.product});
 
@@ -177,7 +183,10 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                     maxQuantity: detailController
                                             .chosenDetails.value?.quantity ??
                                         1,
-                                    onValueChanged: (quantity) {},
+                                    onValueChanged: (quantity) {
+                                      detailController.chosenQuantity.value =
+                                          quantity;
+                                    },
                                   ),
                                 ),
                               ),
@@ -195,8 +204,53 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 5),
-                        child: DefaultButton(
-                            press: () {}, text: 'Thêm vào giỏ hàng'),
+                        child: Obx(
+                          () => DefaultButton(
+                            enabled:
+                                detailController.chosenDetails.value != null,
+                            press: () async {
+                              final currentAccount =
+                                  await cartController.awaitCurrentAccount();
+                              if (currentAccount != null) {
+                                CartModel newItem = CartModel();
+                                newItem.accountId = currentAccount.accountId;
+                                newItem.productDetailId = detailController
+                                    .chosenDetails.value?.productDetailId;
+                                newItem.quantity =
+                                    detailController.chosenQuantity.value;
+                                String result = await cartController.addToCart(
+                                    currentAccount.accountId, newItem);
+                                switch (result) {
+                                  case "Success":
+                                    cartController.getCartByAccountId(
+                                        currentAccount.accountId);
+                                    CustomSuccessMessage.showMessage(
+                                        "Thêm vào giỏ hàng thành công!");
+                                    break;
+                                  case "Update":
+                                    cartController.getCartByAccountId(
+                                        currentAccount.accountId);
+                                    CustomSuccessMessage.showMessage(
+                                        "Cập nhật giỏ hàng thành công!");
+                                    break;
+                                  case "Fail":
+                                    CustomErrorMessage.showMessage(
+                                        "Không thể thêm vào giỏ hàng!");
+                                    break;
+                                  case "NoUser":
+                                    CustomErrorMessage.showMessage(
+                                        "Phiên đăng nhập không hợp lệ!\nVui lòng đăng nhập lại!");
+                                    break;
+                                  default:
+                                    CustomErrorMessage.showMessage(
+                                        "Lỗi không xác định!");
+                                    break;
+                                }
+                              }
+                            },
+                            text: 'Thêm vào giỏ hàng',
+                          ),
+                        ),
                       )
                     ],
                   ),

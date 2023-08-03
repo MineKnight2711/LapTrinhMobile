@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 
 class EditCartItemButton extends StatefulWidget {
   final VoidCallback onTap;
@@ -43,7 +43,7 @@ class _EditCartItemButtonState extends State<EditCartItemButton> {
         child: Row(
           children: [
             Icon(
-              CupertinoIcons.pencil,
+              pencil,
               key: const ValueKey<Color>(Colors.black),
               color: widget.isEnabled!
                   ? Colors.green

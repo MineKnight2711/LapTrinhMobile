@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/model/cart_model.dart';
-import 'package:keyboard_mobile_app/model/product_details_model.dart';
 import 'package:keyboard_mobile_app/screens/product/components/quantity_selector.dart';
-
 import '../../../controller/cart_controller.dart';
 import '../../../widgets/custom_widgets/custom_button.dart';
 
@@ -53,7 +51,7 @@ class _EditCartItemBottomSheetState extends State<EditCartItemBottomSheet> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                   child: GestureDetector(
-                      onTap: () {}, child: const Icon(CupertinoIcons.xmark)),
+                      onTap: () {}, child: const Icon(Icons.close)),
                 ))
           ]),
           const Divider(

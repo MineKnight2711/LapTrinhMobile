@@ -25,6 +25,21 @@ class ProductApi extends GetxController {
     }
   }
 
+  Future<ResponseBaseModel> getById(String? productId) async {
+    ResponseBaseModel responseBaseModel = ResponseBaseModel();
+    final url = Uri.parse("${ApiUrl.apiGetProductById}/$productId");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      responseBaseModel = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+      responseBaseModel.message = "Success";
+      return responseBaseModel;
+    } else {
+      responseBaseModel.message = "Fail";
+      return responseBaseModel;
+    }
+  }
+
   Future<ResponseBaseModel> getProductDetails(String? productId) async {
     ResponseBaseModel responseBaseModel = ResponseBaseModel();
     final url = Uri.parse("${ApiUrl.apiGetProductDetails}/$productId");
