@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -52,54 +54,100 @@ class ProductList extends StatelessWidget {
                     return Container(
                       padding: const EdgeInsets.only(
                           top: 16.0, right: 16.0, left: 16.0),
-                      child: StaggeredGridView.countBuilder(
-                          crossAxisCount: 2,
+                      child: GlowingOverscrollIndicator(
+                        axisDirection: AxisDirection.down,
+                        showTrailing: false,
+                        color: Colors.transparent,
+                        child: SingleChildScrollView(
                           physics: const NeverScrollableScrollPhysics(),
-                          staggeredTileBuilder: (index) =>
-                              const StaggeredTile.fit(1),
-                          mainAxisSpacing: 15,
-                          crossAxisSpacing: 8.0,
-                          itemCount: productControler.listProduct.value!.length,
-                          itemBuilder: (context, index) {
-                            final product =
-                                productControler.listProduct.value![index];
-                            return Card(
-                              elevation: 10,
-                              shadowColor: Colors.grey.withOpacity(1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(10.0)),
-                                child: InkWell(
-                                  onTap: () {
-                                    slideInTransition(context,
-                                        ProductScreen(product: product));
-                                  },
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: RadialGradient(
-                                            colors: [
-                                              Colors.grey.withOpacity(0.3),
-                                              Colors.grey.withOpacity(0.7),
-                                            ],
-                                            center: const Alignment(0, 0),
-                                            radius: 0.6,
-                                            focal: const Alignment(0, 0),
-                                            focalRadius: 0.1),
-                                      ),
-                                      child: product.displayUrl != null
-                                          ? Hero(
-                                              tag: product.displayUrl ?? '',
-                                              child: CachedNetworkImage(
-                                                  imageUrl:
-                                                      product.displayUrl!))
-                                          : const SizedBox.shrink()),
+                          child: Column(
+                            children: [
+                              Obx(
+                                () => SizedBox(
+                                  height: calculateGridViewHeight(
+                                      productControler
+                                          .listProduct.value!.length,
+                                      productControler.showMore.value,
+                                      130, //Chiều cao của 1 item
+                                      2, //Số lượng item theo cột
+                                      50, //Khoảng cách ngang giữa các item
+                                      70, //Chiều cao của button xem thêm
+                                      10), //Chiều cao của widget Divider
+                                  child: StaggeredGridView.countBuilder(
+                                      crossAxisCount: 2,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      staggeredTileBuilder: (index) =>
+                                          const StaggeredTile.fit(1),
+                                      mainAxisSpacing: 15,
+                                      crossAxisSpacing: 8.0,
+                                      itemCount: productControler.showMore.value
+                                          ? productControler
+                                              .listProduct.value!.length
+                                          : min(
+                                              productControler
+                                                  .listProduct.value!.length,
+                                              6),
+                                      itemBuilder: (context, index) {
+                                        final product = productControler
+                                            .listProduct.value![index];
+                                        return Card(
+                                          elevation: 10,
+                                          shadowColor:
+                                              Colors.grey.withOpacity(1),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(10.0)),
+                                            child: InkWell(
+                                              onTap: () {
+                                                slideInTransition(
+                                                    context,
+                                                    ProductScreen(
+                                                        product: product));
+                                              },
+                                              child: product.displayUrl != null
+                                                  ? Hero(
+                                                      tag: product.displayUrl ??
+                                                          '',
+                                                      child: CachedNetworkImage(
+                                                        imageUrl:
+                                                            product.displayUrl!,
+                                                        fit: BoxFit.contain,
+                                                      ))
+                                                  : const SizedBox.shrink(),
+                                            ),
+                                          ),
+                                        );
+                                      }),
                                 ),
                               ),
-                            );
-                          }),
+                              Divider(),
+                              Obx(
+                                () => Visibility(
+                                  visible: productControler
+                                          .listProduct.value!.length >
+                                      6,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      // Toggle the showMore state when the button is pressed
+                                      productControler.showMore.value =
+                                          !productControler.showMore.value;
+                                    },
+                                    child: Text(productControler.showMore.value
+                                        ? 'Show Less'
+                                        : 'Show More'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     );
                   }
                   return const Center(
@@ -116,4 +164,23 @@ class ProductList extends StatelessWidget {
       ],
     );
   }
+}
+
+double calculateGridViewHeight(
+  int itemCount,
+  bool showMore,
+  double itemHeight,
+  int crossAxisCount,
+  double mainAxisSpacing,
+  double showMoreButtonHeight,
+  double dividerHeight,
+) {
+  final int maxItemCount = showMore ? itemCount : 6;
+  final int rowCount = (maxItemCount + crossAxisCount - 1) ~/ crossAxisCount;
+  final double gridViewHeight = rowCount * itemHeight +
+      (rowCount - 2) * mainAxisSpacing +
+      showMoreButtonHeight +
+      dividerHeight;
+
+  return gridViewHeight;
 }

@@ -6,6 +6,7 @@ import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../model/product_details_model.dart';
 import '../../utils/data_convert.dart';
@@ -311,8 +312,11 @@ class CartScreen extends StatelessWidget {
                                       },
                                     );
                                   } else {
-                                    return const Center(
-                                      child: CircularProgressIndicator(),
+                                    return Center(
+                                      child: Lottie.asset(
+                                          "assets/animations/loading_cart_item_3.json",
+                                          width: size.width / 2.5,
+                                          height: size.height / 7),
                                     );
                                   }
                                 },

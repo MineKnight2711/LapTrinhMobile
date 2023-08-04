@@ -12,6 +12,9 @@ class ProductController extends GetxController {
       Rx<List<ProductDetailModel>?>([]);
   Rx<List<String>> listImageUrl = Rx<List<String>>([]);
   var isNoProduct = true.obs;
+
+  final showMore = false.obs;
+
   @override
   void onInit() {
     super.onInit();

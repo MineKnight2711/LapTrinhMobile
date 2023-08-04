@@ -17,6 +17,7 @@ import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_swiper_panation.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 import 'package:logger/logger.dart';
+import 'package:lottie/lottie.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
 import '../../../api/account_api.dart';
@@ -119,6 +120,14 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                     tag: item,
                                     child: CachedNetworkImage(
                                       imageUrl: item,
+                                      placeholder: (context, url) {
+                                        return Center(
+                                          child: Lottie.asset(
+                                              "assets/animations/loading_1.json",
+                                              width: 100,
+                                              height: 100),
+                                        );
+                                      },
                                       fit: BoxFit.contain,
                                     ),
                                   ),
