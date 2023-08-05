@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
@@ -25,6 +26,7 @@ class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
   final loginController = Get.find<LoginController>();
+  final accountApi = Get.find<AccountApi>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -115,7 +117,7 @@ class LoginScreen extends StatelessWidget {
                   CircleIconButton(
                     icon: Icons.fingerprint,
                     onPressed: () async {
-                      if (loginController.enableFingerprint.value) {
+                      if (accountApi.enableFingerprint.value) {
                         final isAuthenticated =
                             await LocalAuthApi.authenticate();
                         if (isAuthenticated == 'Success') {

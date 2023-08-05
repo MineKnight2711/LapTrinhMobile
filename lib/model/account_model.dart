@@ -4,6 +4,7 @@ class AccountModel {
   String? accountId;
   String? fullName;
   DateTime? birthday;
+  bool? isFingerPrintAuthentication;
   String? email;
   String? gender;
   String? imageUrl;
@@ -13,6 +14,7 @@ class AccountModel {
     this.accountId,
     this.fullName,
     this.birthday,
+    this.isFingerPrintAuthentication,
     this.email,
     this.gender,
     this.imageUrl,
@@ -24,6 +26,7 @@ class AccountModel {
       accountId: json['accountId'],
       fullName: json['fullName'],
       birthday: DateFormat('yyyy-MM-dd').parse(json['birthday']),
+      isFingerPrintAuthentication: json["isFingerPrintAuthentication"],
       email: json['email'],
       gender: json['gender'],
       imageUrl: json['imageUrl'],
@@ -38,6 +41,7 @@ class AccountModel {
       'fullName': fullName,
       'birthday':
           birthday != null ? DateFormat("yyyy-MM-dd").format(birthday!) : '',
+      'isFingerPrintAuthentication': isFingerPrintAuthentication.toString(),
       'email': email,
       'gender': gender,
       'imageUrl': imageUrl,
@@ -50,6 +54,7 @@ class AccountModel {
       'accountId': accountId,
       'fullName': fullName,
       'birthday': birthday?.toIso8601String(),
+      'isFingerPrintAuthentication': isFingerPrintAuthentication,
       'email': email,
       'gender': gender,
       'imageUrl': imageUrl,

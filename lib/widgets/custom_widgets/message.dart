@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../controller/login_controller.dart';
 
 class CustomErrorMessage {
   static void showMessage(String message) {
@@ -96,12 +99,18 @@ class CustomAlertDialog extends StatelessWidget {
 }
 
 void showResetLinkSentDialog(BuildContext context, String link) {
+  final loginController = Get.find<LoginController>();
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: const Text('Reset Password Link Sent'),
       content: InkWell(
-        onTap: () => launchURLLink(link),
+        onTap: () {
+          launchURLLink(link);
+          Navigator.pop(context);
+          Navigator.pop(context);
+          loginController.onClose();
+        },
         child: const Text.rich(
           TextSpan(
             text: "Nhấn vào đây để đổi mật khẩu",
@@ -120,7 +129,7 @@ void showResetLinkSentDialog(BuildContext context, String link) {
   );
 }
 
-launchURLLink(String link) async {
+Future launchURLLink(String link) async {
   Uri url = Uri.parse(link);
   if (await launchUrl(url)) {
     await launchUrl(url);

@@ -10,7 +10,7 @@ import '../controller/account_controller.dart';
 
 class AccountApi extends GetxController {
   Rx<AccountResponse?> accountRespone = Rx<AccountResponse?>(null);
-
+  final enableFingerprint = false.obs;
   @override
   void onInit() {
     super.onInit();
@@ -104,6 +104,24 @@ class AccountApi extends GetxController {
     final response = await http.put(
       url,
       body: body,
+    );
+    if (response.statusCode == 200) {
+      responseBase = ResponseBaseModel.fromJson(json.decode(response.body));
+      return responseBase;
+    } else {
+      responseBase.message = 'Fail';
+      return responseBase;
+    }
+  }
+
+  Future<ResponseBaseModel> updateFingerprintAuthentication(
+      AccountModel account) async {
+    ResponseBaseModel responseBase = ResponseBaseModel();
+    final url = Uri.parse(
+        '${ApiUrl.apiUpdateFingerPrintAuthen}/${account.accountId}?isFingerprintEnabled=${account.isFingerPrintAuthentication}');
+
+    final response = await http.put(
+      url,
     );
     if (response.statusCode == 200) {
       responseBase = ResponseBaseModel.fromJson(json.decode(response.body));

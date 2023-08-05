@@ -8,6 +8,7 @@ class AccountResponse {
   String? phoneNumber;
   String? email;
   String? gender;
+  bool? isFingerPrintAuthentication;
   DateTime? birthday;
   String? address;
   String? nickname;
@@ -19,6 +20,7 @@ class AccountResponse {
       this.phoneNumber,
       this.email,
       this.gender,
+      this.isFingerPrintAuthentication,
       this.imageUrl,
       this.birthday,
       this.address,
@@ -31,6 +33,7 @@ class AccountResponse {
     phoneNumber = json['phone'];
     email = json['email'];
     gender = json['gender'];
+    isFingerPrintAuthentication = json['isFingerPrintAuthentication'];
     birthday =
         json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
     ;
@@ -45,6 +48,7 @@ class AccountResponse {
       phoneNumber: map?['phone'],
       email: map?['email'],
       gender: map?['gender'],
+      isFingerPrintAuthentication: map?['isFingerPrintAuthentication'],
       birthday:
           map?['birthday'] != null ? DateTime.parse(map?['birthday']) : null,
       address: map?['address'],
@@ -59,6 +63,7 @@ class AccountResponse {
     data['imageUrl'] = imageUrl;
     data['email'] = email;
     data['gender'] = gender;
+    data['isFingerPrintAuthentication'] = isFingerPrintAuthentication;
     data['birthday'] =
         birthday != null ? DateFormat("yyyy-MM-dd").format(birthday!) : '';
     data['status'] = status;
@@ -70,6 +75,7 @@ class AccountResponse {
       accountId: accountId.toString(),
       fullName: fullName,
       birthday: birthday,
+      isFingerPrintAuthentication: isFingerPrintAuthentication,
       email: email,
       gender: gender,
       imageUrl: imageUrl,

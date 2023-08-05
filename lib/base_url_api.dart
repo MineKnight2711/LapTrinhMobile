@@ -19,6 +19,7 @@ class ApiUrl {
   static const apiGetProductDetailsById = '${baseUrl}productDetail/getById';
   static const apiUpdateCart = '${baseUrl}cart/update';
   static const apiClearCart = '${baseUrl}cart/clear-cart';
+  static const apiUpdateFingerPrintAuthen = '${baseUrl}account/fingerprint';
   //// Api của Quý-------------------------------------------------
   static const apiUpdateAccount = '${baseUrl}account/info';
   static const apiGetAllCategory = '${baseUrl}category';
@@ -27,6 +28,7 @@ class ApiUrl {
   static const apiGetCartByAccount = '${baseUrl}cart';
   static const apiAddToCart = '${baseUrl}cart/add';
   static const apiDeleteItemFromCart = '${baseUrl}cart/delete';
+  static const apiGetAddressByAccountId = '${baseUrl}address/getList';
 
   ///
   ///

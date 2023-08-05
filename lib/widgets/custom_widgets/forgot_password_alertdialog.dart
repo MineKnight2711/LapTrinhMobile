@@ -9,6 +9,7 @@ import 'package:keyboard_mobile_app/model/respone_base_model.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
+import 'package:logger/logger.dart';
 
 class AlertDialogShape extends RoundedRectangleBorder {
   AlertDialogShape({
@@ -64,7 +65,14 @@ class PasswordRecoveryDialog extends StatelessWidget {
                 press: () async {
                   ResponseBaseModel result = await loginController
                       .forgotPassword(loginController.emailController.text);
-
+                  // Logger().i("${result.message} log result");
+                  if (result.message == "InvalidEmail") {
+                    CustomErrorMessage.showMessage('Email không hợp lệ!');
+                    return;
+                  } else if (result.message!.contains("No user")) {
+                    CustomErrorMessage.showMessage('Không tìm thấy tài khoản!');
+                    return;
+                  }
                   showResetLinkSentDialog(
                       context, result.message ?? 'Có lỗi xảy ra');
                 },

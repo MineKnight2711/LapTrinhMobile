@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/controller/account_controller.dart';
+import 'package:keyboard_mobile_app/controller/address_controller.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
 import 'package:keyboard_mobile_app/controller/update_profile_controller.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
+import 'package:keyboard_mobile_app/screens/address/list_address.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
+import 'package:logger/logger.dart';
 import '../../../controller/change_password_controller.dart';
 import '../../user_screens/change_password_screen.dart';
 import '../../user_screens/update_info_screen.dart';
@@ -13,7 +17,7 @@ import 'draw_header.dart';
 class UserDrawer extends StatelessWidget {
   final AccountResponse accounts;
 
-  final loginController = Get.find<LoginController>();
+  final accountApi = Get.find<AccountApi>();
   UserDrawer({
     Key? key,
     required this.accounts,
@@ -49,11 +53,12 @@ class UserDrawer extends StatelessWidget {
           title: const Text('Địa chỉ đã lưu'),
           onTap: () {
             Navigator.pop(context);
-            Get.put(UpdateProfileController(accounts));
+            final addressController = Get.put(AddressController());
             slideInTransition(
               context,
-              ChangeInfo(account: accounts),
+              AddressListScreen(),
             );
+            addressController.getListAddress();
           },
         ),
         ListTile(
@@ -71,10 +76,14 @@ class UserDrawer extends StatelessWidget {
         ListTile(
           title: const Text('Xác thực vân tay'),
           trailing: Obx(() => Switch(
-                value: loginController.enableFingerprint.value,
+                value: accountApi.enableFingerprint.value,
                 onChanged: (newValue) {
-                  loginController.enableFingerprint.value = newValue;
-                  loginController.setFingerPrintState(newValue);
+                  accounts.isFingerPrintAuthentication =
+                      accountApi.enableFingerprint.value = newValue;
+                  Logger()
+                      .i("${accounts.isFingerPrintAuthentication} fingerprint");
+                  accountApi.updateFingerprintAuthentication(
+                      accounts.toAccountModel());
                 },
               )),
         ),

@@ -23,12 +23,6 @@ class LoginController extends GetxController {
   final auth = FirebaseAuth.instance;
   var isValidEmail = false.obs;
   var isValidPassword = false.obs;
-  var enableFingerprint = false.obs;
-  @override
-  void onInit() {
-    super.onInit();
-    checkFingerPrint();
-  }
 
   @override
   void onClose() {
@@ -160,25 +154,10 @@ class LoginController extends GetxController {
     return 'NotFound';
   }
 
-  Future setFingerPrintState(bool value) async {
-    final pref = await SharedPreferences.getInstance();
-    pref.setBool('finger_print_enable', value);
-  }
-
-  Future checkFingerPrint() async {
-    final pref = await SharedPreferences.getInstance();
-    var value = pref.getBool('finger_print_enable');
-    if (value == null) {
-      enableFingerprint.value = false;
-    } else {
-      enableFingerprint.value = value;
-    }
-  }
-
   Future<ResponseBaseModel> forgotPassword(String email) async {
     ResponseBaseModel respone = ResponseBaseModel();
-    if (email.isEmpty) {
-      respone.message = 'Email rỗng!';
+    if (email.isEmpty || isValidEmail.value == false) {
+      respone.message = 'InvalidEmail';
       return respone;
     }
     respone = await accountApi.forgotPassword(email);

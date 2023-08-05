@@ -137,6 +137,7 @@ class RegisterController extends GetxController {
       signInWithGoogleAccount.value!.imageUrl =
           'https://firebasestorage.googleapis.com/v0/b/keyboard-mobile-app.appspot.com/o/default_avatar.png?alt=media&token=125fef63-2e77-45d7-aedd-effdda210fbd';
       print(signInWithGoogleAccount.value!.toMap());
+      signInWithGoogleAccount.value!.isFingerPrintAuthentication = false;
       await accountApi.register(signInWithGoogleAccount.value!);
       return 'Success';
     }
