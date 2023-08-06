@@ -28,12 +28,12 @@ class AddressModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'addressId': addressId,
-      'accountId': accountId,
+      // 'addressId': addressId,
+      // 'accountId': accountId,
       'address': address,
       'receiverName': receiverName,
       'receiverPhone': receiverPhone,
-      'defaultAddress': defaultAddress,
+      'defaultAddress': defaultAddress.toString(),
     };
   }
 }

@@ -28,9 +28,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? Padding(
               padding: const EdgeInsets.all(10),
               child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                onTap: onPressed ??
+                    () {
+                      Navigator.pop(context);
+                    },
                 child: const Icon(Icons.arrow_back, color: Colors.black),
               ),
             )

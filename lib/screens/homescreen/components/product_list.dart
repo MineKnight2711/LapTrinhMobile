@@ -65,10 +65,11 @@ class ProductList extends StatelessWidget {
                               Obx(
                                 () => SizedBox(
                                   height: calculateGridViewHeight(
+                                      productControler.listProduct.value!
+                                          .length, //Số lượng item trong list
                                       productControler
-                                          .listProduct.value!.length,
-                                      productControler.showMore.value,
-                                      130, //Chiều cao của 1 item
+                                          .showMore.value, //Nút xem thêm
+                                      150, //Chiều cao của 1 item
                                       2, //Số lượng item theo cột
                                       50, //Khoảng cách ngang giữa các item
                                       70, //Chiều cao của button xem thêm

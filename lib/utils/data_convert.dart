@@ -24,6 +24,16 @@ class DataConvert {
     return result;
   }
 
+  String simplifyAddress(String address) {
+    String result = address.replaceAll("-", "\n");
+    return result;
+  }
+
+  List<String> splitAddress(String address) {
+    List<String> addressParts = address.split('-');
+    return addressParts;
+  }
+
   String formatCurrency(double value) {
     final currentcy = NumberFormat('#,##0', 'ID');
     String result =
