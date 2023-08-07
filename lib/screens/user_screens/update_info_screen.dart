@@ -18,6 +18,7 @@ class ChangeInfo extends StatelessWidget {
   final profileController = Get.find<UpdateProfileController>();
   @override
   Widget build(BuildContext context) {
+    profileController.fetchCurrent();
     return Scaffold(
       appBar: CustomAppBar(
         onPressed: () {
@@ -84,7 +85,6 @@ class ChangeInfo extends StatelessWidget {
                       text: 'Cập nhật',
                       press: () async {
                         String result = await profileController.updateAccount();
-                        print(result);
                         if (result == "Success") {
                           return CustomSnackBar.showCustomSnackBar(
                               context, 'Cập nhật thành công!', 2);

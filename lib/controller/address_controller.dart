@@ -41,7 +41,13 @@ class AddressController extends GetxController {
             (addressMap) => AddressModel.fromJson(addressMap),
           )
           .toList();
+
       listAddress.value = addressList;
+      if (listAddress.value == null || listAddress.value!.isEmpty) {
+        defaultAddress.value = true;
+      } else {
+        defaultAddress.value = false;
+      }
     }
   }
 
@@ -116,7 +122,12 @@ class AddressController extends GetxController {
     newAddress.receiverPhone = receiverPhoneController.text;
     newAddress.address =
         "${houseAndStreetController.text}-${wardController.text}-${districtAndCityController.text}";
-    newAddress.defaultAddress = defaultAddress.value;
+    if (listAddress.value == null || listAddress.value!.isEmpty) {
+      newAddress.defaultAddress = true;
+    } else {
+      newAddress.defaultAddress = defaultAddress.value;
+    }
+
     final respone = await addressApi.addAddress(newAddress);
     if (respone.message!.contains("success")) {
       return "Success";
@@ -143,6 +154,12 @@ class AddressController extends GetxController {
   final updateDistrictAndCityController = TextEditingController();
   final updateDefaultAddress = false.obs;
 
+  final isValidUpdateReceiverName = true.obs;
+  final isValidUpdateReceiverPhone = true.obs;
+  final isValidUpdateHouseAndStreet = true.obs;
+  final isValidUpdateWard = true.obs;
+  final isValidUpdateDistrictAndCity = true.obs;
+
   void fetchCurrentAddress(AddressModel selectedAddress) {
     updateReceiverNameController.text = selectedAddress.receiverName ?? '';
     updateReceiverPhoneController.text = selectedAddress.receiverPhone ?? '';
@@ -154,7 +171,6 @@ class AddressController extends GetxController {
     //Hàm lặp qua từng phần tử của danh sách chuỗi sau khi phân giải và gán từng phần tử cho danh sách chuỗi rỗng trên
     //Làm như vầy để tránh trường hợp 1 trong các trường địa chỉ bị rỗng
     assignAddressParts(listSplitAddress, targetParts);
-
     updateHouseAndStreetController.text = targetParts[0];
     updateWardController.text = targetParts[1];
     updateDistrictAndCityController.text = targetParts[2];
@@ -166,6 +182,70 @@ class AddressController extends GetxController {
     //Đảm bảo từng phần tử của danh sách chuỗi truyền vào khớp với danh sách chuỗi nhận
     for (int i = 0; i < splitAddress.length && i < targetParts.length; i++) {
       targetParts[i] = splitAddress[i];
+    }
+  }
+
+  String? validateUpdateReceiverName(String? receiverName) {
+    if (receiverName == null || receiverName.isEmpty) {
+      isValidUpdateReceiverName.value = false;
+      return 'Tên người nhận không được trống!';
+    }
+    isValidUpdateReceiverName.value = true;
+    return null;
+  }
+
+  String? validateUpdateReceiverPhone(String? phonenumber) {
+    if (phonenumber == null || phonenumber.isEmpty) {
+      isValidUpdateReceiverPhone.value = false;
+      return 'Số điện thoại không được trống!';
+    }
+    RegExp regex = RegExp(r'^(84|0)[35789]([0-9]{8})$');
+    if (!regex.hasMatch(phonenumber)) {
+      return 'Số điện thoại không đúng định dạng!';
+    }
+    isValidUpdateReceiverPhone.value = true;
+    return null;
+  }
+
+  String? validateUpdateHouseAndStreet(String? houseStreet) {
+    if (houseStreet == null || houseStreet.isEmpty) {
+      isValidUpdateHouseAndStreet.value = false;
+      return 'Trường này không được trống!';
+    }
+    isValidUpdateHouseAndStreet.value = true;
+    return null;
+  }
+
+  String? validateUpdateWard(String? ward) {
+    if (ward == null || ward.isEmpty) {
+      isValidUpdateWard.value = false;
+      return 'Trường này không được trống!';
+    }
+    isValidUpdateWard.value = true;
+    return null;
+  }
+
+  String? validateUpdateDistrictAndCity(String? districtAndCity) {
+    if (districtAndCity == null || districtAndCity.isEmpty) {
+      isValidUpdateDistrictAndCity.value = false;
+      return 'Trường này không được trống!';
+    }
+    isValidUpdateDistrictAndCity.value = true;
+    return null;
+  }
+
+  Future<String> updateAddress(AddressModel currentAddress) async {
+    AddressModel updateAddress = currentAddress;
+    updateAddress.receiverName = updateReceiverNameController.text;
+    updateAddress.receiverPhone = updateReceiverPhoneController.text;
+    updateAddress.address =
+        "${updateHouseAndStreetController.text}-${updateWardController.text}-${updateDistrictAndCityController.text}";
+    updateAddress.defaultAddress = updateDefaultAddress.value;
+    final respone = await addressApi.updateAddress(updateAddress);
+    if (respone.message!.contains("Success")) {
+      return 'Success';
+    } else {
+      return "Cập nhật thất bại!";
     }
   }
 

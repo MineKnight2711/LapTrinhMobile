@@ -53,4 +53,21 @@ class AddressApi extends GetxController {
       return responseBaseModel;
     }
   }
+
+  Future<ResponseBaseModel> updateAddress(AddressModel currentAddress) async {
+    ResponseBaseModel responseBaseModel = ResponseBaseModel();
+    final url =
+        Uri.parse("${ApiUrl.apiUpdateAddress}/${currentAddress.addressId}");
+    Logger().i("${currentAddress.toJson()} log update address");
+    final body = currentAddress.toJson();
+    final response = await http.put(url, body: body);
+    if (response.statusCode == 200) {
+      responseBaseModel = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+      return responseBaseModel;
+    } else {
+      responseBaseModel.message = "Fail";
+      return responseBaseModel;
+    }
+  }
 }

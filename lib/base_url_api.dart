@@ -6,7 +6,8 @@ class ApiUrl {
   //ip wifi nhà - 192.168.0.106
   //ip mobile hostspot - 192.168.29.192/192.168.191.192
   //ip debug lan - 192.168.93.160/192.168.93.111
-  static const baseUrl = 'http://192.168.1.44:6969/api/';
+
+  static const baseUrl = 'http://192.168.255.192:6969/api/';
 
   static const apiGetAllAccount = '${baseUrl}accounts/all';
 
@@ -21,6 +22,7 @@ class ApiUrl {
   static const apiClearCart = '${baseUrl}cart/clear-cart';
   static const apiUpdateFingerPrintAuthen = '${baseUrl}account/fingerprint';
   static const apiDeleteAddress = '${baseUrl}address/delete';
+
   //// Api của Quý-------------------------------------------------
   static const apiUpdateAccount = '${baseUrl}account/info';
   static const apiGetAllCategory = '${baseUrl}category';
@@ -31,6 +33,7 @@ class ApiUrl {
   static const apiDeleteItemFromCart = '${baseUrl}cart/delete';
   static const apiGetAddressByAccountId = '${baseUrl}address/getList';
   static const apiAddAddress = '${baseUrl}address/create';
+  static const apiUpdateAddress = '${baseUrl}address/update';
 
   ///
   ///

@@ -36,7 +36,7 @@ class ProductList extends StatelessWidget {
               ),
               const Center(
                   child: Text(
-                'Recommended',
+                'Sản phẩm',
                 style: TextStyle(
                     color: Colors.black87,
                     fontSize: 16.0,

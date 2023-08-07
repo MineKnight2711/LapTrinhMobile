@@ -17,7 +17,6 @@ class UpdateAddressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    addresController.fetchCurrentAddress(address);
     return Scaffold(
       appBar: CustomAppBar(
           onPressed: () {
@@ -45,6 +44,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInputTextField(
+                    onChanged: addresController.validateUpdateReceiverName,
                     controller: addresController.updateReceiverNameController,
                     labelText: 'Họ tên người nhận',
                     hintText: 'Nhập họ tên',
@@ -56,6 +56,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInputTextField(
+                    onChanged: addresController.validateUpdateReceiverPhone,
                     controller: addresController.updateReceiverPhoneController,
                     labelText: 'Số điện thoại người nhận',
                     hintText: 'Nhập số điện thoại',
@@ -78,6 +79,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInputTextField(
+                    onChanged: addresController.validateUpdateHouseAndStreet,
                     controller: addresController.updateHouseAndStreetController,
                     labelText: 'Số nhà, đường',
                   ),
@@ -88,6 +90,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInputTextField(
+                    onChanged: addresController.validateUpdateWard,
                     controller: addresController.updateWardController,
                     labelText: 'Phường/Xã',
                   ),
@@ -98,6 +101,7 @@ class UpdateAddressScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: CustomInputTextField(
+                    onChanged: addresController.validateUpdateDistrictAndCity,
                     controller:
                         addresController.updateDistrictAndCityController,
                     labelText: 'Quận/Huyện,Thành phố/Tỉnh',
@@ -120,7 +124,12 @@ class UpdateAddressScreen extends StatelessWidget {
                         child: Obx(
                           () => Switch(
                             value: addresController.updateDefaultAddress.value,
-                            onChanged: (value) {},
+                            onChanged: address.defaultAddress == false
+                                ? (value) {
+                                    addresController
+                                        .updateDefaultAddress.value = value;
+                                  }
+                                : null,
                           ),
                         ),
                       ),
@@ -141,9 +150,10 @@ class UpdateAddressScreen extends StatelessWidget {
                         CustomSuccessMessage.showMessage(
                                 "Xoá địa chỉ thành công")
                             .then((value) {
-                          addresController
-                              .getListAddress()
-                              .whenComplete(() => Navigator.pop(context));
+                          addresController.getListAddress().whenComplete(() {
+                            addresController.getListAddress();
+                            Navigator.pop(context);
+                          });
                         });
                       } else {
                         CustomSuccessMessage.showMessage(result);
@@ -160,10 +170,31 @@ class UpdateAddressScreen extends StatelessWidget {
                 ),
                 Container(
                   margin: const EdgeInsets.all(16),
-                  child: DefaultButton(
-                    // enabled: ,
-                    press: () {},
-                    text: "Lưu",
+                  child: Obx(
+                    () => DefaultButton(
+                      enabled: addresController
+                              .isValidUpdateReceiverName.value &&
+                          addresController.isValidUpdateReceiverPhone.value &&
+                          addresController.isValidUpdateHouseAndStreet.value &&
+                          addresController.isValidUpdateWard.value &&
+                          addresController.isValidUpdateDistrictAndCity.value,
+                      press: () async {
+                        String result =
+                            await addresController.updateAddress(address);
+                        if (result == "Success") {
+                          CustomSuccessMessage.showMessage(
+                                  "Cập nhật thành công!")
+                              .then((value) {
+                            addresController
+                                .getListAddress()
+                                .whenComplete(() => Navigator.pop(context));
+                          });
+                        } else {
+                          CustomErrorMessage.showMessage(result);
+                        }
+                      },
+                      text: "Lưu",
+                    ),
                   ),
                 )
               ],

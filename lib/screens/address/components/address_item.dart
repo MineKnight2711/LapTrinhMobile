@@ -13,7 +13,9 @@ class AddressItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       width: double.infinity,
-      height: size.height / 6.2,
+      height: address.defaultAddress == true
+          ? size.height / 5.5
+          : size.height / 6.9,
       child: Column(
         children: [
           Row(

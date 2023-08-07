@@ -28,6 +28,10 @@ class UpdateProfileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchCurrent();
+  }
+
+  void fetchCurrent() {
     fullNameController.text = account.fullName.toString();
     phoneNumberController.text = account.phoneNumber.toString();
     date = account.birthday;
@@ -37,7 +41,7 @@ class UpdateProfileController extends GetxController {
   @override
   void onClose() {
     super.onClose();
-    isValidFullname.value = isValidPhonenumber.value = false;
+    isValidFullname.value = isValidPhonenumber.value = true;
     fullNameController.clear();
     phoneNumberController.clear();
     image = date = selectedGender = null;

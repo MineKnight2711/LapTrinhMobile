@@ -15,6 +15,8 @@ class ProductController extends GetxController {
 
   final showMore = false.obs;
 
+  var selected = 0.obs;
+
   @override
   void onInit() {
     super.onInit();
