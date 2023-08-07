@@ -40,6 +40,7 @@ class ImagePickerWidgetState extends State<ImagePickerWidget>
       });
       widget.onImageSelected(img);
       _animationController.forward(from: 0.0);
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
       // ignore: unused_catch_clause
     } on PlatformException catch (e) {

@@ -132,7 +132,7 @@ class ProductList extends StatelessWidget {
                                       }),
                                 ),
                               ),
-                              Divider(),
+                              const Divider(),
                               Obx(
                                 () => Visibility(
                                   visible: productControler

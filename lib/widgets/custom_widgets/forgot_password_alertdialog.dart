@@ -9,7 +9,6 @@ import 'package:keyboard_mobile_app/model/respone_base_model.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
-import 'package:logger/logger.dart';
 
 class AlertDialogShape extends RoundedRectangleBorder {
   AlertDialogShape({

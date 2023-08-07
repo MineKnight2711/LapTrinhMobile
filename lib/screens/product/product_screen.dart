@@ -300,7 +300,7 @@ class ReviewCard extends StatelessWidget {
   final reviewController = Get.find<ReviewController>();
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         height: mediaHeight(context, 6),
         width: mediaWidth(context, 1),
         child: FutureBuilder<AccountResponse?>(

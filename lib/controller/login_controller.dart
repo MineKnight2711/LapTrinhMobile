@@ -8,7 +8,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keyboard_mobile_app/controller/register_controller.dart';
 import 'package:keyboard_mobile_app/model/account_model.dart';
 import 'package:keyboard_mobile_app/model/respone_base_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../api/account_api.dart';
 import '../model/account_respone.dart';
 import '../widgets/custom_widgets/message.dart';

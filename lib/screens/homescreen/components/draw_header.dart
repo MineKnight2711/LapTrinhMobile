@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/utils/save_image.dart';

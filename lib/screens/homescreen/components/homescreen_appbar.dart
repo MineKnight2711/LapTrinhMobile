@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/user_drawer.dart';
-import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
 import 'package:keyboard_mobile_app/screens/login_signup/login_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 

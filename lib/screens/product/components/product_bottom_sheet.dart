@@ -22,6 +22,7 @@ import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
 import '../../../api/account_api.dart';
 
+// ignore: must_be_immutable
 class ProductDetailsBottomSheet extends StatelessWidget {
   final ProductModel product;
   final detailController = Get.find<ProductDetailController>();
