@@ -9,6 +9,7 @@ import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/screens/address/list_address.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:logger/logger.dart';
+import '../../../configs/mediaquery.dart';
 import '../../../controller/change_password_controller.dart';
 import '../../user_screens/change_password_screen.dart';
 import '../../user_screens/update_info_screen.dart';
@@ -27,17 +28,9 @@ class UserDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        accounts.imageUrl != null
-            ? MyDrawerHeader(
-                fullName: '${accounts.fullName}',
-                email: '${accounts.email}',
-                avatarUrl: '${accounts.imageUrl}',
-              )
-            : MyDrawerHeader(
-                fullName: '${accounts.fullName}',
-                email: '${accounts.email}',
-                avatarUrl: null,
-              ),
+        SizedBox(
+            height: mediaHeight(context, 3.3),
+            child: MyDrawerHeader(account: accounts)),
         ListTile(
           title: const Text('Cập nhật thông tin'),
           onTap: () {
@@ -54,11 +47,11 @@ class UserDrawer extends StatelessWidget {
           onTap: () {
             Navigator.pop(context);
             final addressController = Get.put(AddressController());
+            addressController.getListAddress();
             slideInTransition(
               context,
               AddressListScreen(),
             );
-            addressController.getListAddress();
           },
         ),
         ListTile(

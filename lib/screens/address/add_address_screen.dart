@@ -162,13 +162,15 @@ class NewAddressScreen extends StatelessWidget {
                                 .addAddress("${currentAccount.accountId}");
                             if (result == "Success") {
                               CustomSuccessMessage.showMessage(
-                                  "Thêm địa chỉ thành công");
-                              addressController
-                                  .getListAddress()
-                                  .whenComplete(() {
-                                addressController.onFinishingAddAddress();
-                                addressController.getListAddress();
-                                Navigator.pop(context);
+                                      "Thêm địa chỉ thành công")
+                                  .then((value) {
+                                addressController
+                                    .getListAddress()
+                                    .whenComplete(() {
+                                  addressController.onFinishingAddAddress();
+                                  addressController.getListAddress();
+                                  Navigator.pop(context);
+                                });
                               });
                             } else {
                               CustomErrorMessage.showMessage("Có lỗi xảy ra!");

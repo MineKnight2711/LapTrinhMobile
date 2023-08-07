@@ -175,6 +175,7 @@ class _EditCartItemBottomSheetState extends State<EditCartItemBottomSheet> {
                     showLoadingAnimation(context,
                             "assets/animations/add_to_cart.json", 160, 2)
                         .then((_) {
+                      cartController.checkedItems.clear();
                       cartController.getCartByAccountId().whenComplete(
                             () => Navigator.pop(context),
                           );

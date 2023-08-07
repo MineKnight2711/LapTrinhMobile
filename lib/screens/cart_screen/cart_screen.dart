@@ -59,47 +59,52 @@ class CartScreen extends StatelessWidget {
                     ],
                   ),
                   const Spacer(),
-                  Container(
-                    width: size.width / 2.3,
-                    height: size.height / 24,
-                    margin: const EdgeInsets.only(right: 10),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(20)),
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor:
-                              mainButtonColor, // Change the text (label) color here
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                  Obx(() {
+                    if (cartController.checkedItems.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+                    return Container(
+                      width: size.width / 2.3,
+                      height: size.height / 24,
+                      margin: const EdgeInsets.only(right: 10),
+                      child: ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            backgroundColor:
+                                mainButtonColor, // Change the text (label) color here
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () async {
+                            String result =
+                                await cartController.deleteManyItem();
+                            if (result == "Success") {
+                              CustomSuccessMessage.showMessage(
+                                      "Đã xoá sản phẩm thành công")
+                                  .then((value) => cartController
+                                      .getCartByAccountId()
+                                      .whenComplete(() =>
+                                          cartController.calculateCartTotal()));
+                            } else {
+                              CustomErrorMessage.showMessage(result);
+                            }
+                          },
+                          icon: const Icon(Icons.delete),
+                          label: Obx(
+                            () => cartController.checkedItems.length ==
+                                    cartController.listCartItem.length
+                                ? const Text('Xoá giỏ hàng')
+                                : Text(
+                                    'Xoá ${cartController.checkedItems.length}'),
                           ),
                         ),
-                        onPressed: cartController.checkedItems.length ==
-                                cartController.listCartItem.length
-                            ? () async {
-                                final currentAccount =
-                                    await cartController.awaitCurrentAccount();
-                                if (currentAccount != null) {
-                                  String result = await cartController
-                                      .clearCart("${currentAccount.accountId}");
-                                  if (result == "Success") {
-                                    CustomSuccessMessage.showMessage(
-                                        "Đã xoá sản phẩm thành công");
-                                  } else {
-                                    CustomErrorMessage.showMessage(
-                                        "Có lỗi xảy ra!");
-                                  }
-                                } else {
-                                  CustomErrorMessage.showMessage(
-                                      "Phiên đăng nhập không hợp lệ!");
-                                }
-                              }
-                            : null,
-                        icon: const Icon(Icons.delete),
-                        label: const Text('Xoá giỏ hàng'),
                       ),
-                    ),
-                  ),
+                    );
+                  }),
                 ],
               ),
               Expanded(

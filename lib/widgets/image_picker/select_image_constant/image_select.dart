@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 
 import '../../../configs/mediaquery.dart';
 import '../selectphoto/select_photo_options_screen.dart';
@@ -11,6 +13,7 @@ import '../selectphoto/select_photo_options_screen.dart';
 class ImagePickerWidget extends StatefulWidget {
   final Function(File?) onImageSelected;
   final String? currentImageUrl;
+
   const ImagePickerWidget(
       {Key? key, required this.onImageSelected, this.currentImageUrl})
       : super(key: key);
@@ -24,6 +27,7 @@ class ImagePickerWidgetState extends State<ImagePickerWidget>
   File? image;
   late AnimationController _animationController;
   late Animation<double> _inanimation;
+
   Future pickImage(ImageSource source) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
@@ -48,15 +52,6 @@ class ImagePickerWidgetState extends State<ImagePickerWidget>
         await ImageCropper().cropImage(sourcePath: imageFile.path);
     if (croppedImage == null) return null;
     return File(croppedImage.path);
-  }
-
-  void removeImage() {
-    _animationController.forward(from: 1.0).then((_) {
-      setState(() {
-        image = null;
-      });
-      widget.onImageSelected(null);
-    });
   }
 
   void showSelectPhotoOptions(BuildContext context) {
@@ -97,12 +92,6 @@ class ImagePickerWidgetState extends State<ImagePickerWidget>
         curve: Curves.easeInOut,
       ),
     );
-    // _outanimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-    //   CurvedAnimation(
-    //     parent: _animationController,
-    //     curve: Curves.easeInOut,
-    //   ),
-    // );
   }
 
   @override
@@ -115,15 +104,15 @@ class ImagePickerWidgetState extends State<ImagePickerWidget>
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[
+      children: [
         if (image != null) ...[
           Stack(
             children: [
               ScaleTransition(
                 scale: _inanimation,
                 child: Container(
-                  width: mediaWidth(context, 3),
-                  height: mediaHeight(context, 6),
+                  width: mediaWidth(context, 4),
+                  height: mediaHeight(context, 7),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     boxShadow: [
@@ -146,14 +135,17 @@ class ImagePickerWidgetState extends State<ImagePickerWidget>
               const SizedBox(height: 8),
               Positioned(
                 bottom: 0,
-                left: 0,
+                right: 0,
                 child: InkWell(
-                  onTap: removeImage,
-                  child: const CircleAvatar(
-                    backgroundColor: Colors.red,
-                    radius: 25.0,
+                  onTap: () {
+                    showSelectPhotoOptions(context);
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: mainButtonColor,
+                    radius: mediaAspectRatio(context, 1 / 37),
                     child: Icon(
-                      Icons.cameraswitch,
+                      Icons.camera_alt,
+                      size: mediaAspectRatio(context, 1 / 40),
                       color: Colors.white,
                     ),
                   ),
@@ -166,33 +158,39 @@ class ImagePickerWidgetState extends State<ImagePickerWidget>
             children: [
               Container(
                 width: mediaWidth(context, 3),
-                height: mediaHeight(context, 6),
-                decoration: BoxDecoration(
+                height: mediaHeight(context, 7),
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  image: DecorationImage(
-                    image: widget.currentImageUrl != null
-                        ? Image.network(widget.currentImageUrl!).image
-                        : ExactAssetImage(
-                            'assets/images/profile.png',
-                            scale: mediaWidth(context, 3),
-                          ),
-                    fit: BoxFit.cover,
-                  ),
+                  color: mainAppThemeColor,
+                ),
+                child: ClipOval(
+                  child: widget.currentImageUrl != null
+                      ? CachedNetworkImage(
+                          imageUrl: widget.currentImageUrl!,
+                          fit: BoxFit.cover,
+                          width: mediaWidth(context, 4),
+                          height: mediaHeight(context, 7),
+                        )
+                      : Image.asset(
+                          'assets/images/profile.png',
+                          scale: mediaWidth(context, 4),
+                        ),
                 ),
               ),
               const SizedBox(height: 8),
               Positioned(
                 bottom: 0,
-                left: 0,
+                right: 0,
                 child: InkWell(
                   onTap: () {
                     showSelectPhotoOptions(context);
                   },
                   child: CircleAvatar(
-                    backgroundColor: Colors.blue[400],
-                    radius: 25.0,
-                    child: const Icon(
+                    backgroundColor: mainButtonColor,
+                    radius: mediaAspectRatio(context, 1 / 37),
+                    child: Icon(
                       Icons.camera_alt,
+                      size: mediaAspectRatio(context, 1 / 40),
                       color: Colors.white,
                     ),
                   ),

@@ -215,4 +215,21 @@ class CartController extends GetxController {
     }
     return "Fail";
   }
+
+  Future<String> deleteManyItem() async {
+    final currentAccount = await awaitCurrentAccount();
+    if (currentAccount != null) {
+      final respone =
+          await cartApi.deleteManyItem(currentAccount.accountId, checkedItems);
+      if (respone.message!.contains('Success')) {
+        for (final item in checkedItems) {
+          listCartItem.remove(item);
+        }
+        checkedItems.clear();
+        return "Success";
+      }
+      return "Xoá thất bại\nCó lỗi xảy ra!";
+    }
+    return "Phiên đăng nhập không hợp lệ!";
+  }
 }

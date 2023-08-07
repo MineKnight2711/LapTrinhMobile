@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
+import 'package:keyboard_mobile_app/model/account_respone.dart';
+import 'package:keyboard_mobile_app/utils/save_image.dart';
+import 'package:keyboard_mobile_app/utils/show_animations.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
+import 'package:logger/logger.dart';
+
+import '../../../widgets/image_picker/select_image_constant/image_select.dart';
 
 class MyDrawerHeader extends StatelessWidget {
-  final String fullName;
-  final String email;
-  final String? avatarUrl;
-
-  const MyDrawerHeader({
+  final AccountResponse account;
+  final changeImageController = Get.put(ChangeImageController());
+  MyDrawerHeader({
     Key? key,
-    required this.fullName,
-    required this.email,
-    this.avatarUrl,
+    required this.account,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DrawerHeader(
+      // margin: EdgeInsets.only(bottom: 50),
       decoration: const BoxDecoration(
         color: Color(0xff06AB8D),
       ),
@@ -24,22 +30,48 @@ class MyDrawerHeader extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: mediaHeight(context, 14),
-              width: mediaWidth(context, 6),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: avatarUrl != null
-                      ? Image.network(avatarUrl!).image
-                      : Image.asset(
-                          'assets/images/profile.png',
-                        ).image,
+            SizedBox(
+              // padding: EdgeInsets.only(bottom: 30),
+              height: mediaHeight(context, 6.5),
+              width: mediaWidth(context, 3.5),
+              child: Obx(
+                () => ImagePickerWidget(
+                  onImageSelected: (selectedImage) async {
+                    String url =
+                        await changeImageController.saveImageToFirebaseStorage(
+                            selectedImage, "${account.accountId}");
+                    Logger().i("$url log url");
+                    if (url.isNotEmpty) {
+                      // ignore: use_build_context_synchronously
+                      showLoadingAnimation(
+                          context, "assets/animations/loading_1.json", 180, 3);
+                      String result = await changeImageController
+                          .changeImageUrl("${account.accountId}", url);
+                      if (result == "Success") {
+                        CustomSuccessMessage.showMessage(
+                                "Cập nhật ảnh thành công!")
+                            .then((value) {
+                          changeImageController
+                              .awaitCurrentAccount()
+                              .whenComplete(() => Navigator.pop(context));
+                        });
+                      } else {
+                        CustomErrorMessage.showMessage(result);
+                      }
+                    } else {
+                      CustomErrorMessage.showMessage("Có lỗi xảy ra!");
+                    }
+                  },
+                  currentImageUrl:
+                      changeImageController.newImageUrl.value.isNotEmpty
+                          ? changeImageController.newImageUrl.value
+                          : account.imageUrl,
                 ),
               ),
             ),
-            SizedBox(height: mediaHeight(context, 40)),
+            SizedBox(height: mediaHeight(context, 150)),
             Text(
-              fullName,
+              "${account.fullName}",
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
@@ -47,7 +79,7 @@ class MyDrawerHeader extends StatelessWidget {
               ),
             ),
             Text(
-              email,
+              "${account.email}",
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 14,

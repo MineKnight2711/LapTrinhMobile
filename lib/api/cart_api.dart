@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:keyboard_mobile_app/model/cart_model.dart';
+import 'package:logger/logger.dart';
 
 import '../base_url_api.dart';
 import '../model/respone_base_model.dart';
@@ -74,6 +75,33 @@ class CartApi extends GetxController {
     final response = await http.delete(url);
     if (response.statusCode == 200) {
       responseBaseModel.message = "Success";
+      return responseBaseModel;
+    } else {
+      responseBaseModel.message = "Fail";
+      return responseBaseModel;
+    }
+  }
+
+  Future<ResponseBaseModel> deleteManyItem(
+      String? accountId, List<CartModel> chosenItems) async {
+    ResponseBaseModel responseBaseModel = ResponseBaseModel();
+    final url = Uri.parse(ApiUrl.apiDeleteManyItemFromCart);
+    List<Map<String, String>> lstProductDetail = chosenItems.map((item) {
+      return {
+        "productDetailId": item.productDetailId.toString(),
+      };
+    }).toList();
+
+    Map<String, dynamic> body = {
+      "accountId": accountId,
+      "lstProductDetail": lstProductDetail,
+    };
+    Logger().i("${jsonEncode(body)} Log JsonBody");
+    final response = await http.delete(url,
+        headers: {'Content-Type': 'application/json'}, body: jsonEncode(body));
+    if (response.statusCode == 200) {
+      responseBaseModel = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
       return responseBaseModel;
     } else {
       responseBaseModel.message = "Fail";

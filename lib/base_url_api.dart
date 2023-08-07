@@ -24,6 +24,7 @@ class ApiUrl {
   static const apiDeleteAddress = '${baseUrl}address/delete';
   static const apiGetAllReview = '${baseUrl}review';
   static const apiCreateReview = '${baseUrl}review/create';
+  static const apiChangeImage = '${baseUrl}account/updateImage';
   //// Api của Quý-------------------------------------------------
   static const apiUpdateAccount = '${baseUrl}account/info';
   static const apiGetAllCategory = '${baseUrl}category';
@@ -32,6 +33,7 @@ class ApiUrl {
   static const apiGetCartByAccount = '${baseUrl}cart';
   static const apiAddToCart = '${baseUrl}cart/add';
   static const apiDeleteItemFromCart = '${baseUrl}cart/delete';
+  static const apiDeleteManyItemFromCart = '${baseUrl}cart/deleteMany';
   static const apiGetAddressByAccountId = '${baseUrl}address/getList';
   static const apiAddAddress = '${baseUrl}address/create';
   static const apiUpdateAddress = '${baseUrl}address/update';

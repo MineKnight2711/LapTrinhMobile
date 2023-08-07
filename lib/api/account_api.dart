@@ -146,4 +146,22 @@ class AccountApi extends GetxController {
       return responseBase;
     }
   }
+
+  Future<ResponseBaseModel> changeImageUrl(
+      String accountId, String newImageUrl) async {
+    ResponseBaseModel responseBase = ResponseBaseModel();
+    final url = Uri.parse(
+        '${ApiUrl.apiChangeImage}/$accountId?newImageUrl=${Uri.encodeComponent(newImageUrl)}');
+
+    final response = await http.put(
+      url,
+    );
+    if (response.statusCode == 200) {
+      responseBase = ResponseBaseModel.fromJson(json.decode(response.body));
+      return responseBase;
+    } else {
+      responseBase.message = 'Fail';
+      return responseBase;
+    }
+  }
 }
