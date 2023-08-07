@@ -49,6 +49,21 @@ class AccountApi extends GetxController {
     }
   }
 
+  Future<ResponseBaseModel> findAccountById(String? accountId) async {
+    ResponseBaseModel responseBase = ResponseBaseModel();
+    final response = await http.get(
+      Uri.parse('${ApiUrl.apiFindAccountById}/$accountId'),
+    );
+    if (response.statusCode == 200) {
+      responseBase = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+      return responseBase;
+    } else {
+      responseBase.message = "Fail";
+      return responseBase;
+    }
+  }
+
   Future<ResponseBaseModel?> register(AccountModel account) async {
     final response = await http.post(
       Uri.parse('${ApiUrl.apiCreateAccount}/${account.accountId}'),

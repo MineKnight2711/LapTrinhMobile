@@ -49,15 +49,16 @@ class CartController extends GetxController {
   Future<AccountResponse?> awaitCurrentAccount() async {
     return await acccountApi.fetchCurrent().then((currentAccount) {
       if (currentAccount != null) {
-        getCartByAccountId(currentAccount.accountId);
         return currentAccount;
       }
       return null;
     });
   }
 
-  Future getCartByAccountId(String? accountId) async {
-    ResponseBaseModel respone = await cartApi.getCartByAccountId(accountId);
+  Future getCartByAccountId() async {
+    final currentAccount = await awaitCurrentAccount();
+    ResponseBaseModel respone =
+        await cartApi.getCartByAccountId("${currentAccount?.accountId}");
     if (respone.data != null) {
       final cartReceived = respone.data as List<dynamic>;
 

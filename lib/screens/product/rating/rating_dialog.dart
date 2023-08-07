@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get/get.dart';
+import 'package:keyboard_mobile_app/controller/review_controller.dart';
+import 'package:keyboard_mobile_app/model/product_model.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
-class ProductRatingDialog extends StatefulWidget {
-  final String productName, productID;
+class ProductRatingDialog extends StatelessWidget {
+  final ProductModel product;
 
-  const ProductRatingDialog(
-      {super.key, required this.productName, required this.productID});
+  final reviewController = Get.find<ReviewController>();
 
-  @override
-  _ProductRatingDialogState createState() => _ProductRatingDialogState();
-}
-
-class _ProductRatingDialogState extends State<ProductRatingDialog> {
-  double halfRating = 5.0;
-  TextEditingController _feedbackController = new TextEditingController();
-
-  void initSate() {
-    super.initState();
-  }
+  ProductRatingDialog({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Align(
         alignment: Alignment.center,
-        child: Text('Đánh giá ${widget.productName}'),
+        child: Text('Đánh giá ${product.productName}'),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -51,15 +44,19 @@ class _ProductRatingDialogState extends State<ProductRatingDialog> {
                     color: Colors.amber,
                   ),
                   onRatingUpdate: (ratingvalue) {
-                    setState(() {
-                      halfRating = ratingvalue;
-                    });
+                    reviewController.score.value = ratingvalue;
                   },
                 ),
               ),
-              Text('${halfRating}',
+              Obx(
+                () => Text(
+                  '${reviewController.score.value}',
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20)),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(
@@ -72,7 +69,7 @@ class _ProductRatingDialogState extends State<ProductRatingDialog> {
             width: 260,
             height: 50,
             child: TextFormField(
-              controller: _feedbackController,
+              controller: reviewController.commentController,
               decoration: InputDecoration(
                 labelText: 'Nhận xét',
                 hintText: 'Cảm nhận của bạn',
@@ -95,12 +92,6 @@ class _ProductRatingDialogState extends State<ProductRatingDialog> {
               cursorColor: Colors.blue,
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
-              validator: (value) {
-                if (value == null) {
-                  return 'Please enter your full name';
-                }
-                return null;
-              },
             ),
           ),
         ],
@@ -115,15 +106,26 @@ class _ProductRatingDialogState extends State<ProductRatingDialog> {
         ElevatedButton(
           child: const Text('Gửi'),
           onPressed: () async {
-            // await FirebaseFirestore.instance.collection('ratings').add({
-            //   'DishID': widget.productID,
-            //   'UserID': user?.uid,
-            //   'DateRecored': DateTime.now(),
-            //   'Feedback': _feedbackController.text,
-            //   'Score': halfRating,
-            // });
-
-            Navigator.of(context).pop();
+            final currentAccount = await reviewController.awaitCurrentAccount();
+            if (currentAccount != null) {
+              final result = await reviewController.addReview(
+                  "${currentAccount.accountId}", "${product.productId}");
+              if (result == "Success") {
+                CustomSuccessMessage.showMessage("Đánh giá thành công!")
+                    .then((value) {
+                  reviewController
+                      .getAllReview("${product.productId}")
+                      .then((value) {
+                    reviewController.onFinishReviewed();
+                    Navigator.pop(context);
+                  });
+                });
+              } else {
+                CustomErrorMessage.showMessage(result);
+              }
+            } else {
+              CustomErrorMessage.showMessage("Phiên đăng nhập không hợp lệ!");
+            }
           },
         ),
       ],

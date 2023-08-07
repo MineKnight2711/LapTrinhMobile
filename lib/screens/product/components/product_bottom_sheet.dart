@@ -234,8 +234,7 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                     await cartController.addToCart(newItem);
                                 switch (result) {
                                   case "Success":
-                                    cartController.getCartByAccountId(
-                                        currentAccount.accountId);
+                                    cartController.getCartByAccountId();
                                     CustomSuccessMessage.showMessage(
                                         "Thêm vào giỏ hàng thành công!");
                                     showLoadingAnimation(
@@ -247,8 +246,7 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                             (value) => Navigator.pop(context));
                                     break;
                                   case "Update":
-                                    cartController.getCartByAccountId(
-                                        currentAccount.accountId);
+                                    cartController.getCartByAccountId();
                                     CustomSuccessMessage.showMessage(
                                         "Cập nhật giỏ hàng thành công!");
                                     showLoadingAnimation(

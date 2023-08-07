@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_mobile_app/controller/review_controller.dart';
 import 'package:keyboard_mobile_app/model/category_model.dart';
 import 'package:keyboard_mobile_app/screens/product/product_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
@@ -106,6 +107,10 @@ class ProductList extends StatelessWidget {
                                                     Radius.circular(10.0)),
                                             child: InkWell(
                                               onTap: () {
+                                                final reviewController =
+                                                    Get.put(ReviewController());
+                                                reviewController.getAllReview(
+                                                    "${product.productId}");
                                                 slideInTransition(
                                                     context,
                                                     ProductScreen(

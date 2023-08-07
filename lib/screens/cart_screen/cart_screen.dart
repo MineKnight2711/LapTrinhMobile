@@ -24,11 +24,12 @@ class CartScreen extends StatelessWidget {
 
   // final orderController = Get.put(CreateOrderController());
   Future<void> refesh() async {
-    await cartController.awaitCurrentAccount();
+    await cartController.getCartByAccountId();
   }
 
   @override
   Widget build(BuildContext context) {
+    cartController.getCartByAccountId();
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: CustomAppBar(

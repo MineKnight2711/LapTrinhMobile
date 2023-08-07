@@ -1,16 +1,23 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/product_controller.dart';
+import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/product/components/product_bottom_sheet.dart';
 import 'package:keyboard_mobile_app/screens/product/rating/rating_dialog.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 import '../../controller/product_detail_controller.dart';
+import '../../controller/review_controller.dart';
+import '../../model/review_model.dart';
 import '../../widgets/custom_widgets/rating_bars.dart';
 import 'components/product_display.dart';
 
@@ -19,7 +26,7 @@ class ProductScreen extends StatelessWidget {
   ProductScreen({super.key, required this.product});
   final productController = Get.find<ProductController>();
   final detailsController = Get.put(ProductDetailController());
-
+  final reviewController = Get.find<ReviewController>();
   @override
   Widget build(BuildContext context) {
     var menu = ["Mô tả", "Nhận xét"];
@@ -75,11 +82,31 @@ class ProductScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 10),
-                            child: ShowRatingBar(
-                              rating: 4.5,
-                              size: 20,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Row(
+                              children: [
+                                Obx(
+                                  () => ShowRatingBar(
+                                    rating:
+                                        reviewController.calculateScore().value,
+                                    size: 20,
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(top: 3, left: 5),
+                                  child: Obx(
+                                    () => Text(
+                                      reviewController
+                                          .calculateScore()
+                                          .value
+                                          .toStringAsFixed(1),
+                                      style: GoogleFonts.nunito(fontSize: 16),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
                           const Spacer(),
@@ -92,17 +119,30 @@ class ProductScreen extends StatelessWidget {
                                   topLeft: Radius.circular(20),
                                   bottomLeft: Radius.circular(20)),
                             ),
-                            child: GestureDetector(
-                              onTap: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return ProductRatingDialog(
-                                      productName: "${product.productName}",
-                                      productID: "${product.productId}",
+                            child: InkWell(
+                              onTap: () async {
+                                final currentAccount = await reviewController
+                                    .awaitCurrentAccount();
+                                if (currentAccount != null) {
+                                  final checkAccount = await reviewController
+                                      .checkAccountReview();
+                                  if (!checkAccount) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return ProductRatingDialog(
+                                          product: product,
+                                        );
+                                      },
                                     );
-                                  },
-                                );
+                                  } else {
+                                    CustomErrorMessage.showMessage(
+                                        "Bạn đã đánh giá sản phẩm này rồi!");
+                                  }
+                                } else {
+                                  CustomErrorMessage.showMessage(
+                                      "Bạn phải đăng nhập để đánh giá");
+                                }
                               },
                               child: Row(
                                 mainAxisAlignment:
@@ -190,7 +230,7 @@ class ProductScreen extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 22.0,
                                     ),
                                     SizedBox(
@@ -200,43 +240,22 @@ class ProductScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
-                              Container(
-                                child: Center(child: Text("Not Found")),
-                                // StreamBuilder<QuerySnapshot>(
-                                //   stream: FirebaseFirestore.instance
-                                //       .collection('ratings')
-                                //       .where('DishID', isEqualTo: widget.doc.id)
-                                //       .snapshots(),
-                                //   builder: (context, snapshot) {
-                                //     if (!snapshot.hasData) {
-                                //       return Center(
-                                //         child: CircularProgressIndicator(),
-                                //       );
-                                //     }
-                                //     if (snapshot.hasData) {
-                                //       tongDiem = snapshot.data!.docs
-                                //           .fold(0.0, (sum, doc) => sum! + doc["Score"]);
-                                //       rateCount = snapshot.data!.docs.length;
-                                //       trungBinh = double.parse(
-                                //           (tongDiem! / rateCount).toStringAsFixed(1));
-
-                                //       return Center(
-                                //         child: ListView(
-                                //           itemExtent: 90,
-                                //           scrollDirection: Axis.vertical,
-                                //           physics: BouncingScrollPhysics(),
-                                //           children: snapshot.data!.docs
-                                //               .map((ratings) => ratingCard(() {
-                                //                     //Nhấn vào một bình luận
-                                //                   }, ratings))
-                                //               .toList(),
-                                //         ),
-                                //       );
-                                //     }
-                                //     return
-                                //   },
-                                // ),
-                              ),
+                              Obx(() {
+                                if (reviewController.listReview.value != null) {
+                                  return Column(
+                                    children: reviewController.listReview.value!
+                                        .map((review) =>
+                                            ReviewCard(review: review))
+                                        .toList(),
+                                  );
+                                } else {
+                                  reviewController
+                                      .getAllReview("${product.productId}");
+                                  return const Center(
+                                    child: Text("Loading..."),
+                                  );
+                                }
+                              }),
                             ]),
                       )
                     ],
@@ -272,5 +291,70 @@ class ProductScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class ReviewCard extends StatelessWidget {
+  final ReviewModel review;
+  ReviewCard({super.key, required this.review});
+  final reviewController = Get.find<ReviewController>();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: mediaHeight(context, 6),
+        width: mediaWidth(context, 1),
+        child: FutureBuilder<AccountResponse?>(
+          future: reviewController.getAcconutById("${review.accountId}"),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                children: [
+                  SizedBox(
+                    height: mediaHeight(context, 9),
+                    width: mediaWidth(context, 1),
+                    child: ListTile(
+                      leading: SizedBox(
+                        height: mediaHeight(context, 9),
+                        width: mediaWidth(context, 6),
+                        child: CachedNetworkImage(
+                          imageUrl: snapshot.data!.imageUrl.toString(),
+                        ),
+                      ),
+                      title: Text("${snapshot.data?.fullName}"),
+                      subtitle: Row(
+                        children: [
+                          ShowRatingBar(
+                            rating: review.star ?? 0.0,
+                            size: 20,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3, left: 5),
+                            child: Text(
+                              review.star.toString(),
+                              style: GoogleFonts.nunito(fontSize: 16),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  // SizedBox(
+                  //   height: mediaHeight(context, 200),
+                  // ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Text(
+                        "${review.comment}",
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ));
   }
 }
