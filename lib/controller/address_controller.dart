@@ -11,6 +11,7 @@ import '../model/account_respone.dart';
 class AddressController extends GetxController {
   late AddressApi addressApi;
   final accountApi = Get.find<AccountApi>();
+
   @override
   void onInit() {
     super.onInit();
@@ -18,6 +19,8 @@ class AddressController extends GetxController {
   }
 
   final listAddress = Rx<List<AddressModel>?>([]);
+
+  final currentDefaultAddress = Rx<AddressModel?>(null);
 
   Future<AccountResponse?> awaitCurrentAccount() async {
     return await accountApi.fetchCurrent().then((currentAccount) {
@@ -30,7 +33,7 @@ class AddressController extends GetxController {
 
   Future getListAddress() async {
     final currentAccount = await awaitCurrentAccount();
-    Logger().i("${currentAccount?.accountId} log account");
+
     final respone =
         await addressApi.getAddressesByAccount("${currentAccount?.accountId}");
     if (respone.data != null) {
@@ -43,6 +46,9 @@ class AddressController extends GetxController {
           .toList();
 
       listAddress.value = addressList;
+      currentDefaultAddress.value =
+          addressList.firstWhere((element) => element.defaultAddress == true);
+      Logger().i("${currentDefaultAddress.value?.toJson()} log address");
       if (listAddress.value == null || listAddress.value!.isEmpty) {
         defaultAddress.value = true;
       } else {

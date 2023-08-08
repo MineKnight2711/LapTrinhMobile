@@ -29,6 +29,11 @@ class DataConvert {
     return result;
   }
 
+  String simplifyAddress2(String address) {
+    String result = address.replaceAll("-", ", ");
+    return result;
+  }
+
   List<String> splitAddress(String address) {
     List<String> addressParts = address.split('-');
     return addressParts;

@@ -38,7 +38,7 @@ class CartController extends GetxController {
     super.onClose();
     totalPrice.value = 0.0;
     // isCheckAll = false;
-    listCartItem.value = checkedItems.value = [];
+    checkedItems.value = [];
   }
 
   void closeBottomSheet() {
@@ -67,10 +67,6 @@ class CartController extends GetxController {
             (cartMap) => CartModel.fromJson(cartMap),
           )
           .toList();
-      for (final item in cartList) {
-        ResponseBaseModel response =
-            await productApi.getProductDetailsById(item.productDetailId);
-      }
       listCartItem.value = cartList;
       Logger().i("${listCartItem.length} test cart");
       // isNoProduct.value = false;

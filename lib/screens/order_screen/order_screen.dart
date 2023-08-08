@@ -11,10 +11,11 @@ class OrderScreen extends StatelessWidget {
   final cartController = Get.find<CartController>();
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: CustomAppBar(
         onPressed: () {
+          cartController.getCartByAccountId();
+          cartController.onClose();
           Navigator.pop(context);
         },
         title: 'Đặt hàng',

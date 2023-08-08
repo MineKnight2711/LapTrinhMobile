@@ -8,6 +8,7 @@ import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/order_screen/order_screen.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../controller/address_controller.dart';
 import '../../model/product_details_model.dart';
 import '../../transition_animation/screen_transition.dart';
 import '../../utils/data_convert.dart';
@@ -372,7 +373,9 @@ class CartScreen extends StatelessWidget {
         () => CartBottomNavigation(
           totalPrice: cartController.totalPrice.value,
           onPaymentPressed: () {
-            slideInTransitionReplacement(context, OrderScreen());
+            final addressController = Get.put(AddressController());
+            addressController.getListAddress();
+            slideInTransition(context, OrderScreen());
           },
         ),
       ),

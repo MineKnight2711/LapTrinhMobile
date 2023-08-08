@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:keyboard_mobile_app/model/cart_model.dart';
+import 'package:keyboard_mobile_app/utils/data_convert.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../controller/cart_controller.dart';
 
@@ -16,6 +18,7 @@ class PayCartItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return FutureBuilder(
       future:
           cartController.getProductByDetail("${cartProduct.productDetailId}"),
@@ -68,10 +71,8 @@ class PayCartItem extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          NumberFormat.simpleCurrency(
-                                  locale: 'vi-VN', decimalDigits: 0)
-                              .format(productDetail.price ??
-                                  0 * (cartProduct.quantity ?? 0)),
+                          DataConvert().formatCurrency(productDetail.price! *
+                              cartProduct.quantity!.toDouble()),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
@@ -88,7 +89,12 @@ class PayCartItem extends StatelessWidget {
                   )
                 ]);
               }
-              return const Text('NotFound');
+              return Center(
+                child: Lottie.asset(
+                    "assets/animations/loading_cart_item_3.json",
+                    width: size.width / 2.5,
+                    height: size.height / 7),
+              );
             },
           );
         }
