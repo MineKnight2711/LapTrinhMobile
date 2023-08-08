@@ -20,6 +20,8 @@ class AddressController extends GetxController {
 
   final listAddress = Rx<List<AddressModel>?>([]);
 
+  final chosenAddress = Rx<AddressModel?>(null);
+
   final currentDefaultAddress = Rx<AddressModel?>(null);
 
   Future<AccountResponse?> awaitCurrentAccount() async {

@@ -22,3 +22,19 @@ Future showLoadingAnimation(BuildContext context, String animationPath,
 
   return Future.delayed(Duration(seconds: duration));
 }
+
+void showOrderLoadingAnimation(
+    BuildContext context, String animationPath, double widthHeightLong) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Lottie.asset(animationPath,
+              width: widthHeightLong, height: widthHeightLong),
+        ),
+      );
+    },
+  );
+}

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
+import 'package:keyboard_mobile_app/controller/order_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/order_screen/order_screen.dart';
 import 'package:lottie/lottie.dart';
@@ -375,6 +376,7 @@ class CartScreen extends StatelessWidget {
           onPaymentPressed: () {
             final addressController = Get.put(AddressController());
             addressController.getListAddress();
+            Get.put(OrderController());
             slideInTransition(context, OrderScreen());
           },
         ),

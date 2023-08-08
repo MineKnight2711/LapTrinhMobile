@@ -38,6 +38,8 @@ class ApiUrl {
   static const apiAddAddress = '${baseUrl}address/create';
   static const apiUpdateAddress = '${baseUrl}address/update';
 
+  static const apiCreateOrder = '${baseUrl}order/create';
+
   ///
   ///
   ///

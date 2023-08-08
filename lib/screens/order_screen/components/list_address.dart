@@ -27,7 +27,13 @@ class AccountListAddress extends StatelessWidget {
             itemCount: addressController.listAddress.value!.length,
             itemBuilder: (context, index) {
               final address = addressController.listAddress.value![index];
-              return AddressItem(address: address);
+              return AddressItem(
+                address: address,
+                onPressed: () {
+                  addressController.chosenAddress.value = address;
+                  Navigator.pop(context);
+                },
+              );
             },
           );
         }
@@ -39,7 +45,8 @@ class AccountListAddress extends StatelessWidget {
 
 class AddressItem extends StatelessWidget {
   final AddressModel address;
-  const AddressItem({super.key, required this.address});
+  final Function()? onPressed;
+  const AddressItem({super.key, required this.address, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -53,63 +60,57 @@ class AddressItem extends StatelessWidget {
             ? mediaHeight(context, 6.5)
             : mediaHeight(context, 8),
         child: ListTile(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text('${address.receiverName} '),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 6),
-                width: 1,
-                height: 20,
-                color: Colors.black.withOpacity(0.3),
-              ),
-              Text("${address.receiverPhone}"),
-              const Spacer(),
-            ],
-          ),
-          subtitle: Column(
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                    child: Text(
-                      DataConvert().simplifyAddress("${address.address}"),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: mediaHeight(context, 10 * 10),
-              ),
-              Visibility(
-                visible: address.defaultAddress!,
-                child: Row(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('${address.receiverName} '),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  width: 1,
+                  height: 20,
+                  color: Colors.black.withOpacity(0.3),
+                ),
+                Text("${address.receiverPhone}"),
+                const Spacer(),
+              ],
+            ),
+            subtitle: Column(
+              children: [
+                Row(
                   children: [
-                    Container(
-                      width: mediaWidth(context, 5), // Expand to full width
-                      height:
-                          mediaHeight(context, 32), // Adjust height as needed
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.deepOrange)),
-                      child: const Center(
-                        child: Text(
-                          'Mặc định',
-                          style: TextStyle(color: Colors.deepOrange),
-                        ),
+                    Flexible(
+                      child: Text(
+                        DataConvert().simplifyAddress("${address.address}"),
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-          onTap: () async {
-            // Chuyển sang màn hình view khác và truyền giá trị amount
-
-            // await controller.passVocherValue(amount, coupon.id);
-            Navigator.pop(context);
-          },
-        ),
+                SizedBox(
+                  height: mediaHeight(context, 10 * 10),
+                ),
+                Visibility(
+                  visible: address.defaultAddress!,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: mediaWidth(context, 5), // Expand to full width
+                        height:
+                            mediaHeight(context, 32), // Adjust height as needed
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.deepOrange)),
+                        child: const Center(
+                          child: Text(
+                            'Mặc định',
+                            style: TextStyle(color: Colors.deepOrange),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            onTap: onPressed),
       ),
     );
   }

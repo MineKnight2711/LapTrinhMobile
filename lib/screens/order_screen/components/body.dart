@@ -47,11 +47,17 @@ class Body extends StatelessWidget {
                       () {
                         if (addressController.currentDefaultAddress.value !=
                             null) {
-                          return AddressView(
-                            address:
-                                addressController.currentDefaultAddress.value!,
+                          return Obx(
+                            () => AddressView(
+                              address:
+                                  addressController.chosenAddress.value != null
+                                      ? addressController.chosenAddress.value!
+                                      : addressController
+                                          .currentDefaultAddress.value!,
+                            ),
                           );
                         }
+
                         return const SizedBox.shrink();
                       },
                     )),

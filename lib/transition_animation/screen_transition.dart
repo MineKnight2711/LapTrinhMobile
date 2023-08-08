@@ -83,3 +83,20 @@ void fadeInTransitionReplacement(BuildContext context, Widget widget) async {
     ),
   );
 }
+
+void replaceFadeInTransition(BuildContext context, Widget widget) async {
+  Navigator.pushAndRemoveUntil<dynamic>(
+    context,
+    PageRouteBuilder(
+      transitionDuration: const Duration(seconds: 1),
+      pageBuilder: (context, animation, secondaryAnimation) => widget,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
+    ),
+    (route) => false,
+  );
+}
