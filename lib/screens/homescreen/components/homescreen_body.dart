@@ -5,7 +5,6 @@ import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/category_controller.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/product_list.dart';
 import '../../../model/category_model.dart';
-import '../../../widgets/custom_widgets/custom_swiper_panation.dart';
 
 class HomescreenBody extends StatefulWidget {
   const HomescreenBody({Key? key}) : super(key: key);
@@ -98,7 +97,7 @@ class _HomescreenBodyState extends State<HomescreenBody>
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           const SliverToBoxAdapter(
-            child: BannerList(),
+            child: BannerView(),
           ),
           SliverToBoxAdapter(
             child: tabBar,
@@ -109,23 +108,25 @@ class _HomescreenBodyState extends State<HomescreenBody>
   }
 }
 
-class BannerList extends StatelessWidget {
-  const BannerList({Key? key}) : super(key: key);
+class BannerView extends StatelessWidget {
+  const BannerView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: mediaHeight(context, 6),
+      height: mediaHeight(context, 4.7),
       child: Swiper(
         itemCount: ListDataTemp.banner.length,
+        autoplay: true,
+        autoplayDelay: 10000,
+        viewportFraction: 1,
+        scale: 0.6,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           var item = ListDataTemp.banner[index];
           return Container(
-            height: 120.0,
-            width: 250,
             margin: const EdgeInsets.symmetric(
-              horizontal: 28.0,
+              horizontal: 20.0,
             ),
             decoration: BoxDecoration(
               image: DecorationImage(
@@ -142,14 +143,6 @@ class BannerList extends StatelessWidget {
             ),
           );
         },
-        pagination: SwiperCustomPagination(
-          builder: (context, config) {
-            return CustomSwiperPagination(
-                itemCount: ListDataTemp.banner.length,
-                activeIndex: config.activeIndex);
-          },
-        ), // Add pagination dots.
-        // control: SwiperControl(), // Add next and previous arrow controls.
       ),
     );
   }
@@ -160,13 +153,12 @@ class ListDataTemp {
     "assets/images/banner1.png",
     "assets/images/banner2.jpg",
     "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
-    "assets/images/banner3.jpg",
+    "assets/images/banner4.png",
+    "assets/images/banner5.jpg",
+    "assets/images/banner6.png",
+    "assets/images/banner7.jpg",
+    "assets/images/banner8.jpg",
+    "assets/images/banner9.jpg",
+    "assets/images/banner10.jpg",
   ];
 }

@@ -179,17 +179,26 @@ class LoginScreen extends StatelessWidget {
               LoginWithSocialButton(
                   onPressed: () async {
                     final result = await loginController.signInWithGoogle();
-                    if (result == 'SigninSuccess') {
-                      CustomSuccessMessage.showMessage(
-                          'Đăng ký thành công!\nCòn 1 bước nữa...');
-                      slideInTransition(context, SignUpGoogleCompletedScreen());
-                    } else if (result == 'LoginSuccess') {
-                      CustomSuccessMessage.showMessage('Đăng nhập thành công!');
-                      slideInTransition(context, HomeScreen());
-                    } else if (result == 'CancelSignIn') {
-                      CustomSuccessMessage.showMessage('Đã huỷ đăng nhập!');
-                    } else {
-                      CustomErrorMessage.showMessage('Đăng nhập thất bại!');
+                    switch (result) {
+                      case 'SigninSuccess':
+                        CustomSuccessMessage.showMessage(
+                            'Đăng ký thành công!\nCòn 1 bước nữa...');
+                        slideInTransitionReplacement(
+                            context, SignUpGoogleCompletedScreen());
+                        break;
+                      case 'LoginSuccess':
+                        CustomSuccessMessage.showMessage(
+                            'Đăng nhập thành công!');
+                        replaceFadeInTransition(context, HomeScreen());
+                        break;
+
+                      case 'CancelSignIn':
+                        CustomSuccessMessage.showMessage('Đã huỷ đăng nhập!');
+                        break;
+
+                      default:
+                        CustomErrorMessage.showMessage('Đăng nhập thất bại!');
+                        break;
                     }
                   },
                   buttonText: 'Tiếp tục với Google',

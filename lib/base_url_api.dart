@@ -25,6 +25,7 @@ class ApiUrl {
   static const apiGetAllReview = '${baseUrl}review';
   static const apiCreateReview = '${baseUrl}review/create';
   static const apiChangeImage = '${baseUrl}account/updateImage';
+  static const apiGetAndFetchAllOrder = '${baseUrl}order/testGetOrder';
   //// Api của Quý-------------------------------------------------
   static const apiUpdateAccount = '${baseUrl}account/info';
   static const apiGetAllCategory = '${baseUrl}category';

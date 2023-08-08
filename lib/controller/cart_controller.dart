@@ -61,14 +61,14 @@ class CartController extends GetxController {
         await cartApi.getCartByAccountId("${currentAccount?.accountId}");
     if (respone.data != null) {
       final cartReceived = respone.data as List<dynamic>;
-
+      Logger().i("${respone.data} test cart");
       List<CartModel> cartList = cartReceived
           .map(
             (cartMap) => CartModel.fromJson(cartMap),
           )
           .toList();
       listCartItem.value = cartList;
-      Logger().i("${listCartItem.length} test cart");
+
       // isNoProduct.value = false;
     }
   }

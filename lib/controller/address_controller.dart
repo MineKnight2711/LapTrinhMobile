@@ -4,7 +4,6 @@ import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/api/address_api.dart';
 import 'package:keyboard_mobile_app/model/address_model.dart';
 import 'package:keyboard_mobile_app/utils/data_convert.dart';
-import 'package:logger/logger.dart';
 
 import '../model/account_respone.dart';
 
@@ -50,7 +49,6 @@ class AddressController extends GetxController {
       listAddress.value = addressList;
       currentDefaultAddress.value =
           addressList.firstWhere((element) => element.defaultAddress == true);
-      Logger().i("${currentDefaultAddress.value?.toJson()} log address");
       if (listAddress.value == null || listAddress.value!.isEmpty) {
         defaultAddress.value = true;
       } else {

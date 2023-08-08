@@ -7,8 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../controller/login_controller.dart';
 
 class CustomErrorMessage {
-  static void showMessage(String message) {
-    Fluttertoast.showToast(
+  static Future<void> showMessage(String message) async {
+    await Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.BOTTOM,

@@ -376,7 +376,6 @@ class CartScreen extends StatelessWidget {
           onPaymentPressed: () {
             final addressController = Get.put(AddressController());
             addressController.getListAddress();
-            Get.put(OrderController());
             slideInTransition(context, OrderScreen());
           },
         ),

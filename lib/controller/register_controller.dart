@@ -108,6 +108,11 @@ class RegisterController extends GetxController {
       isValidPhonenumber.value = false;
       return 'Số điện thoại không được trống!';
     }
+    RegExp regex = RegExp(r'^(84|0)[35789]([0-9]{8})$');
+    if (!regex.hasMatch(phonenumber)) {
+      isValidPhonenumber.value = false;
+      return 'Số điện thoại không đúng định dạng!';
+    }
     isValidPhonenumber.value = true;
     return null;
   }

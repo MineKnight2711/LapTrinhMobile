@@ -60,6 +60,7 @@ class SignUpGoogleCompletedScreen extends StatelessWidget {
                 CustomInputTextField(
                     onChanged: registerController.validatePhonenumber,
                     controller: registerController.phonenumberController,
+                    textInputType: TextInputType.number,
                     labelText: 'Nhập số điện thoại',
                     hintText: 'Số điện thoại'),
                 const SizedBox(
@@ -73,9 +74,10 @@ class SignUpGoogleCompletedScreen extends StatelessWidget {
                     String? result =
                         await registerController.signUpwithGoogle();
                     if (result == "Success") {
-                      CustomSuccessMessage.showMessage("Đăng ký thành công!");
+                      CustomSuccessMessage.showMessage("Đăng ký thành công!")
+                          .whenComplete(() => controller.fetchCurrent());
                       // ignore: use_build_context_synchronously
-                      slideInTransitionReplacement(context, HomeScreen());
+                      replaceFadeInTransition(context, HomeScreen());
                       registerController.onClose();
                     } else {
                       CustomErrorMessage.showMessage(

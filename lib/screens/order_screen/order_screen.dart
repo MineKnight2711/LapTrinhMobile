@@ -8,6 +8,7 @@ import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart'
 import 'package:keyboard_mobile_app/utils/show_animations.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
+import 'package:logger/logger.dart';
 
 import '../../controller/address_controller.dart';
 import '../../controller/cart_controller.dart';
@@ -50,20 +51,21 @@ class OrderScreen extends StatelessWidget {
               } else {
                 newOrder.receiverInfo =
                     "${addressController.currentDefaultAddress.value?.receiverName}-${addressController.currentDefaultAddress.value?.receiverPhone}-${addressController.currentDefaultAddress.value?.address}";
+                Logger().i("${newOrder.receiverInfo} log address");
               }
               newOrder.accountId = currentAccount.accountId;
-              newOrder.orderDate = DateTime.now();
+
               String result = await orderController.saveOrder(
                   newOrder, cartController.checkedItems);
               if (result == "Success") {
-                CustomSuccessMessage.showMessage("Đặt hàng thành công")
-                    .then((value) {
-                  Navigator.pop(context);
-                  replaceFadeInTransition(context, HomeScreen());
-                }).whenComplete(() {
-                  cartController.calculateCartTotal();
-                  cartController.deleteManyItem();
-                });
+                CustomSuccessMessage.showMessage("Đặt hàng thành công").then(
+                    (value) => cartController
+                            .deleteManyItem()
+                            .then((_) => cartController.calculateCartTotal())
+                            .whenComplete(() {
+                          Navigator.pop(context);
+                          replaceFadeInTransition(context, HomeScreen());
+                        }));
               } else {
                 CustomSuccessMessage.showMessage(result)
                     .then((value) => Navigator.pop(context));

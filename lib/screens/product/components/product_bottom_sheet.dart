@@ -225,7 +225,8 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                             enabled:
                                 detailController.chosenDetails.value != null,
                             press: () async {
-                              Logger().i("$chosenValue so luong chon");
+                              showOrderLoadingAnimation(context,
+                                  "assets/animations/loading_1.json", 180);
                               final currentAccount =
                                   await cartController.awaitCurrentAccount();
                               if (currentAccount != null) {
@@ -246,8 +247,10 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                             "assets/animations/add_to_cart.json",
                                             160,
                                             2)
-                                        .then(
-                                            (value) => Navigator.pop(context));
+                                        .whenComplete(() {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
                                     break;
                                   case "Update":
                                     cartController.getCartByAccountId();
@@ -258,20 +261,35 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                             "assets/animations/add_to_cart.json",
                                             160,
                                             2)
-                                        .then(
-                                            (value) => Navigator.pop(context));
+                                        .whenComplete(() {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
                                     break;
                                   case "Fail":
                                     CustomErrorMessage.showMessage(
-                                        "Không thể thêm vào giỏ hàng!");
+                                            "Không thể thêm vào giỏ hàng!")
+                                        .whenComplete(() {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
+
                                     break;
                                   case "NoUser":
                                     CustomErrorMessage.showMessage(
-                                        "Phiên đăng nhập không hợp lệ!\nVui lòng đăng nhập lại!");
+                                            "Phiên đăng nhập không hợp lệ!\nVui lòng đăng nhập lại!")
+                                        .whenComplete(() {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
                                     break;
                                   default:
                                     CustomErrorMessage.showMessage(
-                                        "Lỗi không xác định!");
+                                            "Lỗi không xác định!")
+                                        .whenComplete(() {
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                    });
                                     break;
                                 }
                               }
