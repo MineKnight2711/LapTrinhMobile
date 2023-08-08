@@ -36,7 +36,7 @@ class AccountResponse {
     isFingerPrintAuthentication = json['isFingerPrintAuthentication'];
     birthday =
         json['birthday'] != null ? DateTime.parse(json['birthday']) : null;
-    ;
+
     address = json['address'];
     status = json['status'];
   }

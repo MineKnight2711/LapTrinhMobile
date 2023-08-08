@@ -24,9 +24,5 @@ class CategoryController extends GetxController {
         )
         .toList();
     listCategory.value = categoriesList;
-    for (CategoryModel cate in categoriesList) {
-      print("Ma danh muc ${cate.id}");
-      print("Ten danh muc ${cate.categoryName}");
-    }
   }
 }

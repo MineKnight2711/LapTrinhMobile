@@ -117,6 +117,17 @@ class ProductDisplay extends StatelessWidget {
                           );
                         }
                       },
+                      pagination: const SwiperPagination(
+                        builder: FractionPaginationBuilder(
+                            fontSize: 12,
+                            activeFontSize: 16,
+                            activeColor: Colors.black,
+                            color: Colors.black),
+
+                        alignment: Alignment.bottomRight,
+                        margin:
+                            EdgeInsets.all(10.0), // Adjust margins as needed
+                      ),
                     );
                   }
                   return const Center(child: CircularProgressIndicator());

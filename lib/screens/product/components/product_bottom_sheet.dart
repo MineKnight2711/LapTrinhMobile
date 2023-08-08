@@ -14,7 +14,6 @@ import 'package:keyboard_mobile_app/screens/product/components/color_selected.da
 import 'package:keyboard_mobile_app/screens/product/components/quantity_selector.dart';
 import 'package:keyboard_mobile_app/utils/show_animations.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
-import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_swiper_panation.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
@@ -134,12 +133,16 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                   ),
                                 );
                               },
-                              pagination: SwiperCustomPagination(
-                                builder: (context, config) {
-                                  return CustomSwiperPagination(
-                                      itemCount: listImageUrl.length,
-                                      activeIndex: config.activeIndex);
-                                },
+                              pagination: const SwiperPagination(
+                                builder: FractionPaginationBuilder(
+                                    fontSize: 12,
+                                    activeFontSize: 16,
+                                    activeColor: Colors.black,
+                                    color: Colors.black),
+
+                                alignment: Alignment.bottomRight,
+                                margin: EdgeInsets.all(
+                                    10.0), // Adjust margins as needed
                               ),
                             ),
                           );

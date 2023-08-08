@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
-import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:lottie/lottie.dart';
@@ -11,7 +10,6 @@ import 'package:lottie/lottie.dart';
 import '../../model/product_details_model.dart';
 import '../../utils/data_convert.dart';
 import '../../widgets/custom_widgets/custom_appbar.dart';
-import '../../widgets/custom_widgets/custom_button.dart';
 import '../../widgets/custom_widgets/message.dart';
 import 'components/cart_bottom_nav.dart';
 import 'components/edit_cart_bottom_sheet.dart';
@@ -157,7 +155,6 @@ class CartScreen extends StatelessWidget {
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
                                           final product = snapshot.data;
-
                                           return ListTile(
                                             leading: SizedBox(
                                               height: size.height / 10,
@@ -206,8 +203,6 @@ class CartScreen extends StatelessWidget {
                                               ),
                                             ),
                                             title: SizedBox(
-                                              // color: mainBottomNavColor,
-                                              // width: mediaWidth(context, 3),
                                               child: Column(
                                                 children: [
                                                   Row(

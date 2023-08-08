@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/review_controller.dart';
 import 'package:keyboard_mobile_app/model/category_model.dart';
 import 'package:keyboard_mobile_app/screens/product/product_screen.dart';
@@ -138,7 +140,7 @@ class ProductList extends StatelessWidget {
                                   visible: productControler
                                           .listProduct.value!.length >
                                       6,
-                                  child: ElevatedButton(
+                                  child: TextButton(
                                     onPressed: () {
                                       // Toggle the showMore state when the button is pressed
                                       productControler.showMore.value =
@@ -156,9 +158,16 @@ class ProductList extends StatelessWidget {
                       ),
                     );
                   }
-                  return const Center(
-                    child: Text(
-                        "Chúng tôi chưa cập nhật sản phẩm cho danh mục này"),
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/images/no_product.png"),
+                      SizedBox(height: mediaHeight(context, 16)),
+                      Text(
+                        'Chưa có sản phẩm trong danh mục này',
+                        style: GoogleFonts.nunito(fontSize: 16),
+                      )
+                    ],
                   );
                 });
               } else {
