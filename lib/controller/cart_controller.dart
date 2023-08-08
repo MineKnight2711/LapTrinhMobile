@@ -66,6 +66,10 @@ class CartController extends GetxController {
             (cartMap) => CartModel.fromJson(cartMap),
           )
           .toList();
+      for (final item in cartList) {
+        ResponseBaseModel response =
+            await productApi.getProductDetailsById(item.productDetailId);
+      }
       listCartItem.value = cartList;
       Logger().i("${listCartItem.length} test cart");
       // isNoProduct.value = false;

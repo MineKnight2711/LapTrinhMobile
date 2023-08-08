@@ -7,7 +7,7 @@ class ApiUrl {
   //ip mobile hostspot - 192.168.29.192/192.168.191.192
   //ip debug lan - 192.168.93.160/192.168.93.111
 
-  static const baseUrl = 'http://192.168.255.192:6969/api/';
+  static const baseUrl = 'http://10.0.2.2:6969/api/';
 
   static const apiGetAllAccount = '${baseUrl}accounts/all';
 

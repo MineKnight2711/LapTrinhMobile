@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
-import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
+import 'package:keyboard_mobile_app/screens/order_screen/order_screen.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../model/product_details_model.dart';
+import '../../transition_animation/screen_transition.dart';
 import '../../utils/data_convert.dart';
 import '../../widgets/custom_widgets/custom_appbar.dart';
-import '../../widgets/custom_widgets/custom_button.dart';
 import '../../widgets/custom_widgets/message.dart';
 import 'components/cart_bottom_nav.dart';
 import 'components/edit_cart_bottom_sheet.dart';
@@ -368,7 +368,9 @@ class CartScreen extends StatelessWidget {
       bottomNavigationBar: Obx(
         () => CartBottomNavigation(
           totalPrice: cartController.totalPrice.value,
-          onPaymentPressed: () async {},
+          onPaymentPressed: () {
+            slideInTransitionReplacement(context, OrderScreen());
+          },
         ),
       ),
     );

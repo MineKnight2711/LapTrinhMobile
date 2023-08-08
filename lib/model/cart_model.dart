@@ -1,3 +1,5 @@
+import 'package:keyboard_mobile_app/model/product_details_model.dart';
+
 class CartModel {
   String? accountId;
   String? productDetailId;
@@ -23,4 +25,16 @@ class CartModel {
     data['quantity'] = quantity.toString();
     return data;
   }
+}
+
+class CartModel_2 {
+  String? accountId;
+  ProductDetailModel? productDetail;
+  int? quantity;
+
+  CartModel_2({
+    this.accountId,
+    this.productDetail,
+    this.quantity,
+  });
 }

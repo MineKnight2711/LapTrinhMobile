@@ -23,6 +23,8 @@ class ProductController extends GetxController {
     productApi = Get.put(ProductApi());
   }
 
+  var _listAllProduct = <ProductModel>[].obs;
+
   Future getProductByCategory(String? categoryId) async {
     ResponseBaseModel respone =
         await productApi.getProductByCategory(categoryId);
@@ -71,4 +73,11 @@ class ProductController extends GetxController {
       isNoProduct.value = true;
     }
   }
+
+  // Future loadListsProduct() async {
+  //   final res = await ProductService.instance.getAllProduct();
+  //   _listAllProduct.value = res!.data!;
+  //   Logger().i("getX total Load product: ${_listAllProduct.value.length}");
+  //   return;
+  // }
 }

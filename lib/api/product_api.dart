@@ -71,4 +71,6 @@ class ProductApi extends GetxController {
       return responseBaseModel;
     }
   }
+
+  
 }
