@@ -116,14 +116,14 @@ class BannerView extends StatelessWidget {
     return SizedBox(
       height: mediaHeight(context, 4.7),
       child: Swiper(
-        itemCount: ListDataTemp.banner.length,
+        itemCount: ListBanner.banner.length,
         autoplay: true,
-        autoplayDelay: 10000,
+        autoplayDelay: 5000,
         viewportFraction: 1,
         scale: 0.6,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          var item = ListDataTemp.banner[index];
+          var item = ListBanner.banner[index];
           return Container(
             margin: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -148,7 +148,7 @@ class BannerView extends StatelessWidget {
   }
 }
 
-class ListDataTemp {
+class ListBanner {
   static List banner = [
     "assets/images/banner1.png",
     "assets/images/banner2.jpg",

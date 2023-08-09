@@ -22,6 +22,7 @@ import 'package:lottie/lottie.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 
 import '../../../api/account_api.dart';
+import 'image_view.dart';
 
 // ignore: must_be_immutable
 class ProductDetailsBottomSheet extends StatelessWidget {
@@ -85,20 +86,31 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                     children: [
                       Obx(() {
                         if (detailController.imageUrlList.value == null) {
-                          return Container(
-                            height: mediaHeight(context, 4),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                boxShadow: const [
-                                  BoxShadow(blurRadius: 3, spreadRadius: 1)
-                                ]),
-                            child: Hero(
-                              tag: "${product.displayUrl}",
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: CachedNetworkImage(
-                                  imageUrl: "${product.displayUrl}",
-                                  fit: BoxFit.cover,
+                          return GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return ImageViewDialog(
+                                      imageUrl: product.displayUrl.toString());
+                                },
+                              );
+                            },
+                            child: Container(
+                              height: mediaHeight(context, 4),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  boxShadow: const [
+                                    BoxShadow(blurRadius: 3, spreadRadius: 1)
+                                  ]),
+                              child: Hero(
+                                tag: "${product.displayUrl}",
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: CachedNetworkImage(
+                                    imageUrl: "${product.displayUrl}",
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
@@ -116,21 +128,31 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                   : const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 final item = listImageUrl[index];
-                                return SizedBox(
-                                  height: mediaHeight(context, 4),
-                                  child: Hero(
-                                    tag: item,
-                                    child: CachedNetworkImage(
-                                      imageUrl: item,
-                                      placeholder: (context, url) {
-                                        return Center(
-                                          child: Lottie.asset(
-                                              "assets/animations/loading_1.json",
-                                              width: 100,
-                                              height: 100),
-                                        );
+                                return GestureDetector(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return ImageViewDialog(imageUrl: item);
                                       },
-                                      fit: BoxFit.contain,
+                                    );
+                                  },
+                                  child: SizedBox(
+                                    height: mediaHeight(context, 4),
+                                    child: Hero(
+                                      tag: item,
+                                      child: CachedNetworkImage(
+                                        imageUrl: item,
+                                        placeholder: (context, url) {
+                                          return Center(
+                                            child: Lottie.asset(
+                                                "assets/animations/loading_1.json",
+                                                width: 100,
+                                                height: 100),
+                                          );
+                                        },
+                                        fit: BoxFit.contain,
+                                      ),
                                     ),
                                   ),
                                 );

@@ -145,4 +145,13 @@ class ReviewController extends GetxController {
       return "${respone.message}";
     }
   }
+
+  Future<String> deleteReview(String reviewId) async {
+    final respone = await reviewApi.deleteReview(reviewId);
+    if (respone.message!.contains("deleted")) {
+      return "Success";
+    } else {
+      return "${respone.message}";
+    }
+  }
 }

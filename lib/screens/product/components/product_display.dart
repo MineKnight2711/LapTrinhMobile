@@ -8,6 +8,8 @@ import 'package:keyboard_mobile_app/controller/product_controller.dart';
 import 'package:keyboard_mobile_app/model/product_details_model.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 
+import 'image_view.dart';
+
 class ProductDisplay extends StatelessWidget {
   final ProductModel product;
   final List<ProductDetailModel> listProductDetail;
@@ -49,20 +51,33 @@ class ProductDisplay extends StatelessWidget {
                               SizedBox(
                                 height: mediaHeight(context, 80),
                               ),
-                              Container(
-                                height: mediaHeight(context, 4),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    boxShadow: const [
-                                      BoxShadow(blurRadius: 3, spreadRadius: 1)
-                                    ]),
-                                child: Hero(
-                                  tag: "${product.displayUrl}",
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: "${product.displayUrl}",
-                                      fit: BoxFit.cover,
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return ImageViewDialog(
+                                          imageUrl:
+                                              product.displayUrl.toString());
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  height: mediaHeight(context, 4),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            blurRadius: 3, spreadRadius: 1)
+                                      ]),
+                                  child: Hero(
+                                    tag: "${product.displayUrl}",
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: CachedNetworkImage(
+                                        imageUrl: "${product.displayUrl}",
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -137,33 +152,6 @@ class ProductDisplay extends StatelessWidget {
             height: mediaHeight(context, 70),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ImageViewDialog extends StatelessWidget {
-  final String imageUrl;
-
-  const ImageViewDialog({super.key, required this.imageUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
-        child: InteractiveViewer(
-          maxScale: 5.0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10.0),
-            child: CachedNetworkImage(imageUrl: imageUrl),
-          ),
-        ),
       ),
     );
   }

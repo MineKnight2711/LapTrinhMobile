@@ -41,6 +41,7 @@ class ApiUrl {
 
   static const apiCreateOrder = '${baseUrl}order/create';
   static const apiUpdateOrderStatus = '${baseUrl}order/update';
+  static const apiDeleteReview = '${baseUrl}review/delete';
 
   ///
   ///

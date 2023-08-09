@@ -212,35 +212,13 @@ class ProductScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(
-                      //       left: 20.0, right: 40.0, bottom: 130),
-                      //   child: Text(
-                      //     "${product.description}",
-                      //     style: GoogleFonts.roboto(
-                      //         fontWeight: FontWeight.w400,
-                      //         fontStyle: FontStyle.normal,
-                      //         fontSize: 16.0),
-                      //   ),
-                      // ),
                       Obx(
                         () => IndexedStack(
                             index: productController.selected.value,
                             children: [
                               Container(
-                                decoration: const BoxDecoration(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(
-                                      height: 22.0,
-                                    ),
-                                    SizedBox(
-                                      height: 128,
-                                      child: Text("${product.description}"),
-                                    ),
-                                  ],
-                                ),
+                                padding: const EdgeInsets.all(20),
+                                child: Text("${product.description}"),
                               ),
                               Obx(() {
                                 if (reviewController.listReview.value != null) {

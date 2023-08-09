@@ -41,4 +41,18 @@ class ReviewApi extends GetxController {
       return responseBaseModel;
     }
   }
+
+  Future<ResponseBaseModel> deleteReview(String reviewId) async {
+    ResponseBaseModel responseBaseModel = ResponseBaseModel();
+    final url = Uri.parse("${ApiUrl.apiDeleteReview}/$reviewId");
+    final response = await http.delete(url);
+    if (response.statusCode == 200) {
+      responseBaseModel = ResponseBaseModel.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+      return responseBaseModel;
+    } else {
+      responseBaseModel.message = "Fail";
+      return responseBaseModel;
+    }
+  }
 }

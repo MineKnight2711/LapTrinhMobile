@@ -81,7 +81,7 @@ class ProductRatingDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          child: const Text('huỷ'),
+          child: const Text('Huỷ'),
           onPressed: () {
             reviewController.onFinishReviewed();
             Navigator.of(context).pop();

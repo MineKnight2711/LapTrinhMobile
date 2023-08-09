@@ -165,7 +165,7 @@ class InputExpandTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 margin: const EdgeInsets.only(left: 10),
-                height: mediaHeight(context, 7),
+                height: mediaHeight(context, 12),
                 width: mediaWidth(context, 1.35),
                 child: Center(
                   child: ProfileInputTextField(
