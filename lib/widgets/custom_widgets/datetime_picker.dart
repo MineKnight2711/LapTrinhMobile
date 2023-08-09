@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyboard_mobile_app/configs/constant.dart';
 
 import '../../configs/mediaquery.dart';
 
@@ -43,7 +44,7 @@ class BirthdayDatePickerWidgetState extends State<BirthdayDatePickerWidget> {
                   _selectDate(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: mainButtonColor,
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   shape: RoundedRectangleBorder(
