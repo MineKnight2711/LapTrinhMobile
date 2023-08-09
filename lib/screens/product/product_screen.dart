@@ -15,11 +15,13 @@ import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
+import '../../controller/cart_controller.dart';
 import '../../controller/product_detail_controller.dart';
 import '../../controller/review_controller.dart';
 import '../../model/review_model.dart';
 import '../../widgets/custom_widgets/rating_bars.dart';
 import 'components/product_display.dart';
+import 'components/review_card.dart';
 
 class ProductScreen extends StatelessWidget {
   final ProductModel product;
@@ -244,8 +246,11 @@ class ProductScreen extends StatelessWidget {
                                 if (reviewController.listReview.value != null) {
                                   return Column(
                                     children: reviewController.listReview.value!
-                                        .map((review) =>
-                                            ReviewCard(review: review))
+                                        .map((review) => Column(
+                                              children: [
+                                                ReviewCard(review: review),
+                                              ],
+                                            ))
                                         .toList(),
                                   );
                                 } else {
@@ -271,6 +276,7 @@ class ProductScreen extends StatelessWidget {
         child: DefaultButton(
           text: "Xem chi tiết",
           press: () {
+            Get.put(CartController());
             showModalBottomSheet(
               context: context,
               isScrollControlled: true,
@@ -291,70 +297,5 @@ class ProductScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class ReviewCard extends StatelessWidget {
-  final ReviewModel review;
-  ReviewCard({super.key, required this.review});
-  final reviewController = Get.find<ReviewController>();
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-        height: mediaHeight(context, 6),
-        width: mediaWidth(context, 1),
-        child: FutureBuilder<AccountResponse?>(
-          future: reviewController.getAcconutById("${review.accountId}"),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Column(
-                children: [
-                  SizedBox(
-                    height: mediaHeight(context, 9),
-                    width: mediaWidth(context, 1),
-                    child: ListTile(
-                      leading: SizedBox(
-                        height: mediaHeight(context, 9),
-                        width: mediaWidth(context, 6),
-                        child: CachedNetworkImage(
-                          imageUrl: snapshot.data!.imageUrl.toString(),
-                        ),
-                      ),
-                      title: Text("${snapshot.data?.fullName}"),
-                      subtitle: Row(
-                        children: [
-                          ShowRatingBar(
-                            rating: review.star ?? 0.0,
-                            size: 20,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 3, left: 5),
-                            child: Text(
-                              review.star.toString(),
-                              style: GoogleFonts.nunito(fontSize: 16),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  // SizedBox(
-                  //   height: mediaHeight(context, 200),
-                  // ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16),
-                      child: Text(
-                        "${review.comment}",
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ));
   }
 }

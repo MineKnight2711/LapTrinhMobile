@@ -54,7 +54,7 @@ class CartScreen extends StatelessWidget {
                         value: cartController.checkedItems.length ==
                             cartController.listCartItem.length,
                         onChanged: (value) {
-                          cartController.checkAll(value!, context);
+                          cartController.checkAll(value!);
                         },
                       ),
                       const Text('Chọn tất cả'),
@@ -176,9 +176,7 @@ class CartScreen extends StatelessWidget {
                                                         onChanged: (value) {
                                                           cartController
                                                               .checkPerItem(
-                                                                  value!,
-                                                                  item,
-                                                                  context);
+                                                                  value!, item);
                                                         },
                                                       ),
                                                     ),

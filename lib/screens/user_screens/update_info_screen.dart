@@ -1,21 +1,25 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/controller/update_profile_controller.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
+import 'package:keyboard_mobile_app/screens/user_screens/components/drop_down.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
-import 'package:keyboard_mobile_app/widgets/custom_widgets/gender_chose.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
+import '../../api/account_api.dart';
 import '../../configs/mediaquery.dart';
-import '../../widgets/custom_widgets/custom_input.dart';
-import '../../widgets/custom_widgets/datetime_picker.dart';
+import '../../transition_animation/screen_transition.dart';
+import '../../utils/show_animations.dart';
+import '../homescreen/homescreen.dart';
 
 class ChangeInfo extends StatelessWidget {
   final AccountResponse account;
   ChangeInfo({super.key, required this.account});
   final profileController = Get.find<UpdateProfileController>();
+  final accountApi = Get.find<AccountApi>();
   @override
   Widget build(BuildContext context) {
     profileController.fetchCurrent();
@@ -31,73 +35,114 @@ class ChangeInfo extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: mediaHeight(context, 23),
+              height: mediaHeight(context, 40),
             ),
-            SizedBox(
-              height: mediaHeight(context, 23),
-            ),
-            BirthdayDatePickerWidget(
-              initialDate: account.birthday,
-              onChanged: (value) {
-                profileController.date = value;
-              },
-            ),
+            AccountAvatar(imageUrl: account.imageUrl),
             SizedBox(
               height: mediaHeight(context, 40),
             ),
-            GenderSelectionWidget(
-              gender: account.gender,
-              onChanged: (value) {
-                profileController.selectedGender = value;
-              },
-              size: 2,
+            Divider(
+              endIndent: mediaWidth(context, 5),
+              indent: mediaWidth(context, 5),
+              thickness: 2,
+              color: Colors.black38,
             ),
             SizedBox(
               height: mediaHeight(context, 50),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Column(
-                children: [
-                  CustomInputTextField(
-                    controller: profileController.fullNameController,
-                    hintText: 'Nhập họ tên...',
-                    labelText: 'Họ và tên...',
-                    onChanged: profileController.validateFullname,
-                  ),
-                  SizedBox(
-                    height: mediaHeight(context, 40),
-                  ),
-                  CustomInputTextField(
-                    controller: profileController.phoneNumberController,
-                    hintText: 'Nhập số điện thoại...',
-                    labelText: 'Số điện thoại',
-                    onChanged: profileController.validatePhonenumber,
-                    textInputType: TextInputType.number,
-                  ),
-                  SizedBox(
-                    height: mediaHeight(context, 40),
-                  ),
-                  Obx(
-                    () => DefaultButton(
-                      enabled: profileController.isValidFullname.value &&
-                          profileController.isValidPhonenumber.value,
-                      text: 'Cập nhật',
-                      press: () async {
-                        String result = await profileController.updateAccount();
-                        if (result == "Success") {
-                          return CustomSnackBar.showCustomSnackBar(
-                              context, 'Cập nhật thành công!', 2);
-                        }
-                      },
-                    ),
-                  ),
-                ],
+            DatePickerExpandTile(
+              title: "Ngày sinh",
+              currentBirthday: account.birthday,
+              updateProfileController: profileController,
+            ),
+            SizedBox(
+              height: mediaHeight(context, 20 * 10),
+            ),
+            Obx(
+              () => InputExpandTile(
+                title: 'Họ và tên',
+                content: account.fullName.toString(),
+                textController: profileController.fullNameController,
+                isExpanded: profileController.isFullNameDropdown.value,
+                isValid: profileController.isValidFullname.value,
+                textFieldOnChanged: profileController.validateFullname,
+                onExpansionChanged: (isExpanded) {
+                  profileController.isFullNameDropdown.value = isExpanded;
+                },
+                onSavePressed: () async {
+                  showOrderLoadingAnimation(
+                      context, "assets/animations/loading_1.json", 180);
+                  String result = await profileController.updateAccount();
+                  if (result == "Success") {
+                    CustomSuccessMessage.showMessage("Cập nhật thành công!")
+                        .whenComplete(() {
+                      Navigator.pop(context);
+                      accountApi.fetchCurrent().whenComplete(() {
+                        replaceFadeInTransition(context, HomeScreen());
+                      });
+                    });
+                  } else {
+                    CustomErrorMessage.showMessage("Có lỗi xảy ra!")
+                        .whenComplete(() => Navigator.pop(context));
+                  }
+                },
               ),
+            ),
+            Obx(
+              () => InputExpandTile(
+                title: 'Số điện thoại',
+                content: account.phoneNumber.toString(),
+                textController: profileController.phoneNumberController,
+                isExpanded: profileController.isPhoneNumberDropDown.value,
+                isValid: profileController.isValidPhonenumber.value,
+                textFieldOnChanged: profileController.validatePhonenumber,
+                onExpansionChanged: (isExpanded) {
+                  profileController.isPhoneNumberDropDown.value = isExpanded;
+                },
+                onSavePressed: () async {
+                  showOrderLoadingAnimation(
+                      context, "assets/animations/loading_1.json", 180);
+                  String result = await profileController.updateAccount();
+                  if (result == "Success") {
+                    CustomSuccessMessage.showMessage("Cập nhật thành công!")
+                        .whenComplete(() {
+                      Navigator.pop(context);
+                      accountApi.fetchCurrent().whenComplete(() {
+                        replaceFadeInTransition(context, HomeScreen());
+                      });
+                    });
+                  } else {
+                    CustomErrorMessage.showMessage("Có lỗi xảy ra!")
+                        .whenComplete(() => Navigator.pop(context));
+                  }
+                },
+              ),
+            ),
+            SizedBox(
+              height: mediaHeight(context, 40),
+            ),
+            SizedBox(
+              height: mediaHeight(context, 40),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class AccountAvatar extends StatelessWidget {
+  final String? imageUrl;
+  const AccountAvatar({
+    super.key,
+    this.imageUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return CircleAvatar(
+      radius: 80,
+      backgroundImage: CachedNetworkImageProvider(imageUrl ?? ''),
     );
   }
 }

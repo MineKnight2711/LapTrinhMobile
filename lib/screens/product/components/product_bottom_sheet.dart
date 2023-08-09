@@ -10,8 +10,10 @@ import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/controller/product_detail_controller.dart';
 import 'package:keyboard_mobile_app/model/cart_model.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
+import 'package:keyboard_mobile_app/screens/login_signup/login_screen.dart';
 import 'package:keyboard_mobile_app/screens/product/components/color_selected.dart';
 import 'package:keyboard_mobile_app/screens/product/components/quantity_selector.dart';
+import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/utils/show_animations.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
@@ -292,6 +294,13 @@ class ProductDetailsBottomSheet extends StatelessWidget {
                                     });
                                     break;
                                 }
+                              } else {
+                                CustomErrorMessage.showMessage(
+                                        "Bạn phải đăng nhập để thêm vào giỏ hàng!")
+                                    .whenComplete(() {
+                                  Navigator.pop(context);
+                                  slideUpTransition(context, LoginScreen());
+                                });
                               }
                             },
                             text: 'Thêm vào giỏ hàng',

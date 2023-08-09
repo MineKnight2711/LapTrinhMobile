@@ -4,6 +4,7 @@ import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
 
 import '../../api/account_api.dart';
 import '../../configs/mediaquery.dart';
+import '../../controller/order_controller.dart';
 import '../../controller/register_controller.dart';
 import '../../transition_animation/screen_transition.dart';
 import '../../widgets/custom_widgets/custom_appbar.dart';
@@ -75,7 +76,10 @@ class SignUpGoogleCompletedScreen extends StatelessWidget {
                         await registerController.signUpwithGoogle();
                     if (result == "Success") {
                       CustomSuccessMessage.showMessage("Đăng ký thành công!")
-                          .whenComplete(() => controller.fetchCurrent());
+                          .whenComplete(
+                              () => controller.fetchCurrent().whenComplete(() {
+                                    Get.put(OrderController());
+                                  }));
                       // ignore: use_build_context_synchronously
                       replaceFadeInTransition(context, HomeScreen());
                       registerController.onClose();

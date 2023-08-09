@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_mobile_app/api/account_api.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/controller/category_controller.dart';
 import 'package:keyboard_mobile_app/controller/product_controller.dart';
 import 'package:keyboard_mobile_app/screens/cart_screen/cart_screen.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/components/homescreen_body.dart';
+import 'package:keyboard_mobile_app/screens/login_signup/login_screen.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 import 'components/homescreen_appbar.dart';
 
 class HomeScreenController extends GetxController {
   var selectedindex = 0.obs;
+  final accountApi = Get.find<AccountApi>();
   void onItemTapped(BuildContext context, int index) {
     if (selectedindex.value == index) {
       // If the tapped index is the same as the current selected index,
@@ -23,9 +27,15 @@ class HomeScreenController extends GetxController {
     selectedindex.value = index;
 
     if (selectedindex.value == 1) {
-      Get.put(CartController());
-      slideInTransition(context, CartScreen());
-      selectedindex.value = 0;
+      if (accountApi.accountRespone.value != null) {
+        Get.put(CartController());
+        slideInTransition(context, CartScreen());
+        selectedindex.value = 0;
+      } else {
+        slideInTransition(context, LoginScreen());
+        selectedindex.value = 0;
+        CustomErrorMessage.showMessage('Bạn phải đăng nhập để xem giỏ hàng');
+      }
     } else {
       slideInTransitionReplacement(context, HomeScreen());
     }

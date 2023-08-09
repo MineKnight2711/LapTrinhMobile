@@ -35,44 +35,46 @@ class AddressListScreen extends StatelessWidget {
             return SizedBox(
               width: mediaWidth(context, 1),
               child: SingleChildScrollView(
-                child: Column(
-                  children: addressController.listAddress.value!
-                      .where((element) => element.defaultAddress == true)
-                      .map((address) => InkWell(
-                            onTap: () {
-                              addressController.fetchCurrentAddress(address);
-                              slideInTransition(
-                                  context,
-                                  UpdateAddressScreen(
+                child: Obx(
+                  () => Column(
+                    children: addressController.listAddress.value!
+                        .where((element) => element.defaultAddress == true)
+                        .map((address) => InkWell(
+                              onTap: () {
+                                addressController.fetchCurrentAddress(address);
+                                slideInTransition(
+                                    context,
+                                    UpdateAddressScreen(
+                                      address: address,
+                                    ));
+                              },
+                              child: AddressItem(
+                                address: address,
+                              ),
+                            ))
+                        .toList()
+                      ..addAll(
+                        addressController.listAddress.value!
+                            .where((address) =>
+                                address.defaultAddress ==
+                                false) // Filter addresses with defaultAddress == false
+                            .map((address) => InkWell(
+                                  onTap: () {
+                                    addressController
+                                        .fetchCurrentAddress(address);
+                                    slideInTransition(
+                                        context,
+                                        UpdateAddressScreen(
+                                          address: address,
+                                        ));
+                                  },
+                                  child: AddressItem(
                                     address: address,
-                                  ));
-                            },
-                            child: AddressItem(
-                              address: address,
-                            ),
-                          ))
-                      .toList()
-                    ..addAll(
-                      addressController.listAddress.value!
-                          .where((address) =>
-                              address.defaultAddress ==
-                              false) // Filter addresses with defaultAddress == false
-                          .map((address) => InkWell(
-                                onTap: () {
-                                  addressController
-                                      .fetchCurrentAddress(address);
-                                  slideInTransition(
-                                      context,
-                                      UpdateAddressScreen(
-                                        address: address,
-                                      ));
-                                },
-                                child: AddressItem(
-                                  address: address,
-                                ),
-                              ))
-                          .toList(),
-                    ),
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                  ),
                 ),
               ),
             );

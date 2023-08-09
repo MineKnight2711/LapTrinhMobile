@@ -29,11 +29,21 @@ class SortingPopupMenu extends StatelessWidget {
                 itemBuilder: (context) => const <PopupMenuEntry<SortByPrice>>[
                   PopupMenuItem<SortByPrice>(
                     value: SortByPrice.lowToHigh,
-                    child: Text('Giá: Thấp đến cao'),
+                    child: Row(
+                      children: [
+                        Text('Giá: Thấp đến cao'),
+                        Icon(Icons.arrow_drop_up_sharp),
+                      ],
+                    ),
                   ),
                   PopupMenuItem<SortByPrice>(
                     value: SortByPrice.highToLow,
-                    child: Text('Giá: Cao đến thấp'),
+                    child: Row(
+                      children: [
+                        Text('Giá: Cao đến thấp'),
+                        Icon(Icons.arrow_drop_down_sharp),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -52,11 +62,31 @@ class SortingPopupMenu extends StatelessWidget {
                     const <PopupMenuEntry<SortByOrderStatus>>[
                   PopupMenuItem<SortByOrderStatus>(
                     value: SortByOrderStatus.order_status_unconfirmed,
-                    child: Text('Chưa xác nhận'),
+                    child: Text(
+                      'Chưa xác nhận',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  PopupMenuItem<SortByOrderStatus>(
+                    value: SortByOrderStatus.order_status_ondeliver,
+                    child: Text(
+                      'Đang giao',
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ),
                   PopupMenuItem<SortByOrderStatus>(
                     value: SortByOrderStatus.order_status_delivered,
-                    child: Text('Đã giao'),
+                    child: Text(
+                      'Đã giao',
+                      style: TextStyle(color: Colors.green),
+                    ),
+                  ),
+                  PopupMenuItem<SortByOrderStatus>(
+                    value: SortByOrderStatus.order_status_canceled,
+                    child: Text(
+                      'Đã huỷ',
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                 ],
               ),

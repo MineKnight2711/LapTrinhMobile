@@ -19,6 +19,7 @@ import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 import '../../api/fingerprint_api/local_auth_api.dart';
+import '../../controller/order_controller.dart';
 import '../../widgets/custom_widgets/forgot_password_alertdialog.dart';
 import 'complete_register_with_google.dart';
 
@@ -100,8 +101,8 @@ class LoginScreen extends StatelessWidget {
                             if (result == 'Success') {
                               CustomSuccessMessage.showMessage(result);
                               loginController.onClose();
-                              fadeInTransitionReplacement(
-                                  context, HomeScreen());
+                              replaceFadeInTransition(context, HomeScreen());
+                              Get.put(OrderController());
                             } else {
                               CustomSnackBar.showCustomSnackBar(
                                   context, result, 3,
@@ -127,8 +128,8 @@ class LoginScreen extends StatelessWidget {
                             case 'Success':
                               CustomSuccessMessage.showMessage(
                                   'Xác thực thành công!');
-                              fadeInTransitionReplacement(
-                                  context, HomeScreen());
+                              replaceFadeInTransition(context, HomeScreen());
+                              Get.put(OrderController());
                               break;
                             case 'NotFound':
                               CustomErrorMessage.showMessage(
@@ -188,7 +189,10 @@ class LoginScreen extends StatelessWidget {
                         break;
                       case 'LoginSuccess':
                         CustomSuccessMessage.showMessage(
-                            'Đăng nhập thành công!');
+                                'Đăng nhập thành công!')
+                            .whenComplete(() {
+                          Get.put(OrderController());
+                        });
                         replaceFadeInTransition(context, HomeScreen());
                         break;
 

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
@@ -36,14 +38,16 @@ class MyDrawerHeader extends StatelessWidget {
               child: Obx(
                 () => ImagePickerWidget(
                   onImageSelected: (selectedImage) async {
+                    showOrderLoadingAnimation(
+                        context, "assets/animations/loading_1.json", 180);
                     String url =
                         await changeImageController.saveImageToFirebaseStorage(
                             selectedImage, "${account.accountId}");
                     Logger().i("$url log url");
+                    Navigator.pop(context);
                     if (url.isNotEmpty) {
-                      // ignore: use_build_context_synchronously
-                      showLoadingAnimation(
-                          context, "assets/animations/loading_1.json", 180, 3);
+                      showOrderLoadingAnimation(
+                          context, "assets/animations/loading_1.json", 180);
                       String result = await changeImageController
                           .changeImageUrl("${account.accountId}", url);
                       if (result == "Success") {

@@ -61,7 +61,6 @@ class CartController extends GetxController {
         await cartApi.getCartByAccountId("${currentAccount?.accountId}");
     if (respone.data != null) {
       final cartReceived = respone.data as List<dynamic>;
-      Logger().i("${respone.data} test cart");
       List<CartModel> cartList = cartReceived
           .map(
             (cartMap) => CartModel.fromJson(cartMap),
@@ -93,10 +92,9 @@ class CartController extends GetxController {
     return null;
   }
 
-  void checkAll(bool isCheck, BuildContext context) {
+  void checkAll(bool isCheck) {
     if (isCheck) {
       checkedItems.assignAll(listCartItem);
-      showLoadingAnimation(context, "assets/animations/checked.json", 180, 2);
       calculateCartTotal();
     } else {
       checkedItems.clear();
@@ -104,12 +102,10 @@ class CartController extends GetxController {
     }
   }
 
-  void checkPerItem(bool isCheck, CartModel item, BuildContext context) {
+  void checkPerItem(bool isCheck, CartModel item) {
     if (isCheck) {
       checkedItems.add(item);
-      if (checkedItems.length == listCartItem.length) {
-        showLoadingAnimation(context, "assets/animations/checked.json", 180, 2);
-      }
+
       calculateCartTotal();
     } else {
       checkedItems.remove(item);

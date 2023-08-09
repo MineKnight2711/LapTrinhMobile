@@ -14,10 +14,21 @@ class ReviewController extends GetxController {
   final accountApi = Get.find<AccountApi>();
 
   final commentController = TextEditingController();
+
+  final isValidReview = true.obs;
   @override
   void onInit() {
     super.onInit();
     reviewApi = Get.put(ReviewApi());
+  }
+
+  bool checkAccount(String accountId) {
+    if (accountApi.accountRespone.value != null) {
+      if (accountApi.accountRespone.value!.accountId == accountId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   //Chờ thông tin người dùng hiện tại
@@ -54,9 +65,27 @@ class ReviewController extends GetxController {
             (reviewMap) => ReviewModel.fromJson(reviewMap),
           )
           .toList();
-      listReview.value = reviewList;
-      Logger().i("${listReview.value?.length} test listReview");
-      // isNoProduct.value = false;
+      //Lấy account hiện tại
+      final currentAccount = await awaitCurrentAccount();
+
+      //Tạo hai list để duyệt với tài khoản hiện tại
+      List<ReviewModel> currentUserReviews = [];
+      List<ReviewModel> otherUserReviews = [];
+
+      for (var review in reviewList) {
+        if (currentAccount != null &&
+            review.accountId == currentAccount.accountId) {
+          currentUserReviews.add(review);
+        } else {
+          otherUserReviews.add(review);
+        }
+      }
+
+      //Sắp xếp danh sách review theo ngày tháng
+      otherUserReviews.sort((a, b) => b.dateReview!.compareTo(a.dateReview!));
+
+      // Nối hai danh sách lại với nhau
+      listReview.value = [...currentUserReviews, ...otherUserReviews];
     }
   }
 
@@ -91,6 +120,15 @@ class ReviewController extends GetxController {
   void onFinishReviewed() {
     commentController.clear();
     score.value = 5.0;
+  }
+
+  String? validateReview(String? fullname) {
+    if (fullname!.length >= 50) {
+      isValidReview.value = false;
+      return 'Đánh giá phải dưới 50 ký tự!';
+    }
+    isValidReview.value = true;
+    return null;
   }
 
   Future<String> addReview(String accountId, String productId) async {

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/review_controller.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
+import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 class ProductRatingDialog extends StatelessWidget {
@@ -66,32 +68,13 @@ class ProductRatingDialog extends StatelessWidget {
             height: 25,
           ),
           SizedBox(
-            width: 260,
-            height: 50,
-            child: TextFormField(
+            width: mediaWidth(context, 1.5),
+            height: mediaHeight(context, 9),
+            child: CustomInputTextField(
+              maxLenght: 50,
               controller: reviewController.commentController,
-              decoration: InputDecoration(
-                labelText: 'Nhận xét',
-                hintText: 'Cảm nhận của bạn',
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.grey),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: const BorderSide(color: Colors.blue),
-                ),
-              ),
-              style: const TextStyle(fontSize: 16),
-              cursorColor: Colors.blue,
-              keyboardType: TextInputType.text,
-              textInputAction: TextInputAction.next,
+              hintText: "Cảm nhận của bạn",
+              onChanged: reviewController.validateReview,
             ),
           ),
         ],
@@ -100,33 +83,41 @@ class ProductRatingDialog extends StatelessWidget {
         TextButton(
           child: const Text('huỷ'),
           onPressed: () {
+            reviewController.onFinishReviewed();
             Navigator.of(context).pop();
           },
         ),
-        ElevatedButton(
-          child: const Text('Gửi'),
-          onPressed: () async {
-            final currentAccount = await reviewController.awaitCurrentAccount();
-            if (currentAccount != null) {
-              final result = await reviewController.addReview(
-                  "${currentAccount.accountId}", "${product.productId}");
-              if (result == "Success") {
-                CustomSuccessMessage.showMessage("Đánh giá thành công!")
-                    .then((value) {
-                  reviewController
-                      .getAllReview("${product.productId}")
-                      .then((value) {
-                    reviewController.onFinishReviewed();
-                    Navigator.pop(context);
-                  });
-                });
-              } else {
-                CustomErrorMessage.showMessage(result);
-              }
-            } else {
-              CustomErrorMessage.showMessage("Phiên đăng nhập không hợp lệ!");
-            }
-          },
+        Obx(
+          () => ElevatedButton(
+            onPressed: reviewController.isValidReview.value
+                ? () async {
+                    final currentAccount =
+                        await reviewController.awaitCurrentAccount();
+                    if (currentAccount != null) {
+                      final result = await reviewController.addReview(
+                          "${currentAccount.accountId}",
+                          "${product.productId}");
+                      if (result == "Success") {
+                        CustomSuccessMessage.showMessage("Đánh giá thành công!")
+                            .then((value) {
+                          reviewController
+                              .getAllReview("${product.productId}")
+                              .then((value) {
+                            reviewController.onFinishReviewed();
+                            Navigator.pop(context);
+                          });
+                        });
+                      } else {
+                        CustomErrorMessage.showMessage(result);
+                      }
+                    } else {
+                      CustomErrorMessage.showMessage(
+                          "Phiên đăng nhập không hợp lệ!");
+                    }
+                  }
+                : null,
+            child: const Text('Gửi'),
+          ),
         ),
       ],
     );

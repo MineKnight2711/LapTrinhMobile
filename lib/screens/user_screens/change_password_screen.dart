@@ -7,6 +7,7 @@ import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/image_view.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 import '../../controller/change_password_controller.dart';
+import '../../utils/show_animations.dart';
 import '../../widgets/custom_widgets/custom_button.dart';
 import '../../widgets/custom_widgets/custom_input.dart';
 
@@ -128,12 +129,15 @@ class ChangePasswordScreen extends StatelessWidget {
                           enabled: changePassController.isValidPassword.value &&
                               changePassController.isValidReenter.value,
                           press: () async {
+                            showOrderLoadingAnimation(context,
+                                "assets/animations/loading_1.json", 180);
                             String? result =
                                 await changePassController.createPassword(
                                     email,
                                     changePassController
                                         .newpassController.text);
                             if (result == 'Success') {
+                              Navigator.pop(context);
                               CustomSnackBar.showCustomSnackBar(
                                   context, 'Tạo mật khẩu mới thành công!', 2);
                               changePassController.onClose();

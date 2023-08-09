@@ -13,6 +13,85 @@ class CustomInputTextField extends StatefulWidget {
     required this.controller,
     this.onChanged,
     this.textInputType,
+    this.maxLenght,
+  }) : super(key: key);
+  final String? Function(String?)? validator;
+  final Function(String?)? onChanged;
+  final String? hintText;
+  final TextInputType? textInputType;
+  final String? labelText;
+  final int? maxLenght;
+  final FocusNode? focusNode;
+  final FocusNode? nextfocusNode;
+  final TextEditingController controller;
+  @override
+  _CustomInputTextFieldState createState() => _CustomInputTextFieldState();
+}
+
+class _CustomInputTextFieldState extends State<CustomInputTextField> {
+  late TextEditingController _controller;
+  String? _errorText;
+  @override
+  void initState() {
+    super.initState();
+    _controller = widget.controller;
+  }
+
+  void checkOnchangedValidate(String? value) {
+    setState(() {
+      if (value != '' || value != null) {
+        _errorText = widget.onChanged?.call(value);
+      } else {
+        _errorText = null;
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      focusNode: widget.focusNode,
+      onFieldSubmitted: (value) {
+        if (widget.nextfocusNode != null) {
+          widget.focusNode?.unfocus();
+          FocusScope.of(context).requestFocus(widget.nextfocusNode);
+        }
+      },
+      maxLength: widget.maxLenght,
+      keyboardType: widget.textInputType,
+      onChanged: checkOnchangedValidate,
+      validator: widget.validator,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      controller: _controller,
+      cursorColor: Colors.black,
+      decoration: InputDecoration(
+        hintText: widget.hintText,
+        labelText: widget.labelText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        errorText: _errorText,
+      ),
+    );
+  }
+}
+
+class ProfileInputTextField extends StatefulWidget {
+  const ProfileInputTextField({
+    Key? key,
+    this.hintText,
+    this.focusNode,
+    this.nextfocusNode,
+    this.labelText,
+    this.validator,
+    required this.controller,
+    this.onChanged,
+    this.textInputType,
   }) : super(key: key);
   final String? Function(String?)? validator;
   final Function(String?)? onChanged;
@@ -23,10 +102,10 @@ class CustomInputTextField extends StatefulWidget {
   final FocusNode? nextfocusNode;
   final TextEditingController controller;
   @override
-  _CustomInputTextFieldState createState() => _CustomInputTextFieldState();
+  _ProfileInputTextFieldState createState() => _ProfileInputTextFieldState();
 }
 
-class _CustomInputTextFieldState extends State<CustomInputTextField> {
+class _ProfileInputTextFieldState extends State<ProfileInputTextField> {
   late TextEditingController _controller;
   String? _errorText;
   @override
@@ -69,9 +148,7 @@ class _CustomInputTextFieldState extends State<CustomInputTextField> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         labelText: widget.labelText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
+        border: InputBorder.none,
         errorText: _errorText,
       ),
     );

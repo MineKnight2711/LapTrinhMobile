@@ -11,7 +11,12 @@ import '../model/query_order_model.dart';
 
 enum SortByPrice { highToLow, lowToHigh }
 
-enum SortByOrderStatus { order_status_unconfirmed, order_status_delivered }
+enum SortByOrderStatus {
+  order_status_unconfirmed,
+  order_status_ondeliver,
+  order_status_delivered,
+  order_status_canceled
+}
 
 class OrderController extends GetxController {
   late OrderApi orderApi;
@@ -61,6 +66,11 @@ class OrderController extends GetxController {
     return "NoUser";
   }
 
+  // ignore: annotate_overrides
+  Future<void> refresh() async {
+    await getAllOrder();
+  }
+
   Future<String> saveOrder(
       OrderModel newOrder, List<CartModel> chosenItems) async {
     final respone = await orderApi.saveOrder(newOrder, chosenItems);
@@ -101,13 +111,29 @@ class OrderController extends GetxController {
           listQueryOrder.value = List.from(storedListQueryOrder);
           listQueryOrder.removeWhere((order) => order.status != 'Đang giao');
           break;
+        case SortByOrderStatus.order_status_ondeliver:
+          listQueryOrder.value = List.from(storedListQueryOrder);
+          listQueryOrder.removeWhere((order) => order.status != 'Đang giao');
+          break;
         case SortByOrderStatus.order_status_delivered:
           listQueryOrder.value = List.from(storedListQueryOrder);
           listQueryOrder.removeWhere((order) => order.status != 'Đã giao');
+          break;
+        case SortByOrderStatus.order_status_canceled:
+          listQueryOrder.value = List.from(storedListQueryOrder);
+          listQueryOrder.removeWhere((order) => order.status != 'Đã huỷ');
           break;
         case null:
           break;
       }
     }
+  }
+
+  Future<String> updateStatus(String orderId, String status) async {
+    final respone = await orderApi.updateOrderStatus(orderId, status);
+    if (respone.message == "Success") {
+      return "Success";
+    }
+    return respone.message.toString();
   }
 }

@@ -147,8 +147,8 @@ class ProductList extends StatelessWidget {
                                           !productControler.showMore.value;
                                     },
                                     child: Text(productControler.showMore.value
-                                        ? 'Show Less'
-                                        : 'Show More'),
+                                        ? 'Xem ít hơn'
+                                        : 'Xem thêm'),
                                   ),
                                 ),
                               ),

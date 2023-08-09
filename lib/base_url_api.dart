@@ -40,6 +40,7 @@ class ApiUrl {
   static const apiUpdateAddress = '${baseUrl}address/update';
 
   static const apiCreateOrder = '${baseUrl}order/create';
+  static const apiUpdateOrderStatus = '${baseUrl}order/update';
 
   ///
   ///

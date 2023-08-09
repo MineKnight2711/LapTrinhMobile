@@ -63,6 +63,7 @@ class OrderScreen extends StatelessWidget {
                             .deleteManyItem()
                             .then((_) => cartController.calculateCartTotal())
                             .whenComplete(() {
+                          orderController.getAllOrder();
                           Navigator.pop(context);
                           replaceFadeInTransition(context, HomeScreen());
                         }));

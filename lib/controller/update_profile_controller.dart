@@ -20,6 +20,10 @@ class UpdateProfileController extends GetxController {
   String? selectedGender;
   DateTime? date;
 
+  final isFullNameDropdown = false.obs;
+  final isPhoneNumberDropDown = false.obs;
+  final isBirthDayDropDown = false.obs;
+
   TextEditingController fullNameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
 
@@ -78,7 +82,7 @@ class UpdateProfileController extends GetxController {
     ResponseBaseModel respone = await accountApi.updateAccount(updatedAccount);
     if (respone.message == 'Success') {
       await accountApi.login(updatedAccount.accountId);
-      return respone.message.toString();
+      return "Success";
     }
     return respone.message.toString();
   }
