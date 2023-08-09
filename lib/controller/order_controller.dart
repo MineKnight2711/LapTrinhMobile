@@ -109,7 +109,7 @@ class OrderController extends GetxController {
       switch (sortByOrderStatusController.value) {
         case SortByOrderStatus.order_status_unconfirmed:
           listQueryOrder.value = List.from(storedListQueryOrder);
-          listQueryOrder.removeWhere((order) => order.status != 'Đang giao');
+          listQueryOrder.removeWhere((order) => order.status != 'Chờ xác nhận');
           break;
         case SortByOrderStatus.order_status_ondeliver:
           listQueryOrder.value = List.from(storedListQueryOrder);

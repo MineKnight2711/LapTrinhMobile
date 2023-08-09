@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/api/account_api.dart';
+import 'package:keyboard_mobile_app/api/address_api.dart';
+import 'package:keyboard_mobile_app/controller/address_controller.dart';
 import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/controller/category_controller.dart';
 import 'package:keyboard_mobile_app/controller/login_controller.dart';
@@ -30,6 +32,8 @@ class MainController {
     Get.delete<OrderApi>();
     Get.delete<ChangeImageController>();
     Get.delete<UpdateProfileController>();
+    Get.delete<AddressController>();
+    Get.delete<AddressApi>();
     Get.delete<CartApi>();
     Get.delete<CartController>();
   }
