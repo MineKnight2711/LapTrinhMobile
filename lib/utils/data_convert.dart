@@ -45,4 +45,12 @@ class DataConvert {
         "${currentcy.format(double.parse(value.toStringAsFixed(0)))} đ";
     return result;
   }
+
+  String formattedOrderDate(DateTime orderDate) {
+    String amPm = orderDate.hour < 12 ? "AM" : "PM  ";
+    // int hour =
+    //     orderDate.hour < 12 ? orderDate.hour : orderDate.hour - 12;
+    return DateFormat("dd/MM/yyyy 'lúc' h:mm '$amPm' ", 'vi_VN')
+        .format(orderDate);
+  }
 }

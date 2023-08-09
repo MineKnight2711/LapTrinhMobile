@@ -6,6 +6,7 @@ import 'package:keyboard_mobile_app/controller/address_controller.dart';
 import 'package:keyboard_mobile_app/controller/update_profile_controller.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/screens/address/list_address.dart';
+import 'package:keyboard_mobile_app/screens/customer_order/list_order.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:logger/logger.dart';
 import '../../../configs/mediaquery.dart';
@@ -83,6 +84,7 @@ class UserDrawer extends StatelessWidget {
           title: const Text('Đơn hàng'),
           onTap: () {
             Navigator.pop(context);
+            slideInTransition(context, ListOrderScreen());
           },
         ),
         ListTile(

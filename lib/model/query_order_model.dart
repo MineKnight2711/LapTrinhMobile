@@ -1,6 +1,9 @@
+import 'package:keyboard_mobile_app/utils/data_convert.dart';
+
 class QueryOrder {
   String orderId;
   String accountId;
+  double total;
   DateTime orderDate;
   String receiverInfo;
   String status;
@@ -10,6 +13,7 @@ class QueryOrder {
     required this.orderId,
     required this.accountId,
     required this.orderDate,
+    this.total = 0.0,
     required this.receiverInfo,
     required this.status,
     required this.listOrderDetail,
@@ -55,7 +59,7 @@ class QueryProductDetail {
   String color;
   double price;
   int quantity;
-  String imageUrl;
+  List<String> imageUrl;
 
   QueryProductDetail({
     required this.productDetailId,
@@ -73,7 +77,7 @@ class QueryProductDetail {
       color: json['color'],
       price: json['price'].toDouble(),
       quantity: json['quantity'],
-      imageUrl: json['imageUrl'],
+      imageUrl: DataConvert().encodeListImages(json['imageUrl']),
     );
   }
 }
