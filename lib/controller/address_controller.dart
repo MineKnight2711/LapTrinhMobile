@@ -47,6 +47,7 @@ class AddressController extends GetxController {
           .toList();
 
       listAddress.value = addressList;
+
       currentDefaultAddress.value =
           addressList.firstWhere((element) => element.defaultAddress == true);
       if (listAddress.value == null || listAddress.value!.isEmpty) {

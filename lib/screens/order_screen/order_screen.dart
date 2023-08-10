@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/controller/order_controller.dart';
 import 'package:keyboard_mobile_app/model/order_model.dart';
+import 'package:keyboard_mobile_app/screens/address/list_address.dart';
 import 'package:keyboard_mobile_app/screens/homescreen/homescreen.dart';
 import 'package:keyboard_mobile_app/screens/order_screen/components/body.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
@@ -45,6 +46,16 @@ class OrderScreen extends StatelessWidget {
             final currentAccount = await cartController.awaitCurrentAccount();
             if (currentAccount != null) {
               OrderModel newOrder = OrderModel();
+              if (addressController.listAddress.value == null ||
+                  addressController.listAddress.value!.isEmpty) {
+                CustomErrorMessage.showMessage(
+                        "Bạn chưa có địa chỉ!\nVui lòng thêm địa chỉ để đặt hàng")
+                    .whenComplete(() {
+                  Get.put(AddressController());
+                  slideInTransitionReplacement(context, AddressListScreen());
+                });
+                return;
+              }
               if (addressController.chosenAddress.value != null) {
                 newOrder.receiverInfo =
                     "${addressController.chosenAddress.value?.receiverName}-${addressController.chosenAddress.value?.receiverPhone}-${addressController.chosenAddress.value?.address}";
