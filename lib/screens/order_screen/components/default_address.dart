@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:keyboard_mobile_app/screens/order_screen/components/list_address.dart';
 import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart';
 import 'package:keyboard_mobile_app/utils/data_convert.dart';
-import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 
 import '../../../model/address_model.dart';
 

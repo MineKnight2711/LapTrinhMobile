@@ -1,13 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:keyboard_mobile_app/configs/constant.dart';
 import 'package:keyboard_mobile_app/configs/mediaquery.dart';
 import 'package:keyboard_mobile_app/controller/product_controller.dart';
-import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/model/product_model.dart';
 import 'package:keyboard_mobile_app/screens/product/components/product_bottom_sheet.dart';
 import 'package:keyboard_mobile_app/screens/product/rating/rating_dialog.dart';
@@ -18,7 +16,6 @@ import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 import '../../controller/cart_controller.dart';
 import '../../controller/product_detail_controller.dart';
 import '../../controller/review_controller.dart';
-import '../../model/review_model.dart';
 import '../../widgets/custom_widgets/rating_bars.dart';
 import 'components/product_display.dart';
 import 'components/review_card.dart';

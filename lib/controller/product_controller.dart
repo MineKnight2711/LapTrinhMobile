@@ -23,8 +23,6 @@ class ProductController extends GetxController {
     productApi = Get.put(ProductApi());
   }
 
-  var _listAllProduct = <ProductModel>[].obs;
-
   Future getProductByCategory(String? categoryId) async {
     ResponseBaseModel respone =
         await productApi.getProductByCategory(categoryId);

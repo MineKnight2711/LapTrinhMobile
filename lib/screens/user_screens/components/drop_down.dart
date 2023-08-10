@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:keyboard_mobile_app/controller/update_profile_controller.dart';
-import 'package:keyboard_mobile_app/utils/data_convert.dart';
 import 'package:intl/intl.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_input.dart';
 import '../../../api/account_api.dart';
 import '../../../configs/mediaquery.dart';
-import '../../../model/account_model.dart';
 import '../../../transition_animation/screen_transition.dart';
 import '../../../utils/show_animations.dart';
 import '../../../widgets/custom_widgets/datetime_picker.dart';

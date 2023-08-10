@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:keyboard_mobile_app/api/cart_api.dart';
@@ -6,8 +5,6 @@ import 'package:keyboard_mobile_app/api/product_api.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/model/respone_base_model.dart';
 import 'package:keyboard_mobile_app/utils/data_convert.dart';
-import 'package:keyboard_mobile_app/utils/show_animations.dart';
-import 'package:logger/logger.dart';
 
 import '../api/account_api.dart';
 import '../model/cart_model.dart';

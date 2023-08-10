@@ -17,7 +17,6 @@ import 'package:keyboard_mobile_app/transition_animation/screen_transition.dart'
 import 'package:keyboard_mobile_app/utils/show_animations.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
-import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 import 'package:scroll_edge_listener/scroll_edge_listener.dart';
 

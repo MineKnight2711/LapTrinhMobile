@@ -7,7 +7,6 @@ import 'package:keyboard_mobile_app/controller/update_profile_controller.dart';
 import 'package:keyboard_mobile_app/model/account_respone.dart';
 import 'package:keyboard_mobile_app/screens/user_screens/components/drop_down.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_appbar.dart';
-import 'package:keyboard_mobile_app/widgets/custom_widgets/custom_button.dart';
 import 'package:keyboard_mobile_app/widgets/custom_widgets/message.dart';
 import '../../api/account_api.dart';
 import '../../configs/mediaquery.dart';

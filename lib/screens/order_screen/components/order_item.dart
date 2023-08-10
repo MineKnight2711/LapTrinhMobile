@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:keyboard_mobile_app/model/cart_model.dart';
 import 'package:keyboard_mobile_app/utils/data_convert.dart';
 import 'package:lottie/lottie.dart';

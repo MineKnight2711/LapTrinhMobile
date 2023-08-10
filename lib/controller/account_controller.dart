@@ -3,11 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:keyboard_mobile_app/api/account_api.dart';
-import 'package:keyboard_mobile_app/api/cart_api.dart';
-import 'package:keyboard_mobile_app/api/order_api.dart';
-import 'package:keyboard_mobile_app/controller/cart_controller.dart';
 import 'package:keyboard_mobile_app/controller/main_controller.dart';
-import 'package:keyboard_mobile_app/controller/order_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/account_respone.dart';
 
