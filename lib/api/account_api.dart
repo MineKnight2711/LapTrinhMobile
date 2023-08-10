@@ -21,11 +21,13 @@ class AccountApi extends GetxController {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       accountRespone.value = await login(user.uid);
-
+      enableFingerprint.value =
+          accountRespone.value?.isFingerPrintAuthentication ?? false;
       return accountRespone.value;
     }
     if (accountRespone.value != null) {
       accountRespone.value = await login(accountRespone.value!.accountId);
+      accountRespone.value?.isFingerPrintAuthentication ?? false;
       return accountRespone.value;
     }
     return null;
@@ -46,6 +48,8 @@ class AccountApi extends GetxController {
       await AccountController().storedUserToSharedRefererces(
           AccountResponse.fromMap(responseBase.data));
       // accountResponseResult.status = "Đăng nhập thành công";
+      enableFingerprint.value =
+          accountResponseResult.isFingerPrintAuthentication ?? false;
       return accountResponseResult;
     } else {
       // accountResponseResult.status = "Đăng nhập thất bại";
