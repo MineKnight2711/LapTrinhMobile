@@ -128,6 +128,7 @@ class LoginScreen extends StatelessWidget {
                             case 'Success':
                               CustomSuccessMessage.showMessage(
                                   'Xác thực thành công!');
+                              await accountApi.fetchCurrent();
                               replaceFadeInTransition(context, HomeScreen());
                               Get.put(OrderController());
                               break;
