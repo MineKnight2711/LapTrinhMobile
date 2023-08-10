@@ -24,6 +24,10 @@ class AccountApi extends GetxController {
 
       return accountRespone.value;
     }
+    if (accountRespone.value != null) {
+      accountRespone.value = await login(accountRespone.value!.accountId);
+      return accountRespone.value;
+    }
     return null;
   }
 
